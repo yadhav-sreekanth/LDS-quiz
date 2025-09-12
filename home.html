@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Little Daffodils Quiz Club — Home</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+  :root {
+    --primary:#1a3d7c; 
+    --accent:#ffd700; 
+    --bg:#f8fafc; 
+    --card:#ffffff; 
+    --muted:#6b7280;
+    --success:#22c55e;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; font-family:'Poppins', sans-serif; background:var(--bg); color:#111;
+  }
+  header {
+    background:linear-gradient(90deg,var(--primary),#0d2b5a);
+    color:#fff; padding:14px 20px;
+    display:flex; justify-content:space-between; align-items:center;
+    position:sticky; top:0; z-index:100;
+    box-shadow:0 2px 10px rgba(0,0,0,0.15);
+  }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .brand img { width:48px; height:48px; border-radius:8px; background:#fff; padding:6px; }
+  .brand h1 { margin:0; font-size:1.1rem; font-weight:700; }
+  .small { font-size:0.85rem; color:#d1d5db; }
+  .nav-actions { display:flex; gap:12px; }
+  .btn {
+    background:var(--accent); color:var(--primary);
+    padding:8px 16px; border-radius:999px; border:0;
+    font-weight:600; cursor:pointer; transition:0.2s;
+  }
+  .btn:hover { transform:translateY(-2px); }
+  .btn.secondary {
+    background:transparent; color:#fff;
+    border:1px solid rgba(255,255,255,0.2);
+  }
+  main { max-width:1100px; margin:28px auto; padding:0 16px; animation:fadeIn 0.6s ease; }
+  .grid { display:grid; grid-template-columns:1fr 340px; gap:20px; align-items:start; }
+  .card {
+    background:var(--card); padding:20px; border-radius:14px;
+    box-shadow:0 8px 24px rgba(16,24,40,0.08);
+    animation:slideUp 0.5s ease;
+  }
+  h2,h3 { margin-top:0; color:var(--primary); font-family:'Playfair Display', serif; }
+  .muted { color:var(--muted); font-size:0.95rem; }
+  /* Profile */
+  .profile-row { display:flex; gap:14px; align-items:center; }
+  .avatar {
+    width:82px; height:82px; border-radius:50%; overflow:hidden;
+    background:#eee; display:flex; align-items:center; justify-content:center;
+    border:3px solid var(--primary);
+  }
+  .avatar img { width:100%; height:100%; object-fit:cover; }
+  .quiz-controls { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  .stat-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
+  .stat {
+    background:#f9fafb; padding:10px 14px; border-radius:10px;
+    font-weight:600; box-shadow:inset 0 0 4px rgba(0,0,0,0.04);
+  }
+  /* Quiz */
+  .quiz-area { min-height:320px; display:flex; flex-direction:column; gap:14px; }
+  .question-box {
+    padding:18px; border-radius:12px;
+    background:linear-gradient(180deg,#fff,#f9fbff);
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    animation:popIn 0.4s ease;
+  }
+  .choices { display:flex; flex-direction:column; gap:10px; margin-top:10px; }
+  .choice {
+    padding:12px; border-radius:8px;
+    border:1px solid #e6e9ef; background:#fff;
+    cursor:pointer; transition:0.25s;
+  }
+  .choice:hover { transform:scale(1.02); border-color:var(--accent); }
+  .choice.correct { border-color:var(--success); background:#ecfdf5; }
+  .choice.wrong { border-color:#ef4444; background:#fef2f2; }
+  .timer-bar {
+    height:6px; border-radius:6px;
+    background:var(--accent); transition:width 1s linear;
+    margin-top:6px;
+  }
+  /* Leaderboard */
+  .leaderboard { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+  .lb-item {
+    display:flex; justify-content:space-between;
+    padding:8px 10px; border-radius:8px;
+    background:rgba(26,61,124,0.06);
+  }
+  .lb-item:nth-child(1){ background:linear-gradient(90deg,#fff7d6,#ffe769); font-weight:700; }
+  .lb-item:nth-child(2){ background:#f1f5f9; }
+  .lb-item:nth-child(3){ background:#f9fafb; }
+  /* Settings */
+  .settings { display:flex; flex-direction:column; gap:10px; }
+  .settings input { padding:8px; border-radius:8px; border:1px solid #e6e9ef; }
+  footer {
+    text-align:center; margin-top:40px; padding:20px;
+    color:var(--muted); font-size:0.9rem;
+  }
+  footer span { font-weight:600; color:var(--primary); }
+  /* Animations */
+  @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+  @keyframes slideUp { from{transform:translateY(20px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+  @keyframes popIn { from{transform:scale(0.95);opacity:0;} to{transform:scale(1);opacity:1;} }
+  /* Responsive */
+  @media(max-width:960px){ .grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <img src="logonew.png" alt="logo">
+      <div>
+        <h1>Little Daffodils Quiz Club</h1>
+        <div class="small">Love • Service • Sacrifice</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <button id="settingsBtn" class="btn secondary"><i class="fas fa-cog"></i> Settings</button>
+      <button id="logoutBtn" class="btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <div class="grid">
+      <!-- QUIZ + PROFILE -->
+      <div>
+        <div class="card">
+          <div class="profile-row">
+            <div class="avatar"><img id="avatarImg" src="principal.jpg" alt="avatar"></div>
+            <div style="flex:1">
+              <h2 id="displayName">Student Name</h2>
+              <div class="muted" id="displayEmail">email@example.com</div>
+              <div class="small" id="displayCategory">Category: --</div>
+            </div>
+            <div style="text-align:right">
+              <div class="muted">Quizzes today</div>
+              <div id="quizzesToday" style="font-weight:700">0 / 4</div>
+            </div>
+          </div>
+          <div class="quiz-controls">
+            <select id="categorySelect" class="small">
+              <option value="auto">Auto-detect (by DOB)</option>
+              <option value="4-5">Grades 4–5</option>
+              <option value="6-7">Grades 6–7</option>
+              <option value="8-10">Grades 8–10</option>
+            </select>
+            <button id="startQuiz" class="btn">Start Quiz</button>
+            <button id="resumeQuiz" class="btn secondary">Resume</button>
+          </div>
+          <div class="stat-row">
+            <div class="stat">Score: <span id="totalScore">0</span></div>
+            <div class="stat">Best Today: <span id="bestToday">0</span></div>
+            <div class="stat">Time/Q: 20s</div>
+          </div>
+        </div>
+
+        <!-- QUIZ AREA -->
+        <div class="card" style="margin-top:18px">
+          <div class="quiz-area" id="quizArea">
+            <div class="small muted">No active quiz. Click Start Quiz to begin.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside>
+        <div class="card">
+          <h3><i class="fas fa-trophy"></i> Leaderboard</h3>
+          <div class="leaderboard" id="leaderboard">
+            <div class="small muted">Loading leaderboard…</div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3><i class="fas fa-cog"></i> Settings</h3>
+          <div class="settings">
+            <label class="small">Change profile picture</label>
+            <input type="file" id="avatarInput" accept="image/*">
+            <label class="small">Change password</label>
+            <input type="password" id="oldPass" placeholder="Old password">
+            <input type="password" id="newPass" placeholder="New password">
+            <button id="changePassBtn" class="btn">Change Password</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2025 Little Daffodils School | <span>Love • Service • Sacrifice</span>
+  </footer>
+
+  <!-- Scripts (reuse your JS logic) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+  <script src="home.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Little Daffodils Quiz Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <link rel="stylesheet" href="style.css"/>
+   <link rel="icon" href="logonew.png">
+   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+</head>
+<body>
+  <!-- Header & Navbxar -->
+  <header id="header">
+    <nav class="navbar">
+      
+      <a href="#mainContent" class="nav-logo">
+        <img src="logonew.png" alt="image">
+        <span class="hello">Little Daffodils School</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#mainContent">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#founder">Founder</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <div class="hero" id="mainContent">
+    <div class="hero-logo">
+        <img src="logonew.png" alt="image" >
+    
+    </div>
+    <div class="hero-content">
+      <h1 style="font-size: 45px;">Little Daffodils Quiz Club <br/><h1 style="font-size: 29px;">A Space Where Young Minds Shine Brighter</h1>  </h1>
+      <p class="tagline">Love • Service • Sacrifice</p>
+      <button id="startBtn">Join Now</button>
+    </div>
+  </div>
+
+  <!-- Authentication Modal -->
+  <div class="modal" id="authModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Join Quiz Club</h3>
+        <span class="close" id="closeModal">&times;</span>
+      </div>
+      <div class="tabs">
+        <button id="signUpTab" class="active">Sign Up</button>
+        <button id="signInTab">Sign In</button>
+      </div>
+      <div class="form-container">
+        <!-- Sign Up Form -->
+        <form id="signUpForm" class="form active">
+          <input type="text" placeholder="Full Name" required>
+          <input type="email" placeholder="Email" required>
+          <input type="password" placeholder="Password" required>
+          <input type="date" placeholder="Date of Birth" required>
+          <button type="submit">Sign Up</button>
+        </form>
+
+        <!-- Sign In Form -->
+        <form id="signInForm" class="form">
+          <input type="email" placeholder="Email" required>
+          <input type="password" placeholder="Password" required>
+          <button type="submit">Sign In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <h2 class="section-title">About Little Daffodils School</h2>
+    <p>
+      Established on <b>9th May 1990</b> by our founder <b>Mr. N Ramachandran Nair</b>, 
+      Little Daffodils School is a prestigious institution in Calicut (Kerala), 
+      affiliated with the <b>Central Board of Secondary Education (CBSE), Delhi</b>. 
+      Since its inception, the school has stood as a beacon of quality education, 
+      nurturing young minds with values, knowledge, and discipline. Our commitment 
+      has always been to provide not just education, but an environment where 
+      character, creativity, and leadership blossom.<br/> Click this link to learn more about the school <a href="https://www.littledaffodilsschool.com/index.php">https://www.littledaffodilsschool.com/index.php</a>
+    </p>
+  </section>
+
+  <!-- About Website -->
+  <section class="website-info">
+    <h2 class="section-title">About This Website</h2>
+    <p>
+      The Little Daffodils Quiz Club Website is created as a modern digital 
+      platform for students to expand their horizons beyond the classroom. 
+      It is not merely a quiz space, but a learning companion that sharpens 
+      the intellect, stimulates curiosity, and builds confidence in young minds. 
+      Here, children engage with knowledge interactively, developing their 
+      reasoning, analytical abilities, and awareness of the world around them. 
+      By participating in quizzes and learning challenges, students not only 
+      enrich their academic foundation but also foster teamwork, healthy 
+      competition, and critical thinking — essential qualities for future leaders. 
+      This website stands as a bridge between traditional learning and modern 
+      knowledge-building, making education exciting, dynamic, and purposeful.
+    </p>
+  </section>
+
+  <!-- Founder Section -->
+  <section class="founder" id="founder">
+    <h2 class="section-title">Our Founder</h2>
+    <div class="founder-box">
+      <img src="principal.jpg" alt="Founder" class="founder-img">
+      <div class="founder-info">
+        <p>
+          <b>Mr. N Ramachandran Nair</b>, the visionary behind Little Daffodils School, 
+          believed in the power of education to shape society. His dedication to nurturing 
+          holistic development in children has transformed countless lives. His ideals 
+          of love, service, and sacrifice remain the foundation on which this institution 
+          continues to thrive.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <h2 class="section-title">Contact Us</h2>
+    <div class="branches">
+      <div class="branch-card">
+        <h3>Main Branch (Westhill)</h3>
+        <p>Near Vikramaidan, Westhill, Kozhikode - 673005</p>
+        <p><a href="tel:+914952262062"><i class="fas fa-phone"></i> +91 495-2262062</a></p>
+        <p><a href="mailto:littledaffodils@yahoo.com"><i class="fas fa-envelope"></i> littledaffodils@yahoo.com</a></p>
+      </div>
+      <div class="branch-card">
+        <h3>Branch (Eravannoor)</h3>
+        <p>Little Daffodils School, Thekkedath Thazham, Eravannoor (PO), Near Palath, Calicut – 673585</p>
+        <p><a href="tel:+914952380230"><i class="fas fa-phone"></i> +91 495-2380230</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Little Daffodils School | Love • Service • Sacrifice</p>
+  </footer>
+<script>
+  // Replace with your Supabase project URL and anon key
+  const SUPABASE_URL = "https://qcvbqizwmhtuinpqtbzz.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdmJxaXp3bWh0dWlucHF0Ynp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTgyMjIsImV4cCI6MjA3MzE3NDIyMn0.cSRjn0n1MowMMkILc-WEuotSN2Cj78jpbxJhtEqRjl4";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
+  <script src="script.js"></script>
+</body>
+</html>
