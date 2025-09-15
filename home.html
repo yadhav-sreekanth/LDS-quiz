@@ -816,6 +816,26 @@
                 margin-left: 280px;
             }
         }
+        @media (max-width: 459px) {
+         .logo{
+         text-align: center;
+        }  
+         }
+                .nav-toggle {
+                     display: none; /* hidden by default */
+            }
+
+                @media (max-width: 768px) {
+       .container .nav-toggle {
+      display: flex; /* or flex, inline-block depending on design */
+    }
+                .logo{
+                    margin-left: 50px;
+                }
+                .nav-list{
+                    margin-top: 40px;
+                }
+                }
     </style>
 </head>
 <body>
@@ -840,6 +860,7 @@
         <div class="nav-toggle">
             <i class="fas fa-bars"></i>
         </div>
+
 
         <div class="sidebar" id="sidebar">
             <ul class="nav-list">
@@ -873,7 +894,7 @@
 
             <!-- Quiz Section -->
             <div class="section active" id="section-quiz">
-                <h2 class="section-title">Quiz Challenge</h2>
+                <h2 class="section-title" style="text-align: center;">Quiz Challenge</h2>
                 
                 <div class="quiz-intro" id="quizIntro">
                     <h2>Test Your Knowledge!</h2>
