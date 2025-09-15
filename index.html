@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
    <link rel="stylesheet" href="style.css"/>
    <link rel="icon" href="logonew.png">
-   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 </head>
 <body>
@@ -40,7 +39,7 @@
     <div class="hero-content">
       <h1 style="font-size: 45px;">Little Daffodils Quiz Club <br/><h1 style="font-size: 29px;">A Space Where Young Minds Shine Brighter</h1>  </h1>
       <p class="tagline">Love • Service • Sacrifice</p>
-      <button id="startBtn">Join Now</button>
+      <button id="startBtn">Start Now</button>
     </div>
   </div>
 
@@ -111,7 +110,7 @@
   <section class="founder" id="founder">
     <h2 class="section-title">Our Founder</h2>
     <div class="founder-box">
-      <img src="principal.jpg" alt="Founder" class="founder-img">
+      <img src="principal.jpg" alt="Founder" class="founder-img" style="border-radius: 20px;">
       <div class="founder-info">
         <p>
           <b>Mr. N Ramachandran Nair</b>, the visionary behind Little Daffodils School, 
@@ -146,12 +145,7 @@
   <footer>
     <p>&copy; 2025 Little Daffodils School | Love • Service • Sacrifice</p>
   </footer>
-<script>
-  // Replace with your Supabase project URL and anon key
-  const SUPABASE_URL = "https://qcvbqizwmhtuinpqtbzz.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdmJxaXp3bWh0dWlucHF0Ynp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTgyMjIsImV4cCI6MjA3MzE3NDIyMn0.cSRjn0n1MowMMkILc-WEuotSN2Cj78jpbxJhtEqRjl4";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-</script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
 </html>

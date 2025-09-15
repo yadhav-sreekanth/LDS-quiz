@@ -1,4 +1,8 @@
-// Wait for DOM to fully load
+const SUPABASE_URL = "https://qcvbqizwmhtuinpqtbzz.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdmJxaXp3bWh0dWlucHF0Ynp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTgyMjIsImV4cCI6MjA3MzE3NDIyMn0.cSRjn0n1MowMMkILc-WEuotSN2Cj78jpbxJhtEqRjl4";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+//  Wait for DOM to fully load
+
 document.addEventListener('DOMContentLoaded', function() {
   // Modal toggle elements
   const startBtn = document.getElementById("startBtn");
@@ -95,27 +99,53 @@ if (signUpForm) {
       return;
     }
 
-    // Supabase signup
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name, dob } // stores extra info in user metadata
+    try {
+      // Supabase signup
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { name, dob } // stores extra info in user metadata
+        }
+      });
+
+      if (authError) {
+        alert("Sign Up Error: " + authError.message);
+        console.error(authError);
+        return;
       }
-    });
 
-    if (error) {
-      alert("Sign Up Error: " + error.message);
-      console.error(error);
-      return;
+      // Store user data in a separate table
+const { data: tableData, error: tableError } = await supabase
+  .from('users')
+  .insert([
+    {
+      id: authData.user.id,
+      full_name: name,   // ✅ matches your schema
+      dob: dob           // ✅ matches your schema
+      // email is already stored in auth.users
+      // created_at not needed (not in your schema)
     }
+  ]);
 
-    alert("Check your email to confirm your account!");
-    console.log("User signed up:", data);
-    closeModalFunc();
+
+      if (tableError) {
+        console.error("Error storing data in table:", tableError);
+        // Don't show this error to user as auth was successful
+      }
+
+      alert("Check your email to confirm your account!");
+      console.log("User signed up:", authData);
+      closeModalFunc();
+
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      alert("An unexpected error occurred. Please try again.");
+    }
   });
 }
 
+// Add this to your script.js file after successful sign-in
 if (signInForm) {
   signInForm.addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -133,21 +163,66 @@ if (signInForm) {
       email,
       password
     });
-if (error) {
-  alert("Sign In Error: " + error.message);
-  console.error(error);
-  return;
-}
+    
+    if (error) {
+      alert("Sign In Error: " + error.message);
+      console.error(error);
+      return;
+    }
 
-alert("Welcome back!");
-console.log("User signed in:", data);
-closeModalFunc();
+    // Store user ID in localStorage for home.html to access
+    localStorage.setItem('sd_user_id', data.user.id);
+    
+    // Also store user data for the home page
+    const userData = {
+      id: data.user.id,
+      email: data.user.email,
+      full_name: data.user.user_metadata.name || 'Student',
+      dob: data.user.user_metadata.dob || '',
+      total_points: 0,
+      profile_photo: 'https://via.placeholder.com/48'
+    };
+    
+    // Save to localStorage
+    localStorage.setItem('userData', JSON.stringify({
+      [data.user.id]: userData
+    }));
 
-// Redirect to home.html
-window.location.href = "home.html";
+    alert("Welcome back!");
+    console.log("User signed in:", data);
+    closeModalFunc();
 
+    // Redirect to home.html
+    window.location.href = "home.html";
   });
 }
+
+// Also add this to handle the auth state change properly
+supabase.auth.onAuthStateChange((event, session) => {
+  if (session) {
+    console.log("User is logged in:", session.user);
+    // Store user ID for home.html
+    localStorage.setItem('sd_user_id', session.user.id);
+    
+    // Make sure user data exists in localStorage
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    if (!userData[session.user.id]) {
+      userData[session.user.id] = {
+        id: session.user.id,
+        email: session.user.email,
+        full_name: session.user.user_metadata.name || 'Student',
+        dob: session.user.user_metadata.dob || '',
+        total_points: 0,
+        profile_photo: 'https://via.placeholder.com/48'
+      };
+      localStorage.setItem('userData', JSON.stringify(userData));
+    }
+  } else {
+    console.log("User is logged out");
+    // Remove user ID from localStorage when logged out
+    localStorage.removeItem('sd_user_id');
+  }
+});
 
   // Header scroll effect
   window.addEventListener('scroll', function() {

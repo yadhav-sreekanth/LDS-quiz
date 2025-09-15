@@ -32,7 +32,7 @@
     
     /* Header & Navigation */
     header {
-      background: linear-gradient(135deg, var(--primary) 0%, #0d2b5a 100%);
+      background: linear-gradient(135deg,  #f7f8fa 100% var(--primary) 0%,);
       padding: 1rem 2rem;
       position: fixed;
       width: 100%;
