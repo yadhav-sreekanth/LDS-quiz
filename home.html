@@ -880,7 +880,7 @@
             <ul class="nav-list">
                 <li class="nav-item active" data-section="quiz">
                     <i class="fas fa-brain"></i>
-                    <span>Quiz</span>
+                    <span>Dashboard</span>
                 </li>
 
                 <li class="nav-item" data-section="leaderboard">
@@ -898,7 +898,7 @@
                 </li>
                 <li class="nav-item" data-section="account">
                     <i class="fas fa-user"></i>
-                    <span>Account</span>
+                    <span>My Space</span>
                 </li>
                 <li class="nav-item" data-section="settings">
                     <i class="fas fa-cog"></i>
@@ -959,6 +959,10 @@
                         <button class="btn btn-logout" id="backToMenuBtn">Back to Menu</button>
                     </div>
                 </div>
+                <div class="quiz-intro" id="quizIntro">
+                    <h2>Your Guide</h2>
+                    <p>Your guide will h</p>
+                </div>
             </div>
 
             <!-- Posts Section -->
@@ -1005,6 +1009,64 @@
                     <div class="view-more">
                         <i class="fas fa-chevron-down"></i>
                         <span>View More</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Section -->
+            <div class="section" id="section-account">
+                <h2 class="section-title">Your Space</h2>
+                <div class="settings-container" id="accountContainer" style="display:grid; gap:1.5rem;">
+                    <div class="account-header" style="display:flex; align-items:center; gap:1rem;">
+                        <img id="accountAvatar" src="https://via.placeholder.com/80" alt="Avatar" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid var(--primary-light);">
+                        <div>
+                            <div id="accountName" style="font-weight:700; font-size:1.2rem;">Student</div>
+                            <div id="accountEmail" style="color:var(--gray); font-size:.9rem;">email@example.com</div>
+                            <div id="accountPoints" style="margin-top:.25rem; color:var(--primary)">Points: 0</div>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1rem;">
+                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                            <h3 style="margin-bottom:1rem; color:var(--primary);">Badges</h3>
+                            <div id="accountBadges" style="display:flex; flex-wrap:wrap; gap:.5rem;"></div>
+                        </div>
+                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                            <h3 style="margin-bottom:1rem; color:var(--primary);">Connections</h3>
+                            <div style="display:flex; gap:1rem;">
+                                <div><div style="font-weight:700;" id="followersCount">0</div><div style="color:var(--gray);">Followers</div></div>
+                                <div><div style="font-weight:700;" id="followingCount">0</div><div style="color:var(--gray);">Following</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                            <h3 style="margin-bottom:1rem; color:var(--primary);">Followers</h3>
+                            <input id="followersSearch" type="text" placeholder="Search followers by name" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:.75rem;" />
+                            <div id="followersList" class="posts-feed" style="max-height:360px;"></div>
+                        </div>
+                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                            <h3 style="margin-bottom:1rem; color:var(--primary);">Discover</h3>
+                            <input id="followingSearch" type="text" placeholder="Search people to follow" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:.75rem;" />
+                            <div id="discoverList" class="posts-feed" style="max-height:360px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Announcements Section -->
+            <div class="section" id="section-announcements">
+                <h2 class="section-title">Announcements</h2>
+                <div class="settings-container">
+                    <div id="announcementsList" class="posts-feed" style="max-height: none;"></div>
+                    <div id="announceFormWrap" class="create-post" style="display:none; margin-top:1.5rem;">
+                        <h3>New Announcement</h3>
+                        <div class="form-group">
+                            <input type="text" id="announceTitle" placeholder="Title" />
+                        </div>
+                        <div class="form-group">
+                            <textarea id="announceBody" placeholder="Write announcement..."></textarea>
+                        </div>
+                        <button class="post-btn" id="announcePostBtn"><i class="fas fa-bullhorn"></i> Publish</button>
                     </div>
                 </div>
             </div>

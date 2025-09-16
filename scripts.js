@@ -118,6 +118,8 @@
                     // Load section content if needed
                     if (section === 'leaderboard') loadLeaderboard('global');
                     if (section === 'posts') loadPosts();
+                    if (section === 'announcements') loadAnnouncements();
+                    if (section === 'account') loadAccount();
                 });
             });
             
@@ -150,6 +152,9 @@
             
             // Post functionality
             document.getElementById('postBtn').addEventListener('click', createPost);
+            // Announcement functionality
+            const announceBtn = document.getElementById('announcePostBtn');
+            if (announceBtn) announceBtn.addEventListener('click', createAnnouncement);
             
             // Settings functionality
             document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
@@ -430,6 +435,18 @@
                     if (error) console.error('Error updating points:', error);
                 });
             
+            // Awards: check flawless (no wrong answers) and milestones
+            try {
+                const totalQuestions = quizQuestions.length;
+                const flawless = currentScore === totalQuestions * 2; // 2 points each
+                if (flawless) {
+                    awaitRecordAward({ type: 'flawless_quiz', label: 'No Wrong Answers' });
+                }
+                if (newTotal >= 10) awaitRecordAward({ type: 'milestone_10', label: '10 Points Milestone' });
+                if (newTotal >= 30) awaitRecordAward({ type: 'milestone_30', label: '30 Points Milestone' });
+                if (newTotal >= 60) awaitRecordAward({ type: 'milestone_60', label: '60 Points Milestone' });
+            } catch (e) { console.warn('award check failed', e); }
+            
             // Record this attempt to prevent repetition
             recordQuizAttempt(userProfile.dob);
             
@@ -437,6 +454,13 @@
             quizContainerEl.style.display = 'none';
             quizResultEl.style.display = 'block';
             finalScoreEl.textContent = currentScore;
+        }
+
+        // Store award if table exists; ignore errors silently
+        async function awaitRecordAward(award) {
+            try {
+                await supabase.from('awards').insert([{ user_id: userId, type: award.type, label: award.label }]);
+            } catch (_) {}
         }
 
         function recordQuizAttempt(dob) {
@@ -480,6 +504,7 @@
             
             const container = document.getElementById('postsFeed');
             container.innerHTML = '';
+            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com');
             
             if (error) {
                 console.error('Error loading posts:', error);
@@ -515,7 +540,7 @@
                         ${post.image_path ? `<img src="${post.image_path}" alt="post image" />` : ''}
                         <div class="post-actions">
                             <button class="share-btn" data-post-id="${post.id}"><i class="fas fa-share"></i> Share</button>
-                            ${post.user_id === userId ? `<button class="delete-btn" data-post-id="${post.id}"><i class="fas fa-trash"></i> Delete</button>` : ''}
+                            ${(post.user_id === userId || isDevEmail) ? `<button class=\"delete-btn\" data-post-id=\"${post.id}\"><i class=\"fas fa-trash\"></i> Delete</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -539,11 +564,12 @@
                 btn.addEventListener('click', async () => {
                     const postId = btn.getAttribute('data-post-id');
                     if (!confirm('Delete this post? This cannot be undone.')) return;
-                    const { error } = await supabase
-                        .from('posts')
-                        .delete()
-                        .eq('id', postId)
-                        .eq('user_id', userId);
+                    let q = supabase.from('posts').delete().eq('id', postId);
+                    // Only restrict by user_id if not dev
+                    if (!isDevEmail) {
+                        q = q.eq('user_id', userId);
+                    }
+                    const { error } = await q;
                     if (error) {
                         console.error('Delete failed:', error);
                         alert(`Delete failed: ${error.message}`);
@@ -697,7 +723,7 @@
                 console.error('Error loading leaderboard:', error);
                 return;
             }
-
+            
             // Filter by category based on DOB-derived quiz type
             let users = Array.isArray(allUsers) ? allUsers.slice() : [];
             if (category && category !== 'global') {
@@ -717,38 +743,38 @@
             }
 
             // Display top 3
-            users.slice(0, 3).forEach((user, index) => {
-                const medals = ['🥇', '🥈', '🥉'];
-                
-                const leaderEl = document.createElement('div');
-                leaderEl.className = 'leader';
-                leaderEl.innerHTML = `
-                    <div class="leader-rank">${medals[index]}</div>
-                    <img class="leader-img" src="${user.profile_photo || 'https://via.placeholder.com/80'}" alt="${user.full_name}">
-                    <div class="leader-info">
+                users.slice(0, 3).forEach((user, index) => {
+                    const medals = ['🥇', '🥈', '🥉'];
+                    
+                    const leaderEl = document.createElement('div');
+                    leaderEl.className = 'leader';
+                    leaderEl.innerHTML = `
+                        <div class="leader-rank">${medals[index]}</div>
+                        <img class="leader-img" src="${user.profile_photo || 'https://via.placeholder.com/80'}" alt="${user.full_name}">
+                        <div class="leader-info">
                         <strong>${user.full_name}${user.is_dev ? ' <span class=\"dev-badge\">DEV</span>' : ''}</strong>
+                            <span>${user.total_points || 0} pts</span>
+                        </div>
+                    `;
+                    
+                    top3El.appendChild(leaderEl);
+                });
+                
+                // Display all leaders
+                users.forEach((user, index) => {
+                    const leaderRow = document.createElement('div');
+                    leaderRow.className = 'leader-row';
+                    leaderRow.innerHTML = `
+                        <div class="leader-row-user">
+                            <span>${index + 1}.</span>
+                            <img src="${user.profile_photo || 'https://via.placeholder.com/40'}" alt="${user.full_name}">
+                        <strong>${user.full_name}${user.is_dev ? ' <span class=\"dev-badge\">DEV</span>' : ''}</strong>
+                        </div>
                         <span>${user.total_points || 0} pts</span>
-                    </div>
-                `;
-                
-                top3El.appendChild(leaderEl);
-            });
-            
-            // Display all leaders
-            users.forEach((user, index) => {
-                const leaderRow = document.createElement('div');
-                leaderRow.className = 'leader-row';
-                leaderRow.innerHTML = `
-                    <div class="leader-row-user">
-                        <span>${index + 1}.</span>
-                        <img src="${user.profile_photo || 'https://via.placeholder.com/40'}" alt="${user.full_name}">
-                        <strong>${user.full_name}${user.is_dev ? ' <span class=\"dev-badge\">DEV</span>' : ''}</strong>
-                    </div>
-                    <span>${user.total_points || 0} pts</span>
-                `;
-                
-                allEl.appendChild(leaderRow);
-            });
+                    `;
+                    
+                    allEl.appendChild(leaderRow);
+                });
         }
 
         async function saveProfile() {
@@ -816,14 +842,14 @@
                 }
                 Object.assign(userProfile, updates);
             }
-            
+                
             // Save to localStorage and refresh UI
-            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-            userData[userId] = userProfile;
-            localStorage.setItem('userData', JSON.stringify(userData));
-            renderUserSummary(userProfile);
-            
-            alert('Profile updated successfully!');
+                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                userData[userId] = userProfile;
+                localStorage.setItem('userData', JSON.stringify(userData));
+                renderUserSummary(userProfile);
+                
+                alert('Profile updated successfully!');
         }
 
         async function logout() {
@@ -855,15 +881,15 @@
 
                 // 2) Delete profile row
                 const { error: userDelErr } = await supabase
-                    .from('users')
-                    .delete()
-                    .eq('id', userId);
+                .from('users')
+                .delete()
+                .eq('id', userId);
                 if (userDelErr) {
                     console.error('Error deleting user row:', userDelErr);
                     alert('Error deleting account (profile row). Please try again.');
-                    return;
-                }
-
+                return;
+            }
+            
                 // 3) Try to delete auth user via Edge Function (requires deployment with service role)
                 try {
                     const { error: fnErr } = await supabase.functions.invoke('delete-user', {
@@ -877,10 +903,10 @@
                 }
 
                 // 4) Sign out and redirect
-                await supabase.auth.signOut();
-                localStorage.removeItem('sd_user_id');
-                alert('Your account has been deleted successfully.');
-                window.location.href = 'index.html';
+            await supabase.auth.signOut();
+            localStorage.removeItem('sd_user_id');
+            alert('Your account has been deleted successfully.');
+            window.location.href = 'index.html';
             } catch (e) {
                 console.error('Account deletion failed:', e);
                 alert(e.message || 'Account deletion failed. Please try again.');
@@ -916,4 +942,216 @@
                 deleteFolder('avatars', `${uid}`),
                 deleteFolder('post-images', `${uid}`)
             ]);
+        }
+
+        async function loadAnnouncements() {
+            const listEl = document.getElementById('announcementsList');
+            const formWrap = document.getElementById('announceFormWrap');
+            // Show form only for developer email
+            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com');
+            if (formWrap) formWrap.style.display = isDevEmail ? 'block' : 'none';
+
+            // Fetch announcements
+            const { data, error } = await supabase
+                .from('announcements')
+                .select('id, title, body, created_at')
+                .order('created_at', { ascending: false });
+
+            listEl.innerHTML = '';
+            if (error) {
+                console.error('Error loading announcements:', error);
+                listEl.innerHTML = '<p>Error loading announcements.</p>';
+                return;
+            }
+            if (!data || data.length === 0) {
+                listEl.innerHTML = '<p>No announcements right now.</p>';
+                return;
+            }
+
+            data.forEach(a => {
+                const el = document.createElement('div');
+                el.className = 'post';
+                const when = new Date(a.created_at).toLocaleString();
+                el.innerHTML = `
+                    <div class="post-head">
+                        <strong>${escapeHtml(a.title || 'Announcement')}</strong>
+                        <small>${when}</small>
+                    </div>
+                    <div class="post-body">
+                        <p>${escapeHtml(a.body || '')}</p>
+                        ${isDevEmail ? `<div class="post-actions"><button class="delete-btn announce-delete" data-aid="${a.id}"><i class=\"fas fa-trash\"></i> Delete</button></div>` : ''}
+                    </div>
+                `;
+                listEl.appendChild(el);
+            });
+
+            // Attach delete handlers for dev
+            if (isDevEmail) {
+                listEl.querySelectorAll('.announce-delete').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const id = btn.getAttribute('data-aid');
+                        if (!confirm('Delete this announcement?')) return;
+                        const { error } = await supabase.from('announcements').delete().eq('id', id);
+                        if (error) { alert('Delete failed: ' + error.message); return; }
+                        loadAnnouncements();
+                    });
+                });
+            }
+        }
+
+        async function createAnnouncement() {
+            const title = (document.getElementById('announceTitle').value || '').trim();
+            const body = (document.getElementById('announceBody').value || '').trim();
+            if (!title || !body) { alert('Title and body required'); return; }
+            // Restrict to developer email on client side (RLS should enforce on server)
+            if ((userProfile.email || '').toLowerCase() !== 'yadhavvsreelakam@gmail.com') {
+                alert('Only developer can post announcements.');
+                return;
+            }
+            const { error } = await supabase
+                .from('announcements')
+                .insert([{ title, body }]);
+            if (error) { alert('Failed to publish: ' + error.message); return; }
+            document.getElementById('announceTitle').value = '';
+            document.getElementById('announceBody').value = '';
+            loadAnnouncements();
+        }
+
+        async function loadAccount() {
+            try {
+                // Header summary
+                document.getElementById('accountAvatar').src = userProfile.profile_photo || 'https://via.placeholder.com/80';
+                document.getElementById('accountName').innerHTML = escapeHtml(userProfile.full_name || 'Student');
+                document.getElementById('accountEmail').textContent = userProfile.email || '';
+                document.getElementById('accountPoints').textContent = `Points: ${userProfile.total_points || 0}`;
+
+                // Badges based on points tiers
+                const badgesEl = document.getElementById('accountBadges');
+                badgesEl.innerHTML = '';
+                const pts = userProfile.total_points || 0;
+                const badges = [];
+                if (pts >= 10) badges.push({ name: 'Bronze Achiever', color: '#cd7f32' });
+                if (pts >= 30) badges.push({ name: 'Silver Scholar', color: '#c0c0c0' });
+                if (pts >= 60) badges.push({ name: 'Gold Genius', color: '#ffd700' });
+                if (badges.length === 0) badges.push({ name: 'Getting Started', color: '#9ca3af' });
+                badges.forEach(b => {
+                    const tag = document.createElement('span');
+                    tag.textContent = b.name;
+                    tag.style.cssText = `display:inline-block;padding:.3rem .6rem;border-radius:999px;background:${b.color};color:#111;font-weight:600;font-size:.8rem;border:1px solid rgba(0,0,0,.08)`;
+                    badgesEl.appendChild(tag);
+                });
+                // Awards from table
+                try {
+                    const { data: awards } = await supabase
+                        .from('awards')
+                        .select('type, label, created_at')
+                        .eq('user_id', userId)
+                        .order('created_at', { ascending: false })
+                        .limit(10);
+                    if (awards && awards.length) {
+                        const wrap = document.createElement('div');
+                        wrap.style.marginTop = '.75rem';
+                        awards.forEach(a => {
+                            const chip = document.createElement('span');
+                            chip.textContent = a.label || a.type;
+                            chip.style.cssText = 'display:inline-block;margin:.25rem .25rem 0 0;padding:.25rem .55rem;border-radius:999px;background:#eef2ff;color:#1a3d7c;font-weight:600;font-size:.75rem;border:1px solid #dbe3ff';
+                            wrap.appendChild(chip);
+                        });
+                        badgesEl.appendChild(wrap);
+                    }
+                } catch (_) {}
+
+                // Query follows
+                const [{ data: followersIds }, { data: followingIds }] = await Promise.all([
+                    supabase.from('follows').select('follower_id').eq('followed_id', userId),
+                    supabase.from('follows').select('followed_id').eq('follower_id', userId)
+                ]);
+
+                const followerIdList = (followersIds || []).map(r => r.follower_id);
+                const followingIdList = (followingIds || []).map(r => r.followed_id);
+
+                document.getElementById('followersCount').textContent = followerIdList.length;
+                document.getElementById('followingCount').textContent = followingIdList.length;
+
+                // Fetch users for lists & discover (exclude self)
+                const { data: users } = await supabase
+                    .from('users')
+                    .select('id, full_name, profile_photo, total_points')
+                    .order('total_points', { ascending: false })
+                    .limit(50);
+
+                const usersById = Object.fromEntries((users || []).map(u => [u.id, u]));
+
+                // Render followers list
+                const followersList = document.getElementById('followersList');
+                const discoverList = document.getElementById('discoverList');
+                followersList.innerHTML = '';
+                discoverList.innerHTML = '';
+
+                function renderCard(u, isFollowing) {
+                    const row = document.createElement('div');
+                    row.className = 'leader-row';
+                    row.innerHTML = `
+                        <div class=\"leader-row-user\">
+                            <img src=\"${u.profile_photo || 'https://via.placeholder.com/40'}\" alt=\"${u.full_name}\">
+                            <strong>${u.full_name}</strong>
+                        </div>
+                        <div>
+                            <span style=\"margin-right:.75rem;color:#6b7280\">${u.total_points || 0} pts</span>
+                            <button class=\"btn btn-primary\" data-user-id=\"${u.id}\" data-follow=\"${isFollowing ? '1' : '0'}\">${isFollowing ? 'Unfollow' : 'Follow'}</button>
+                        </div>
+                    `;
+                    return row;
+                }
+
+                const followerUsers = followerIdList.map(id => usersById[id]).filter(Boolean);
+                followerUsers.forEach(u => followersList.appendChild(renderCard(u, followingIdList.includes(u.id))));
+
+                // Discover: users not self; show follow status
+                (users || []).filter(u => u.id !== userId).forEach(u => {
+                    discoverList.appendChild(renderCard(u, followingIdList.includes(u.id)));
+                });
+
+                // Search handlers
+                const fSearch = document.getElementById('followersSearch');
+                const gSearch = document.getElementById('followingSearch');
+                if (fSearch) {
+                    fSearch.oninput = () => {
+                        const q = (fSearch.value || '').toLowerCase();
+                        followersList.querySelectorAll('.leader-row').forEach(row => {
+                            const name = row.querySelector('strong')?.textContent.toLowerCase() || '';
+                            row.style.display = name.includes(q) ? '' : 'none';
+                        });
+                    };
+                }
+                if (gSearch) {
+                    gSearch.oninput = () => {
+                        const q = (gSearch.value || '').toLowerCase();
+                        discoverList.querySelectorAll('.leader-row').forEach(row => {
+                            const name = row.querySelector('strong')?.textContent.toLowerCase() || '';
+                            row.style.display = name.includes(q) ? '' : 'none';
+                        });
+                    };
+                }
+
+                // Follow/Unfollow actions
+                function attachFollowHandlers(container) {
+                    container.querySelectorAll('button[data-user-id]').forEach(btn => {
+                        btn.onclick = async () => {
+                            const targetId = btn.getAttribute('data-user-id');
+                            const following = btn.getAttribute('data-follow') === '1';
+                            if (following) {
+                                await supabase.from('follows').delete().eq('follower_id', userId).eq('followed_id', targetId);
+                            } else {
+                                await supabase.from('follows').insert([{ follower_id: userId, followed_id: targetId }]);
+                            }
+                            loadAccount();
+                        };
+                    });
+                }
+                attachFollowHandlers(followersList);
+                attachFollowHandlers(discoverList);
+            } catch (e) {
+                console.warn('loadAccount failed:', e);
+            }
         }
