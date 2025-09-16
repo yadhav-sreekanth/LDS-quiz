@@ -20,6 +20,38 @@
             return 'lower_primary';
         }
 
+        // Fisher–Yates shuffle (pure)
+        function shuffleArray(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                const tmp = a[i];
+                a[i] = a[j];
+                a[j] = tmp;
+            }
+            return a;
+        }
+
+        function getSeenQuestionsSet(uid, quizType) {
+            const raw = localStorage.getItem('seen_questions');
+            let data = {};
+            try { data = raw ? JSON.parse(raw) : {}; } catch (_) { data = {}; }
+            const arr = ((data[uid] || {})[quizType] || []);
+            return new Set(arr.map(String));
+        }
+
+        function appendSeenQuestions(uid, quizType, ids) {
+            if (!Array.isArray(ids) || ids.length === 0) return;
+            const raw = localStorage.getItem('seen_questions');
+            let data = {};
+            try { data = raw ? JSON.parse(raw) : {}; } catch (_) { data = {}; }
+            if (!data[uid]) data[uid] = {};
+            const existing = new Set(((data[uid][quizType]) || []).map(String));
+            ids.forEach(id => existing.add(String(id)));
+            const kept = Array.from(existing).slice(-1000);
+            data[uid][quizType] = kept;
+            localStorage.setItem('seen_questions', JSON.stringify(data));
+        }
         // DOM references
         const userNameEl = document.getElementById('userName');
         const userPointsEl = document.getElementById('userPoints');
@@ -55,6 +87,7 @@
         let timerInterval = null;
         const QUESTION_TIME = 20;
         let timeLeft = QUESTION_TIME;
+        const QUIZ_LENGTH_DEFAULT = 20; // target number of questions per quiz
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', async function() {
@@ -120,6 +153,7 @@
                     if (section === 'posts') loadPosts();
                     if (section === 'announcements') loadAnnouncements();
                     if (section === 'account') loadAccount();
+                    if (section === 'developer') ensureDeveloperVisibleAndInit();
                 });
             });
             
@@ -205,6 +239,9 @@
                 });
             }
             
+            // Developer nav visibility
+            ensureDeveloperVisibleAndInit();
+            
             // Load initial data
             loadPosts();
             loadLeaderboard('global');
@@ -265,6 +302,148 @@
             quizTitleEl.textContent = `Quiz — ${quizType.replace('_', ' ').toUpperCase()}`;
         }
 
+        function ensureDeveloperVisibleAndInit() {
+            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com');
+            const nav = document.getElementById('nav-developer');
+            const section = document.getElementById('section-developer');
+            if (nav) nav.style.display = isDevEmail ? '' : 'none';
+            if (section) section.style.display = isDevEmail ? '' : 'none';
+            if (!isDevEmail) return;
+            // Bind developer buttons once
+            const bind = () => {
+                const ed = document.getElementById('devQuestionsEditor');
+                const msg = document.getElementById('devQuestionsMsg');
+                const loadBtn = document.getElementById('devLoadQuestionsBtn');
+                const validateBtn = document.getElementById('devValidateBtn');
+                const saveBtn = document.getElementById('devSaveQuestionsBtn');
+                const clearSeenBtn = document.getElementById('devClearSeenBtn');
+                const ideaBtn = document.getElementById('devPostIdeaBtn');
+                const addBtn = document.getElementById('devAddQuestionBtn');
+                const ageSel = document.getElementById('devAgeGroup');
+                const qInput = document.getElementById('devQuestionText');
+                const opt1 = document.getElementById('devOpt1');
+                const opt2 = document.getElementById('devOpt2');
+                const opt3 = document.getElementById('devOpt3');
+                const opt4 = document.getElementById('devOpt4');
+                const correctSel = document.getElementById('devCorrectOption');
+                if (!loadBtn || loadBtn._bound) return; // already bound
+                loadBtn._bound = true;
+                loadBtn.onclick = async () => {
+                    msg.textContent = 'Loading questions.json...';
+                    const content = await devLoadQuestionsFromStorage();
+                    ed.value = content || '';
+                    msg.textContent = content ? 'Loaded from Storage (config/questions.json)' : 'Loaded local fallback (questions.json)';
+                };
+                validateBtn.onclick = () => {
+                    try {
+                        const parsed = JSON.parse(ed.value || '{}');
+                        const cats = ['early_years','lower_primary','upper_primary'];
+                        cats.forEach(c => { if (!Array.isArray(parsed[c])) throw new Error(`Category ${c} must be an array`); });
+                        msg.textContent = 'Valid JSON ✔';
+                    } catch (e) {
+                        msg.textContent = 'Invalid JSON: ' + (e.message || e);
+                    }
+                };
+                saveBtn.onclick = async () => {
+                    try {
+                        JSON.parse(ed.value || '{}');
+                    } catch (e) {
+                        msg.textContent = 'Fix JSON before saving: ' + (e.message || e);
+                        return;
+                    }
+                    msg.textContent = 'Saving to Storage...';
+                    const result = await devSaveQuestionsToStorage(ed.value);
+                    if (result === true) {
+                        msg.textContent = 'Saved to Storage successfully.';
+                    } else if (typeof result === 'string') {
+                        msg.textContent = 'Save failed: ' + result;
+                    } else {
+                        msg.textContent = 'Save failed.';
+                    }
+                    // refresh in-memory cache
+                    sessionStorage.removeItem('questions_json');
+                };
+                clearSeenBtn.onclick = () => {
+                    localStorage.removeItem('seen_questions');
+                    msg.textContent = 'Cleared seen question cache.';
+                };
+                ideaBtn.onclick = async () => {
+                    const title = (document.getElementById('devIdeaTitle').value || '').trim();
+                    const body = (document.getElementById('devIdeaBody').value || '').trim();
+                    const ideaMsg = document.getElementById('devIdeaMsg');
+                    if (!title || !body) { ideaMsg.textContent = 'Title and description required.'; return; }
+                    const { error } = await supabase.from('announcements').insert([{ title: `[Idea] ${title}`, body }]);
+                    if (error) { ideaMsg.textContent = 'Failed: ' + error.message; return; }
+                    ideaMsg.textContent = 'Idea posted!';
+                    document.getElementById('devIdeaTitle').value = '';
+                    document.getElementById('devIdeaBody').value = '';
+                };
+                addBtn.onclick = () => {
+                    try {
+                        const json = JSON.parse(ed.value || '{}');
+                        const group = (ageSel.value || 'lower_primary');
+                        if (!Array.isArray(json[group])) json[group] = [];
+                        const arr = json[group];
+                        const nextId = (arr.reduce((m, q) => Math.max(m, Number(q.id) || 0), 0) + 1) || 1;
+                        const o1 = (opt1.value || '').trim();
+                        const o2 = (opt2.value || '').trim();
+                        const o3 = (opt3.value || '').trim();
+                        const o4 = (opt4.value || '').trim();
+                        const qt = (qInput.value || '').trim();
+                        if (!qt || !o1 || !o2 || !o3 || !o4) { msg.textContent = 'Fill question and all four options.'; return; }
+                        const correct = Number(correctSel.value);
+                        const newQ = {
+                            id: nextId,
+                            question_text: qt,
+                            options: [
+                                { id: 1, text: o1 },
+                                { id: 2, text: o2 },
+                                { id: 3, text: o3 },
+                                { id: 4, text: o4 }
+                            ],
+                            correct_option: correct
+                        };
+                        arr.push(newQ);
+                        ed.value = JSON.stringify(json, null, 2);
+                        msg.textContent = `Added to ${group} with id ${nextId}. Click Save to persist.`;
+                        qInput.value = opt1.value = opt2.value = opt3.value = opt4.value = '';
+                        correctSel.value = '1';
+                    } catch (e) {
+                        msg.textContent = 'Cannot add: fix the JSON or form. ' + (e.message || e);
+                    }
+                };
+            };
+            bind();
+        }
+
+        async function devLoadQuestionsFromStorage() {
+            try {
+                const { data, error } = await supabase.storage.from('config').download('questions.json');
+                if (error) throw error;
+                const text = await data.text();
+                return text;
+            } catch (_) {
+                try {
+                    const res = await fetch('questions.json', { cache: 'no-cache' });
+                    return await res.text();
+                } catch (e) { return ''; }
+            }
+        }
+
+        async function devSaveQuestionsToStorage(text) {
+            try {
+                const blob = new Blob([text], { type: 'application/json' });
+                // upsert to storage bucket 'config'
+                const { data, error } = await supabase.storage.from('config').upload('questions.json', blob, { upsert: true, contentType: 'application/json' });
+                if (error) throw error;
+                return true;
+            } catch (e) {
+                console.warn('save questions failed', e);
+                // bubble up readable message so UI can show it
+                return (e && (e.message || e.error || e.statusText)) ? (e.message || e.error || e.statusText) : false;
+            }
+        }
+
         async function startQuiz() {
             const quizType = determineQuizTypeFromDOB(userProfile.dob);
             
@@ -276,14 +455,20 @@
             }
             
             // Prepare quiz session - get questions from appropriate JSON
-            quizQuestions = await fetchQuestionsForQuiz(quizType);
-            if (quizQuestions.length === 0) {
+            let allQuestions = await fetchQuestionsForQuiz(quizType);
+            if (allQuestions.length === 0) {
                 alert('No questions available at the moment.');
                 return;
             }
-            
-            // For demo, we'll just use 3 questions
-            quizQuestions = quizQuestions.slice(0, 3);
+            // Remove seen questions until pool is exhausted; otherwise fall back to full pool
+            const seenSet = getSeenQuestionsSet(userId, quizType);
+            const unseen = allQuestions.filter(q => !seenSet.has(String(q.id)));
+            const pickFrom = unseen.length > 0 ? unseen : allQuestions;
+            const desiredCount = Math.min(QUIZ_LENGTH_DEFAULT, pickFrom.length);
+            quizQuestions = shuffleArray(pickFrom).slice(0, desiredCount).map(q => ({
+                ...q,
+                options: shuffleArray((q.options || []).slice())
+            }));
             
             currentQuestionIndex = 0;
             currentScore = 0;
@@ -305,9 +490,17 @@
                     if (cached) {
                         questionBanks = JSON.parse(cached);
                     } else {
+                        // Try Supabase Storage first
+                        try {
+                            const { data } = await supabase.storage.from('config').download('questions.json');
+                            const text = data ? await data.text() : null;
+                            if (text) questionBanks = JSON.parse(text);
+                        } catch (_) {}
+                        if (!questionBanks) {
                         const res = await fetch('questions.json', { cache: 'no-cache' });
                         if (!res.ok) throw new Error('Failed to load questions.json');
                         questionBanks = await res.json();
+                        }
                         sessionStorage.setItem('questions_json', JSON.stringify(questionBanks));
                     }
                 }
@@ -449,6 +642,12 @@
             
             // Record this attempt to prevent repetition
             recordQuizAttempt(userProfile.dob);
+            // Persist seen question ids for this user/type to avoid repeats on next quiz
+            try {
+                const quizType = determineQuizTypeFromDOB(userProfile.dob);
+                const ids = quizQuestions.map(q => String(q.id));
+                appendSeenQuestions(userId, quizType, ids);
+            } catch (e) { console.warn('store seen questions failed', e); }
             
             // Show results and hide quiz
             quizContainerEl.style.display = 'none';
@@ -539,6 +738,7 @@
                         <p>${escapeHtml(post.content || '')}</p>
                         ${post.image_path ? `<img src="${post.image_path}" alt="post image" />` : ''}
                         <div class="post-actions">
+                            <button class="like-btn" data-post-id="${post.id}" aria-pressed="false"><i class="fas fa-heart"></i> <span class="like-text">Like</span> <span class="like-count" aria-live="polite">0</span></button>
                             <button class="share-btn" data-post-id="${post.id}"><i class="fas fa-share"></i> Share</button>
                             ${(post.user_id === userId || isDevEmail) ? `<button class=\"delete-btn\" data-post-id=\"${post.id}\"><i class=\"fas fa-trash\"></i> Delete</button>` : ''}
                         </div>
@@ -547,6 +747,9 @@
                 
                 container.appendChild(el);
             });
+
+            // Attach like handlers & hydrate like counts/state
+            await hydrateAndBindLikes(container);
 
             // Attach share handlers
             container.querySelectorAll('.share-btn').forEach(btn => {
@@ -564,6 +767,8 @@
                 btn.addEventListener('click', async () => {
                     const postId = btn.getAttribute('data-post-id');
                     if (!confirm('Delete this post? This cannot be undone.')) return;
+                    // Also best-effort delete likes for this post to avoid orphan counts
+                    try { await supabase.from('post_likes').delete().eq('post_id', postId); } catch (_) {}
                     let q = supabase.from('posts').delete().eq('id', postId);
                     // Only restrict by user_id if not dev
                     if (!isDevEmail) {
@@ -578,6 +783,75 @@
                     loadPosts();
                 });
             });
+        }
+
+        // Likes: fetch counts and user-liked state, bind toggle actions
+        async function hydrateAndBindLikes(container) {
+            try {
+                const postIds = Array.from(container.querySelectorAll('.like-btn')).map(b => b.getAttribute('data-post-id'));
+                if (postIds.length === 0) return;
+                // 1) counts per post
+                const { data: countsData } = await supabase
+                    .from('post_likes')
+                    .select('post_id, count:post_id', { count: 'exact', head: false })
+                    .in('post_id', postIds);
+                // countsData returns rows, but count isn't grouped. We'll fetch grouped counts via RPC alternative if needed.
+            } catch (_) {}
+
+            // Workaround: use PostgREST RPC for grouped counts via select with exact count requires group. We'll do a second call using raw SQL via REST is not available, so instead fetch all likes for posts and count on client.
+            try {
+                const { data: likesAll } = await supabase
+                    .from('post_likes')
+                    .select('post_id, user_id')
+                    .in('post_id', Array.from(container.querySelectorAll('.like-btn')).map(b => b.getAttribute('data-post-id')));
+                const countMap = {};
+                const likedSet = new Set();
+                (likesAll || []).forEach(r => {
+                    countMap[r.post_id] = (countMap[r.post_id] || 0) + 1;
+                    if (r.user_id === userId) likedSet.add(r.post_id);
+                });
+                container.querySelectorAll('.like-btn').forEach(btn => {
+                    const pid = btn.getAttribute('data-post-id');
+                    const liked = likedSet.has(pid);
+                    btn.setAttribute('aria-pressed', liked ? 'true' : 'false');
+                    btn.querySelector('.like-text').textContent = liked ? 'Liked' : 'Like';
+                    const countEl = btn.querySelector('.like-count');
+                    countEl.textContent = String(countMap[pid] || 0);
+                    btn.onclick = () => toggleLike(pid, btn);
+                });
+            } catch (e) {
+                console.warn('hydrate likes failed', e);
+            }
+        }
+
+        async function toggleLike(postId, btn) {
+            const liked = btn.getAttribute('aria-pressed') === 'true';
+            try {
+                if (liked) {
+                    await supabase.from('post_likes').delete().eq('post_id', postId).eq('user_id', userId);
+                } else {
+                    await supabase.from('post_likes').insert([{ post_id: postId, user_id: userId }]);
+                }
+            } catch (e) {
+                alert(e.message || 'Failed to update like');
+                return;
+            }
+            // Update UI optimistically by reloading counts for this post
+            await refreshLikeForPost(postId, btn);
+        }
+
+        async function refreshLikeForPost(postId, btn) {
+            try {
+                const { data } = await supabase
+                    .from('post_likes')
+                    .select('post_id, user_id')
+                    .eq('post_id', postId);
+                const count = (data || []).length;
+                const liked = (data || []).some(r => r.user_id === userId);
+                btn.setAttribute('aria-pressed', liked ? 'true' : 'false');
+                btn.querySelector('.like-text').textContent = liked ? 'Liked' : 'Like';
+                btn.querySelector('.like-count').textContent = String(count);
+            } catch (_) {}
         }
 
         async function sharePost({ text, url, image }) {

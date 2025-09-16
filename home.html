@@ -454,6 +454,22 @@
             gap: .75rem;
             margin-top: .75rem;
         }
+        .like-btn {
+            background: none;
+            border: 1px solid #fde2f2;
+            padding: .4rem .8rem;
+            border-radius: 999px;
+            cursor: pointer;
+            color: #9d174d;
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+        }
+        .like-btn[aria-pressed="true"] {
+            background: #fdf2f8;
+            border-color: #fbcfe8;
+            color: #be185d;
+        }
         .share-btn {
             background: none;
             border: 1px solid #e5e7eb;
@@ -900,6 +916,10 @@
                     <i class="fas fa-user"></i>
                     <span>My Space</span>
                 </li>
+                <li class="nav-item" data-section="developer" id="nav-developer" style="display:none;">
+                    <i class="fas fa-code"></i>
+                    <span>Developer</span>
+                </li>
                 <li class="nav-item" data-section="settings">
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
@@ -961,7 +981,60 @@
                 </div>
                 <div class="quiz-intro" id="quizIntro">
                     <h2>Your Guide</h2>
-                    <p>Your guide will h</p>
+                    <p style="max-width:900px;margin:0 auto 1rem;line-height:1.75;color:#374151">
+                        Welcome to Little Daffodils Quiz Club! This short guide will help you discover everything you can do here — from taking quizzes and earning points to posting, liking, following, and climbing the leaderboard. Have fun and explore!
+                    </p>
+                    <div style="text-align:left;max-width:980px;margin:0 auto;display:grid;gap:1rem">
+                        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:1rem 1.25rem">
+                            <h3 style="margin:0 0 .5rem;color:var(--primary)">1) Take Quizzes and Earn Points ✨</h3>
+                            <ul style="margin-left:1.25rem;line-height:1.75">
+                                <li>Tap <strong>Start Quiz</strong>. Questions are matched to your age group automatically.</li>
+                                <li>You have <strong>20 seconds</strong> per question. Choose the best answer and hit <strong>Next</strong>.</li>
+                                <li>Scoring: <strong>+2</strong> for correct answers, <strong>−1</strong> for wrong answers.</li>
+                                <li>Finish the quiz to see your score and earn points that boost your leaderboard rank.</li>
+                            </ul>
+                        </div>
+                        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:1rem 1.25rem">
+                            <h3 style="margin:0 0 .5rem;color:#b45309">2) Post, Share, and Like 🧡</h3>
+                            <ul style="margin-left:1.25rem;line-height:1.75">
+                                <li>Open the <strong>Posts</strong> tab to read what others share.</li>
+                                <li>Press <strong>Like</strong> on posts you enjoy. It turns to <strong>Liked</strong> and the counter updates instantly.</li>
+                                <li>Use <strong>Share</strong> to copy a link and spread great posts with friends.</li>
+                                <li>Want to create a post? Write your message, optionally attach an image, and hit <strong>Post</strong>.</li>
+                            </ul>
+                        </div>
+                        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:1rem 1.25rem">
+                            <h3 style="margin:0 0 .5rem;color:#166534">3) Leaderboard and Badges 🏆</h3>
+                            <ul style="margin-left:1.25rem;line-height:1.75">
+                                <li>Visit <strong>Leaderboard</strong> to see the top performers. Check <em>Global</em> or your age category.</li>
+                                <li>Earn points to unlock fun badges like <strong>Bronze Achiever</strong>, <strong>Silver Scholar</strong>, and <strong>Gold Genius</strong>.</li>
+                                <li>Perfect quizzes may grant special awards — keep an eye on your profile!</li>
+                            </ul>
+                        </div>
+                        <div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:1rem 1.25rem">
+                            <h3 style="margin:0 0 .5rem;color:#1d4ed8">4) Your Space: Profile and Connections 👥</h3>
+                            <ul style="margin-left:1.25rem;line-height:1.75">
+                                <li>Open <strong>My Space</strong> to view your avatar, points, badges, and awards.</li>
+                                <li>Update your name and profile picture anytime.</li>
+                                <li>Discover classmates, <strong>Follow</strong> them, and manage followers. Search by name to find people quickly.</li>
+                            </ul>
+                        </div>
+                        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1rem 1.25rem">
+                            <h3 style="margin:0 0 .5rem;color:#111827">5) Announcements 📣</h3>
+                            <ul style="margin-left:1.25rem;line-height:1.75">
+                                <li>Check the <strong>Announcements</strong> tab for news, events, and updates from the club.</li>
+                                <li>New posts appear at the top so you never miss anything important.</li>
+                            </ul>
+                        </div>
+                        <div style="background:#fafafa;border:1px dashed #d1d5db;border-radius:12px;padding:1rem 1.25rem">
+                            <h3 style="margin:0 0 .5rem;color:#0f172a">Quick Tips 💡</h3>
+                            <ul style="margin-left:1.25rem;line-height:1.75">
+                                <li>Be kind and respectful in your posts and comments.</li>
+                                <li>Keep images small and clear for faster uploads.</li>
+                                <li>If something looks wrong, refresh the page or sign out and back in.</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1113,6 +1186,80 @@
                             <button class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
                             <button class="btn btn-logout" id="logoutBtn">Logout</button>
                             <button class="btn btn-danger" id="deleteAccountBtn">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Developer Section (visible only to developer email) -->
+            <div class="section" id="section-developer">
+                <h2 class="section-title">Developer Tools</h2>
+                <div class="settings-container">
+                    <div style="display:grid; gap:1rem;">
+                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                            <h3 style="margin-bottom:.75rem; color:var(--primary);">Questions JSON Editor</h3>
+                            <p style="color:#6b7280; margin-bottom:.5rem;">Load, edit, and save the quiz questions JSON. This saves to Supabase Storage bucket <code>config/questions.json</code>. Changes affect all users.</p>
+                            <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.5rem;">
+                                <button class="btn btn-primary" id="devLoadQuestionsBtn">Load Current</button>
+                                <button class="btn" id="devValidateBtn" style="background:#eef2ff; color:#1a3d7c;">Validate</button>
+                                <button class="btn" id="devSaveQuestionsBtn" style="background:#16a34a; color:#fff;">Save</button>
+                                <button class="btn" id="devClearSeenBtn" style="background:#f59e0b; color:#111;">Clear Seen Questions Cache</button>
+                            </div>
+                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:.75rem; margin-bottom:.75rem;">
+                                <div>
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Age Group</label>
+                                    <select id="devAgeGroup" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
+                                        <option value="early_years">Early Years</option>
+                                        <option value="lower_primary">Lower Primary</option>
+                                        <option value="upper_primary">Upper Primary</option>
+                                        <option value="cbse">CBSE</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Correct Option</label>
+                                    <select id="devCorrectOption" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
+                                        <option value="1">Option 1</option>
+                                        <option value="2">Option 2</option>
+                                        <option value="3">Option 3</option>
+                                        <option value="4">Option 4</option>
+                                    </select>
+                                </div>
+                                <div style="grid-column: 1 / -1;">
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Question</label>
+                                    <input id="devQuestionText" type="text" placeholder="Type the question..." style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                </div>
+                                <div>
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option 1</label>
+                                    <input id="devOpt1" type="text" placeholder="Option 1" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                </div>
+                                <div>
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option 2</label>
+                                    <input id="devOpt2" type="text" placeholder="Option 2" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                </div>
+                                <div>
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option 3</label>
+                                    <input id="devOpt3" type="text" placeholder="Option 3" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                </div>
+                                <div>
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option 4</label>
+                                    <input id="devOpt4" type="text" placeholder="Option 4" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                </div>
+                                <div style="grid-column: 1 / -1; text-align:right;">
+                                    <button class="btn btn-primary" id="devAddQuestionBtn">Add to JSON</button>
+                                </div>
+                            </div>
+                            <textarea id="devQuestionsEditor" style="width:100%; min-height:320px; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,monospace; border:1px solid #e5e7eb; border-radius:8px; padding:.75rem;" placeholder="{\n  \"early_years\": [],\n  \"lower_primary\": [],\n  \"upper_primary\": []\n}"></textarea>
+                            <div id="devQuestionsMsg" style="margin-top:.5rem; color:#374151;"></div>
+                        </div>
+                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                            <h3 style="margin-bottom:.75rem; color:var(--primary);">Suggest an Idea</h3>
+                            <p style="color:#6b7280; margin-bottom:.5rem;">Write an idea or improvement for the club. It will be posted as an announcement with the title prefix <strong>[Idea]</strong>.</p>
+                            <input type="text" id="devIdeaTitle" placeholder="Short title" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:.5rem;" />
+                            <textarea id="devIdeaBody" placeholder="Describe your idea..." style="width:100%; min-height:120px; border:1px solid #e5e7eb; border-radius:8px; padding:.75rem;"></textarea>
+                            <div style="margin-top:.5rem;">
+                                <button class="btn btn-primary" id="devPostIdeaBtn">Post Idea</button>
+                            </div>
+                            <div id="devIdeaMsg" style="margin-top:.5rem; color:#374151;"></div>
                         </div>
                     </div>
                 </div>
