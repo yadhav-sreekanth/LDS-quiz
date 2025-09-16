@@ -99,6 +99,19 @@
         .user-details .name {
             font-weight: 600;
         }
+
+        .dev-badge {
+            display: inline-block;
+            margin-left: .5rem;
+            padding: 0.1rem 0.45rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--secondary), #ffd966);
+            color: #1a1a1a;
+            vertical-align: middle;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
         
         .user-details .points {
             color: var(--secondary);
@@ -869,13 +882,23 @@
                     <i class="fas fa-brain"></i>
                     <span>Quiz</span>
                 </li>
+
+                <li class="nav-item" data-section="leaderboard">
+                    <i class="fas fa-trophy"></i>
+                    <span>Leaderboard</span>
+                </li>
+
                 <li class="nav-item" data-section="posts">
                     <i class="fas fa-comments"></i>
                     <span>Posts</span>
                 </li>
-                <li class="nav-item" data-section="leaderboard">
-                    <i class="fas fa-trophy"></i>
-                    <span>Leaderboard</span>
+                <li class="nav-item" data-section="announcements">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </li>
+                <li class="nav-item" data-section="account">
+                    <i class="fas fa-user"></i>
+                    <span>Account</span>
                 </li>
                 <li class="nav-item" data-section="settings">
                     <i class="fas fa-cog"></i>
@@ -969,7 +992,6 @@
                         <button class="leaderboard-tab" data-category="early_years">Early Years</button>
                         <button class="leaderboard-tab" data-category="lower_primary">Lower Primary</button>
                         <button class="leaderboard-tab" data-category="upper_primary">Upper Primary</button>
-                        <button class="leaderboard-tab" data-category="cbse">CBSE</button>
                     </div>
                     
                     <div class="top-three" id="top3">

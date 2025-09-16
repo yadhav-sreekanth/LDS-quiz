@@ -6,149 +6,8 @@
         let userId = null;
         let userProfile = null;
 
-        // Quiz questions by category
-        const questionBanks = {
-            early_years: [
-                {
-                    id: 1,
-                    question_text: "Which animal says 'meow'?",
-                    options: [
-                        { id: 1, text: "Dog" },
-                        { id: 2, text: "Cat" },
-                        { id: 3, text: "Cow" },
-                        { id: 4, text: "Duck" }
-                    ],
-                    correct_option: 2
-                },
-                {
-                    id: 2,
-                    question_text: "What color is a banana?",
-                    options: [
-                        { id: 1, text: "Red" },
-                        { id: 2, text: "Yellow" },
-                        { id: 3, text: "Blue" },
-                        { id: 4, text: "Green" }
-                    ],
-                    correct_option: 2
-                },
-                {
-                    id: 3,
-                    question_text: "How many fingers do you have on one hand?",
-                    options: [
-                        { id: 1, text: "3" },
-                        { id: 2, text: "4" },
-                        { id: 3, text: "5" },
-                        { id: 4, text: "6" }
-                    ],
-                    correct_option: 3
-                }
-            ],
-            lower_primary: [
-                {
-                    id: 1,
-                    question_text: "What is 5 + 7?",
-                    options: [
-                        { id: 1, text: "10" },
-                        { id: 2, text: "11" },
-                        { id: 3, text: "12" },
-                        { id: 4, text: "13" }
-                    ],
-                    correct_option: 3
-                },
-                {
-                    id: 2,
-                    question_text: "Which planet is known as the Red Planet?",
-                    options: [
-                        { id: 1, text: "Earth" },
-                        { id: 2, text: "Mars" },
-                        { id: 3, text: "Jupiter" },
-                        { id: 4, text: "Venus" }
-                    ],
-                    correct_option: 2
-                },
-                {
-                    id: 3,
-                    question_text: "What is the capital of India?",
-                    options: [
-                        { id: 1, text: "Mumbai" },
-                        { id: 2, text: "Kolkata" },
-                        { id: 3, text: "New Delhi" },
-                        { id: 4, text: "Chennai" }
-                    ],
-                    correct_option: 3
-                }
-            ],
-            upper_primary: [
-                {
-                    id: 1,
-                    question_text: "What is the chemical symbol for gold?",
-                    options: [
-                        { id: 1, text: "Go" },
-                        { id: 2, text: "Gd" },
-                        { id: 3, text: "Au" },
-                        { id: 4, text: "Ag" }
-                    ],
-                    correct_option: 3
-                },
-                {
-                    id: 2,
-                    question_text: "Who wrote 'Romeo and Juliet'?",
-                    options: [
-                        { id: 1, text: "Charles Dickens" },
-                        { id: 2, text: "William Shakespeare" },
-                        { id: 3, text: "Jane Austen" },
-                        { id: 4, text: "Mark Twain" }
-                    ],
-                    correct_option: 2
-                },
-                {
-                    id: 3,
-                    question_text: "What is the largest ocean on Earth?",
-                    options: [
-                        { id: 1, text: "Atlantic Ocean" },
-                        { id: 2, text: "Indian Ocean" },
-                        { id: 3, text: "Arctic Ocean" },
-                        { id: 4, text: "Pacific Ocean" }
-                    ],
-                    correct_option: 4
-                }
-            ],
-            cbse: [
-                {
-                    id: 1,
-                    question_text: "What is the formula for the area of a circle?",
-                    options: [
-                        { id: 1, text: "πr²" },
-                        { id: 2, text: "2πr" },
-                        { id: 3, text: "πd" },
-                        { id: 4, text: "2πr²" }
-                    ],
-                    correct_option: 1
-                },
-                {
-                    id: 2,
-                    question_text: "Who discovered the law of gravity?",
-                    options: [
-                        { id: 1, text: "Albert Einstein" },
-                        { id: 2, text: "Isaac Newton" },
-                        { id: 3, text: "Galileo Galilei" },
-                        { id: 4, text: "Nikola Tesla" }
-                    ],
-                    correct_option: 2
-                },
-                {
-                    id: 3,
-                    question_text: "What is the chemical formula for water?",
-                    options: [
-                        { id: 1, text: "H2O" },
-                        { id: 2, text: "CO2" },
-                        { id: 3, text: "O2" },
-                        { id: 4, text: "NaCl" }
-                    ],
-                    correct_option: 1
-                }
-            ]
-        };
+        // Questions are loaded from questions.json at runtime
+        let questionBanks = null;
 
         // Utility: determine quiz type from DOB (yyyy)
         function determineQuizTypeFromDOB(dobString) {
@@ -236,6 +95,8 @@
                     await ensureUserExists(userData[userId]);
                 } else {
                     userData[userId] = data;
+                    // Ensure email is present from Auth (not stored in users table)
+                    userData[userId].email = session.user.email;
                 }
                 
                 localStorage.setItem('userData', JSON.stringify(userData));
@@ -352,7 +213,9 @@
                     full_name: profileLike.full_name || 'Student',
                     dob: profileLike.dob || '2010-01-01',
                     profile_photo: profileLike.profile_photo || null,
-                    total_points: profileLike.total_points || 0
+                    total_points: profileLike.total_points || 0,
+                    // optional flag to mark developer account in users table
+                    is_dev: !!profileLike.is_dev
                 };
                 const { error } = await supabase
                     .from('users')
@@ -377,11 +240,13 @@
         }
 
         function renderUserSummary(profile) {
-            userNameEl.textContent = profile.full_name || 'Student';
+            const displayName = profile.full_name || 'Student';
+            const isDev = (profile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com';
+            userNameEl.innerHTML = isDev ? `${displayName} <span class="dev-badge">DEV</span>` : displayName;
             userPointsEl.textContent = `Points: ${profile.total_points || 0}`;
             profilePhotoEl.src = profile.profile_photo || 'https://via.placeholder.com/48';
             
-            mobileUserNameEl.textContent = profile.full_name || 'Student';
+            mobileUserNameEl.innerHTML = isDev ? `${displayName} <span class="dev-badge">DEV</span>` : displayName;
             mobileUserPointsEl.textContent = `Points: ${profile.total_points || 0}`;
             mobileProfilePhotoEl.src = profile.profile_photo || 'https://via.placeholder.com/48';
             
@@ -398,7 +263,7 @@
         async function startQuiz() {
             const quizType = determineQuizTypeFromDOB(userProfile.dob);
             
-            // Check attempt limit
+            // Check attempt limit (max 5 in the last 7 days)
             const allowed = await checkAttemptLimit(userId, quizType);
             if (!allowed) {
                 alert('You have reached the limit of 5 quizzes for this type in the last 7 days. Try later.');
@@ -428,9 +293,24 @@
         }
 
         async function fetchQuestionsForQuiz(quizType) {
-            // In a real app, this would fetch from JSON files
-            // For now, we'll use the question banks defined above
-            return questionBanks[quizType] || [];
+            try {
+                if (!questionBanks) {
+                    // cache in sessionStorage to avoid repeated fetches
+                    const cached = sessionStorage.getItem('questions_json');
+                    if (cached) {
+                        questionBanks = JSON.parse(cached);
+                    } else {
+                        const res = await fetch('questions.json', { cache: 'no-cache' });
+                        if (!res.ok) throw new Error('Failed to load questions.json');
+                        questionBanks = await res.json();
+                        sessionStorage.setItem('questions_json', JSON.stringify(questionBanks));
+                    }
+                }
+            } catch (e) {
+                console.error('Failed fetching questions.json:', e);
+                questionBanks = questionBanks || {};
+            }
+            return (questionBanks[quizType] || []).slice();
         }
 
         function renderQuestion() {
@@ -561,35 +441,31 @@
 
         function recordQuizAttempt(dob) {
             const quizType = determineQuizTypeFromDOB(dob);
-            const now = new Date();
-            const weekNumber = getWeekNumber(now);
-            
-            // Get existing attempts or initialize
             const attempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
             if (!attempts[userId]) attempts[userId] = {};
-            if (!attempts[userId][quizType]) attempts[userId][quizType] = {};
-            
-            // Record this week's attempt
-            attempts[userId][quizType][weekNumber] = true;
+            let list = attempts[userId][quizType];
+            // Migration: previously stored as an object keyed by weekNumber; now use timestamp array
+            if (!Array.isArray(list)) list = [];
+            const nowTs = Date.now();
+            const sevenDaysAgo = nowTs - 7 * 24 * 60 * 60 * 1000;
+            // Push and prune to last 7 days and cap length
+            list.push(nowTs);
+            list = list.filter(ts => Number(ts) > sevenDaysAgo).slice(-50);
+            attempts[userId][quizType] = list;
             localStorage.setItem('quizAttempts', JSON.stringify(attempts));
         }
 
         async function checkAttemptLimit(userId, quizType) {
-            const now = new Date();
-            const weekNumber = getWeekNumber(now);
-            
-            // Get attempts data
             const attempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
-            
-            // Check if user has already attempted this quiz type this week
-            if (attempts[userId] && attempts[userId][quizType] && attempts[userId][quizType][weekNumber]) {
-                return false;
-            }
-            
-            return true;
+            const list = Array.isArray(attempts[userId]?.[quizType]) ? attempts[userId][quizType] : [];
+            const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+            const recentCount = list.filter(ts => Number(ts) > sevenDaysAgo).length;
+            // Allow up to 5 attempts in the last 7 days
+            return recentCount < 5;
         }
 
         function getWeekNumber(date) {
+            // kept for compatibility elsewhere; not used in limiter anymore
             const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
             const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
             return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
@@ -599,7 +475,7 @@
             // Fetch posts with user info
             const { data: posts, error } = await supabase
                 .from('posts')
-                .select('id, user_id, content, image_path, created_at, users:users!posts_user_id_fkey(full_name, profile_photo)')
+                .select('id, user_id, content, image_path, created_at, users:users!posts_user_id_fkey(full_name, profile_photo, is_dev)')
                 .order('created_at', { ascending: false });
             
             const container = document.getElementById('postsFeed');
@@ -624,10 +500,14 @@
                 // Format date
                 const postDate = new Date(post.created_at).toLocaleString();
                 
+                const displayName = (post.users && post.users.full_name) || 'User';
+                const nameWithBadge = (post.users && post.users.is_dev)
+                    ? `${displayName} <span class="dev-badge">DEV</span>`
+                    : displayName;
                 el.innerHTML = `
                     <div class="post-head">
                         <img src="${(post.users && post.users.profile_photo) || 'https://via.placeholder.com/40'}" />
-                        <strong>${(post.users && post.users.full_name) || 'User'}</strong>
+                        <strong>${nameWithBadge}</strong>
                         <small>${postDate}</small>
                     </div>
                     <div class="post-body">
@@ -808,7 +688,7 @@
 
         async function loadLeaderboard(category) {
             // Fetch users from Supabase, ordered by points
-            const { data: users, error } = await supabase
+            const { data: allUsers, error } = await supabase
                 .from('users')
                 .select('*')
                 .order('total_points', { ascending: false });
@@ -817,50 +697,58 @@
                 console.error('Error loading leaderboard:', error);
                 return;
             }
-            
-            // Display top 3
-            const top3El = document.getElementById('top3');
-            top3El.innerHTML = '';
-            
-            if (users.length > 0) {
-                users.slice(0, 3).forEach((user, index) => {
-                    const medals = ['🥇', '🥈', '🥉'];
-                    
-                    const leaderEl = document.createElement('div');
-                    leaderEl.className = 'leader';
-                    leaderEl.innerHTML = `
-                        <div class="leader-rank">${medals[index]}</div>
-                        <img class="leader-img" src="${user.profile_photo || 'https://via.placeholder.com/80'}" alt="${user.full_name}">
-                        <div class="leader-info">
-                            <strong>${user.full_name}</strong>
-                            <span>${user.total_points || 0} pts</span>
-                        </div>
-                    `;
-                    
-                    top3El.appendChild(leaderEl);
-                });
-                
-                // Display all leaders
-                const allEl = document.getElementById('leaderboardAll');
-                allEl.innerHTML = '';
-                
-                users.forEach((user, index) => {
-                    const leaderRow = document.createElement('div');
-                    leaderRow.className = 'leader-row';
-                    leaderRow.innerHTML = `
-                        <div class="leader-row-user">
-                            <span>${index + 1}.</span>
-                            <img src="${user.profile_photo || 'https://via.placeholder.com/40'}" alt="${user.full_name}">
-                            <strong>${user.full_name}</strong>
-                        </div>
-                        <span>${user.total_points || 0} pts</span>
-                    `;
-                    
-                    allEl.appendChild(leaderRow);
-                });
-            } else {
-                top3El.innerHTML = '<p>No leaderboard data available</p>';
+
+            // Filter by category based on DOB-derived quiz type
+            let users = Array.isArray(allUsers) ? allUsers.slice() : [];
+            if (category && category !== 'global') {
+                users = users.filter(u => determineQuizTypeFromDOB(u.dob) === category);
             }
+
+            // Prepare containers and clear previous content
+            const top3El = document.getElementById('top3');
+            const allEl = document.getElementById('leaderboardAll');
+            top3El.innerHTML = '';
+            allEl.innerHTML = '';
+
+            // Empty state
+            if (users.length === 0) {
+                allEl.innerHTML = '<p>No leaderboard data available</p>';
+                return;
+            }
+
+            // Display top 3
+            users.slice(0, 3).forEach((user, index) => {
+                const medals = ['🥇', '🥈', '🥉'];
+                
+                const leaderEl = document.createElement('div');
+                leaderEl.className = 'leader';
+                leaderEl.innerHTML = `
+                    <div class="leader-rank">${medals[index]}</div>
+                    <img class="leader-img" src="${user.profile_photo || 'https://via.placeholder.com/80'}" alt="${user.full_name}">
+                    <div class="leader-info">
+                        <strong>${user.full_name}${user.is_dev ? ' <span class=\"dev-badge\">DEV</span>' : ''}</strong>
+                        <span>${user.total_points || 0} pts</span>
+                    </div>
+                `;
+                
+                top3El.appendChild(leaderEl);
+            });
+            
+            // Display all leaders
+            users.forEach((user, index) => {
+                const leaderRow = document.createElement('div');
+                leaderRow.className = 'leader-row';
+                leaderRow.innerHTML = `
+                    <div class="leader-row-user">
+                        <span>${index + 1}.</span>
+                        <img src="${user.profile_photo || 'https://via.placeholder.com/40'}" alt="${user.full_name}">
+                        <strong>${user.full_name}${user.is_dev ? ' <span class=\"dev-badge\">DEV</span>' : ''}</strong>
+                    </div>
+                    <span>${user.total_points || 0} pts</span>
+                `;
+                
+                allEl.appendChild(leaderRow);
+            });
         }
 
         async function saveProfile() {
@@ -873,26 +761,32 @@
             let updates = {};
             let photoPath = null;
             
-            // Validate passwords if provided
+            // 1) Password via Auth
             if (password) {
                 if (password !== confirmPassword) {
                     alert('Passwords do not match');
                     return;
                 }
-                // Update password via Auth
-                const { error } = await supabase.auth.updateUser({
-                    password: password
-                });
-                
-                if (error) {
-                    alert('Error updating password: ' + error.message);
+                const { error: pwErr } = await supabase.auth.updateUser({ password });
+                if (pwErr) {
+                    alert('Error updating password: ' + pwErr.message);
                     return;
                 }
-                
                 alert('Password updated successfully!');
             }
             
-            // Handle profile photo upload
+            // 2) Email via Auth (NOT users table)
+            if (email && email !== (userProfile.email || '')) {
+                const { error: emailErr } = await supabase.auth.updateUser({ email });
+                if (emailErr) {
+                    alert('Error updating email: ' + emailErr.message);
+                    return;
+                }
+                // Supabase may send a confirmation link; reflect locally for UI
+                userProfile.email = email;
+            }
+            
+            // 3) Profile photo upload (users table)
             if (file) {
                 try {
                     photoPath = await uploadToBucket('avatars', file, `${userId}`);
@@ -904,45 +798,32 @@
                 }
             }
             
-            // Update name if changed
-            if (name) {
+            // 4) Name in users table
+            if (name && name !== (userProfile.full_name || '')) {
                 updates.full_name = name;
             }
             
-            // Update email if changed
-            if (email) {
-                updates.email = email;
-            }
-            
-            // Update user record if there are changes
+            // Persist users table updates
             if (Object.keys(updates).length > 0) {
-                // Update in Supabase
                 const { error } = await supabase
                     .from('users')
                     .update(updates)
                     .eq('id', userId);
-                
                 if (error) {
                     console.error('Error updating profile:', error);
                     alert('Error updating profile. Please try again.');
                     return;
                 }
-                
-                // Update user profile
                 Object.assign(userProfile, updates);
-                
-                // Save to localStorage
-                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-                userData[userId] = userProfile;
-                localStorage.setItem('userData', JSON.stringify(userData));
-                
-                // Refresh UI
-                renderUserSummary(userProfile);
-                
-                alert('Profile updated successfully!');
-            } else {
-                alert('No changes to save');
             }
+            
+            // Save to localStorage and refresh UI
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            userData[userId] = userProfile;
+            localStorage.setItem('userData', JSON.stringify(userData));
+            renderUserSummary(userProfile);
+            
+            alert('Profile updated successfully!');
         }
 
         async function logout() {
@@ -962,30 +843,48 @@
             if (!confirm('Are you sure? This will delete all your data and cannot be undone.')) {
                 return;
             }
-            
-            // Delete user from Supabase
-            const { error } = await supabase
-                .from('users')
-                .delete()
-                .eq('id', userId);
-            
-            if (error) {
-                console.error('Error deleting account:', error);
-                alert('Error deleting account. Please try again.');
-                return;
+            try {
+                // 0) Best-effort: delete storage files (avatars and post-images under user's folder)
+                await deleteUserStorageAssets(userId);
+
+                // 1) Delete posts
+                await supabase
+                    .from('posts')
+                    .delete()
+                    .eq('user_id', userId);
+
+                // 2) Delete profile row
+                const { error: userDelErr } = await supabase
+                    .from('users')
+                    .delete()
+                    .eq('id', userId);
+                if (userDelErr) {
+                    console.error('Error deleting user row:', userDelErr);
+                    alert('Error deleting account (profile row). Please try again.');
+                    return;
+                }
+
+                // 3) Try to delete auth user via Edge Function (requires deployment with service role)
+                try {
+                    const { error: fnErr } = await supabase.functions.invoke('delete-user', {
+                        body: { user_id: userId }
+                    });
+                    if (fnErr) {
+                        console.warn('Edge function delete-user not available or failed:', fnErr);
+                    }
+                } catch (e) {
+                    console.warn('Edge function delete-user invoke failed:', e);
+                }
+
+                // 4) Sign out and redirect
+                await supabase.auth.signOut();
+                localStorage.removeItem('sd_user_id');
+                alert('Your account has been deleted successfully.');
+                window.location.href = 'index.html';
+            } catch (e) {
+                console.error('Account deletion failed:', e);
+                alert(e.message || 'Account deletion failed. Please try again.');
             }
-            
-            // Also delete posts
-            await supabase
-                .from('posts')
-                .delete()
-                .eq('user_id', userId);
-            
-            // Sign out and redirect
-            await supabase.auth.signOut();
-            localStorage.removeItem('sd_user_id');
-            alert('Your account has been deleted successfully.');
-            window.location.href = 'index.html';
         }
 
         // Helper function to escape HTML
@@ -996,5 +895,25 @@
                 '>': '&gt;', 
                 '"': '&quot;', 
                 "'": '&#39;' 
-            }[c]));
+            })[c]);
+        }
+        // Helper: delete all files under a user's folder for a bucket
+        async function deleteFolder(bucketName, prefix) {
+            try {
+                const { data, error } = await supabase.storage.from(bucketName).list(prefix, { limit: 1000, offset: 0, search: '' });
+                if (error) return;
+                const files = (data || []).map(f => `${prefix}/${f.name}`);
+                if (files.length > 0) {
+                    await supabase.storage.from(bucketName).remove(files);
+                }
+            } catch (e) {
+                console.warn(`deleteFolder ${bucketName}/${prefix} failed`, e);
+            }
+        }
+
+        async function deleteUserStorageAssets(uid) {
+            await Promise.all([
+                deleteFolder('avatars', `${uid}`),
+                deleteFolder('post-images', `${uid}`)
+            ]);
         }
