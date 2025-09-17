@@ -102,40 +102,37 @@
             
             userId = session.user.id;
             
-            // Check if we have user data in localStorage
+            // Always fetch the latest profile from Supabase to avoid stale local cache
             let userData = JSON.parse(localStorage.getItem('userData') || '{}');
-            
-            if (!userData[userId]) {
-                // Fetch user data from Supabase
+            try {
                 const { data, error } = await supabase
                     .from('users')
                     .select('*')
                     .eq('id', userId)
                     .single();
-                    
-                if (error) {
-                    console.error('Error fetching user data:', error);
-                    // Create default user data
-                    userData[userId] = {
+                if (error || !data) {
+                    // Create minimal default then upsert to ensure presence
+                    const fresh = {
                         id: userId,
-                        full_name: session.user.user_metadata.name || 'Student',
-                        email: session.user.email,
-                        dob: session.user.user_metadata.dob || '2010-01-01',
+                        full_name: session.user.user_metadata?.name || 'Student',
+                        dob: session.user.user_metadata?.dob || '2010-01-01',
                         total_points: 0,
                         profile_photo: 'https://via.placeholder.com/48'
                     };
-                    // Ensure a corresponding row exists in users table
-                    await ensureUserExists(userData[userId]);
+                    await ensureUserExists(fresh);
+                    userProfile = { ...fresh, email: session.user.email };
                 } else {
-                    userData[userId] = data;
-                    // Ensure email is present from Auth (not stored in users table)
-                    userData[userId].email = session.user.email;
+                    userProfile = { ...data, email: session.user.email };
                 }
-                
-                localStorage.setItem('userData', JSON.stringify(userData));
+            } catch (e) {
+                console.warn('Profile fetch failed, using local cache if present', e);
+                if (userData[userId]) {
+                    userProfile = { ...userData[userId], email: session.user.email };
+                }
             }
-            
-            userProfile = userData[userId];
+            // Persist fresh profile to local cache and render
+            userData[userId] = userProfile;
+            localStorage.setItem('userData', JSON.stringify(userData));
             renderUserSummary(userProfile);
             
             // Navigation functionality
@@ -246,6 +243,27 @@
             loadPosts();
             loadLeaderboard('global');
         });
+
+        // Fetch latest user row and refresh UI/cache (can be called after updates)
+        async function refreshCurrentUserFromDB() {
+            if (!userId) return;
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+                if (!error && data) {
+                    userProfile = { ...userProfile, ...data };
+                    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                    userData[userId] = userProfile;
+                    localStorage.setItem('userData', JSON.stringify(userData));
+                    renderUserSummary(userProfile);
+                }
+            } catch (e) {
+                console.warn('refreshCurrentUserFromDB failed', e);
+            }
+        }
 
         // Ensure a users row exists for this auth user (avoids FK errors)
         async function ensureUserExists(profileLike) {
@@ -1122,6 +1140,8 @@
                 userData[userId] = userProfile;
                 localStorage.setItem('userData', JSON.stringify(userData));
                 renderUserSummary(userProfile);
+                // Re-fetch from DB to ensure we mirror server state and handle RLS triggers
+                refreshCurrentUserFromDB();
                 
                 alert('Profile updated successfully!');
         }
@@ -1134,7 +1154,24 @@
                 console.error('Error signing out:', error);
             }
             
-            // Remove user ID from localStorage
+            // Clear cached data for this user to avoid stale profile after re-login
+            try {
+                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                if (userId && userData[userId]) {
+                    delete userData[userId];
+                    localStorage.setItem('userData', JSON.stringify(userData));
+                }
+                const attempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
+                if (userId && attempts[userId]) {
+                    delete attempts[userId];
+                    localStorage.setItem('quizAttempts', JSON.stringify(attempts));
+                }
+                const seen = JSON.parse(localStorage.getItem('seen_questions') || '{}');
+                if (userId && seen[userId]) {
+                    delete seen[userId];
+                    localStorage.setItem('seen_questions', JSON.stringify(seen));
+                }
+            } catch (_) {}
             localStorage.removeItem('sd_user_id');
             window.location.href = 'index.html';
         }
@@ -1147,22 +1184,122 @@
                 // 0) Best-effort: delete storage files (avatars and post-images under user's folder)
                 await deleteUserStorageAssets(userId);
 
-                // 1) Delete posts
-                await supabase
-                    .from('posts')
-                    .delete()
-                    .eq('user_id', userId);
+                // 1) Clean up rows that reference the user to satisfy foreign keys
+                // 1a) Post likes made by the user
+                {
+                    const { error } = await supabase
+                        .from('post_likes')
+                        .delete()
+                        .eq('user_id', userId);
+                    if (error) console.warn('post_likes by user delete failed:', error);
+                }
 
-                // 2) Delete profile row
-                const { error: userDelErr } = await supabase
-                .from('users')
-                .delete()
-                .eq('id', userId);
-                if (userDelErr) {
-                    console.error('Error deleting user row:', userDelErr);
-                    alert('Error deleting account (profile row). Please try again.');
-                return;
-            }
+                // 1b) Post likes on the user's posts, then delete the posts themselves
+                let postIds = [];
+                {
+                    const { data, error } = await supabase
+                        .from('posts')
+                        .select('id')
+                        .eq('user_id', userId);
+                    if (!error && Array.isArray(data)) postIds = data.map(p => p.id);
+                }
+                if (postIds.length > 0) {
+                    const { error } = await supabase
+                        .from('post_likes')
+                        .delete()
+                        .in('post_id', postIds);
+                    if (error) console.warn('post_likes on user posts delete failed:', error);
+                }
+                {
+                    const { error } = await supabase
+                        .from('posts')
+                        .delete()
+                        .eq('user_id', userId);
+                    if (error) console.warn('posts delete failed:', error);
+                }
+
+                // 1c) Follows where the user is follower or followed
+                {
+                    const { error } = await supabase
+                        .from('follows')
+                        .delete()
+                        .or(`follower_id.eq.${userId},followed_id.eq.${userId}`);
+                    if (error) console.warn('follows delete failed:', error);
+                }
+
+                // 1d) Awards
+                {
+                    const { error } = await supabase
+                        .from('awards')
+                        .delete()
+                        .eq('user_id', userId);
+                    if (error) console.warn('awards delete failed:', error);
+                }
+
+                // 1e) Quiz attempts and their answers
+                let attemptIds = [];
+                {
+                    const { data, error } = await supabase
+                        .from('attempts')
+                        .select('id')
+                        .eq('user_id', userId);
+                    if (!error && Array.isArray(data)) attemptIds = data.map(a => a.id);
+                }
+                if (attemptIds.length > 0) {
+                    const { error: aaErr } = await supabase
+                        .from('attempt_answers')
+                        .delete()
+                        .in('attempt_id', attemptIds);
+                    if (aaErr) console.warn('attempt_answers delete failed:', aaErr);
+
+                    const { error: atErr } = await supabase
+                        .from('attempts')
+                        .delete()
+                        .in('id', attemptIds);
+                    if (atErr) console.warn('attempts delete failed:', atErr);
+                } else {
+                    const { error } = await supabase
+                        .from('attempts')
+                        .delete()
+                        .eq('user_id', userId);
+                    if (error) console.warn('attempts delete (empty set) failed:', error);
+                }
+
+                // 1f) Quizzes created by the user and their question links
+                let quizIds = [];
+                {
+                    const { data, error } = await supabase
+                        .from('quizzes')
+                        .select('id')
+                        .eq('user_id', userId);
+                    if (!error && Array.isArray(data)) quizIds = data.map(q => q.id);
+                }
+                if (quizIds.length > 0) {
+                    const { error: qqErr } = await supabase
+                        .from('quiz_questions')
+                        .delete()
+                        .in('quiz_id', quizIds);
+                    if (qqErr) console.warn('quiz_questions delete failed:', qqErr);
+
+                    const { error: qzErr } = await supabase
+                        .from('quizzes')
+                        .delete()
+                        .in('id', quizIds);
+                    if (qzErr) console.warn('quizzes delete failed:', qzErr);
+                }
+
+                // 2) Delete profile row last
+                {
+                    const { error: userDelErr } = await supabase
+                        .from('users')
+                        .delete()
+                        .eq('id', userId);
+                    if (userDelErr) {
+                        console.error('Error deleting user row:', userDelErr);
+                        alert('Error deleting account (profile row). Please try again.');
+                        return;
+                    }
+                }
             
                 // 3) Try to delete auth user via Edge Function (requires deployment with service role)
                 try {
@@ -1177,10 +1314,10 @@
                 }
 
                 // 4) Sign out and redirect
-            await supabase.auth.signOut();
-            localStorage.removeItem('sd_user_id');
-            alert('Your account has been deleted successfully.');
-            window.location.href = 'index.html';
+                await supabase.auth.signOut();
+                localStorage.removeItem('sd_user_id');
+                alert('Your account has been deleted successfully.');
+                window.location.href = 'index.html';
             } catch (e) {
                 console.error('Account deletion failed:', e);
                 alert(e.message || 'Account deletion failed. Please try again.');
