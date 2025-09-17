@@ -41,17 +41,22 @@
         .container {
             display: flex;
             flex: 1;
+            margin-top: 85px;
         }
         
         /* Header Styles */
         header {
             background-color: white;
             padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-            border-bottom: 3px solid rgba(26,61,124,0.06);
+            border-bottom: 3px solid rgba(255, 255, 255, 0.06);
         }
         
         .logo {
@@ -787,6 +792,12 @@
                 display: none;
             }
         }
+        @media (max-width: 900px) {
+    .leaderboard-container {
+        max-width: 95vw;
+        padding: 1rem 0.5rem;
+    }
+}
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -871,6 +882,15 @@
                     margin-top: 40px;
                 }
                 }
+                @media (max-width: 433px) {
+                    .leaderboard-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #eee;
+    }
+}
     </style>
 </head>
 <body>
@@ -898,37 +918,43 @@
 
 
         <div class="sidebar" id="sidebar">
-            <ul class="nav-list">
+            <ul class="nav-list" style="gap: 10px;">
                 <li class="nav-item active" data-section="quiz">
                     <i class="fas fa-brain"></i>
                     <span>Dashboard</span>
                 </li>
-
+<br/>
                 <li class="nav-item" data-section="leaderboard">
                     <i class="fas fa-trophy"></i>
                     <span>Leaderboard</span>
                 </li>
-
+<br/>
                 <li class="nav-item" data-section="posts">
                     <i class="fas fa-comments"></i>
                     <span>Posts</span>
                 </li>
+                <br/>
                 <li class="nav-item" data-section="announcements">
                     <i class="fas fa-bullhorn"></i>
                     <span>Announcements</span>
                 </li>
-                <li class="nav-item" data-section="account">
-                    <i class="fas fa-user"></i>
-                    <span>My Space</span>
-                </li>
+                <br/>
+                
                 <li class="nav-item" data-section="developer" id="nav-developer" style="display:none;">
                     <i class="fas fa-code"></i>
                     <span>Developer</span>
                 </li>
+                <div class="divider" style="margin-top: 10px; margin-bottom: 30px; border-bottom: 1px solid #eee;"> <br></div>
+                <li class="nav-item" data-section="account">
+                    <i class="fas fa-user"></i>
+                    <span>My Space</span>
+                </li>
+
                 <li class="nav-item" data-section="settings">
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
                 </li>
+                </div>
             </ul>
         </div>
 
@@ -1096,7 +1122,7 @@
                 <h2 class="section-title">Your Space</h2>
                 <div class="settings-container" id="accountContainer" style="display:grid; gap:1.5rem;">
                     <div class="account-header" style="display:flex; align-items:center; gap:1rem;">
-                        <img id="accountAvatar" src="https://via.placeholder.com/80" alt="Avatar" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid var(--primary-light);">
+                        <img id="accountAvatar" src="logonew.png" alt="Avatar" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid var(--primary-light);">
                         <div>
                             <div id="accountName" style="font-weight:700; font-size:1.2rem;">Student</div>
                             <div id="accountEmail" style="color:var(--gray); font-size:.9rem;">email@example.com</div>
