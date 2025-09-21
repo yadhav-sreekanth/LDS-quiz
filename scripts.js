@@ -239,6 +239,9 @@
             // Developer nav visibility
             ensureDeveloperVisibleAndInit();
             
+            // Initialize weekly points system
+            await initializeWeeklyPoints();
+            
             // Load initial data
             loadPosts();
             loadLeaderboard('global');
@@ -301,13 +304,22 @@
 
         function renderUserSummary(profile) {
             const displayName = profile.full_name || 'Student';
-            const isDev = (profile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com';
-            userNameEl.innerHTML = isDev ? `${displayName} <span class="dev-badge">DEV</span>` : displayName;
-            userPointsEl.textContent = `Points: ${profile.total_points || 0}`;
+            const isDev = (profile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com' || profile.is_dev;
+            const roleBadge = profile.role_badge || (isDev ? 'DEV' : '');
+            
+            let badgeHtml = '';
+            if (roleBadge) {
+                const badgeClass = roleBadge.toLowerCase();
+                badgeHtml = `<span class="dev-badge ${badgeClass}">${roleBadge.toUpperCase()}</span>`;
+            }
+            
+            userNameEl.innerHTML = `${displayName} ${badgeHtml}`;
+            // Show weekly points in header (current week)
+            userPointsEl.textContent = `Points: ${profile.weekly_points || 0}`;
             profilePhotoEl.src = profile.profile_photo || 'https://via.placeholder.com/48';
             
-            mobileUserNameEl.innerHTML = isDev ? `${displayName} <span class="dev-badge">DEV</span>` : displayName;
-            mobileUserPointsEl.textContent = `Points: ${profile.total_points || 0}`;
+            mobileUserNameEl.innerHTML = `${displayName} ${badgeHtml}`;
+            mobileUserPointsEl.textContent = `Points: ${profile.weekly_points || 0}`;
             mobileProfilePhotoEl.src = profile.profile_photo || 'https://via.placeholder.com/48';
             
             settingsProfilePhotoEl.src = profile.profile_photo || 'https://via.placeholder.com/80';
@@ -321,7 +333,7 @@
         }
 
         function ensureDeveloperVisibleAndInit() {
-            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com');
+            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com') || userProfile?.is_dev;
             const nav = document.getElementById('nav-developer');
             const section = document.getElementById('section-developer');
             if (nav) nav.style.display = isDevEmail ? '' : 'none';
@@ -344,6 +356,11 @@
                 const opt3 = document.getElementById('devOpt3');
                 const opt4 = document.getElementById('devOpt4');
                 const correctSel = document.getElementById('devCorrectOption');
+                const grantBtn = document.getElementById('devGrantPowerBtn');
+                const revokeBtn = document.getElementById('devRevokePowerBtn');
+                const grantEmail = document.getElementById('devGrantEmail');
+                const roleSelect = document.getElementById('devRoleSelect');
+                const powerMsg = document.getElementById('devPowerMsg');
                 if (!loadBtn || loadBtn._bound) return; // already bound
                 loadBtn._bound = true;
                 loadBtn.onclick = async () => {
@@ -428,6 +445,79 @@
                         correctSel.value = '1';
                     } catch (e) {
                         msg.textContent = 'Cannot add: fix the JSON or form. ' + (e.message || e);
+                    }
+                };
+                grantBtn.onclick = async () => {
+                    const email = (grantEmail.value || '').trim().toLowerCase();
+                    const role = (roleSelect.value || 'developer');
+                    if (!email) { powerMsg.textContent = 'Please enter an email address.'; return; }
+                    powerMsg.textContent = 'Granting powers...';
+                    try {
+                        // First, find the user by email
+                        const { data: authUsers } = await supabase.auth.admin.listUsers();
+                        const targetUser = authUsers?.users?.find(u => u.email?.toLowerCase() === email);
+                        
+                        if (!targetUser) {
+                            powerMsg.textContent = 'User not found. They need to sign up first.';
+                            return;
+                        }
+                        
+                        // Update user role in users table
+                        const { error } = await supabase
+                            .from('users')
+                            .update({ 
+                                is_dev: true,
+                                role_badge: role,
+                                role_granted_by: userId,
+                                role_granted_at: new Date().toISOString()
+                            })
+                            .eq('id', targetUser.id);
+                        
+                        if (error) {
+                            powerMsg.textContent = 'Failed to grant powers: ' + error.message;
+                            return;
+                        }
+                        
+                        powerMsg.textContent = `Successfully granted ${role} powers to ${email}!`;
+                        grantEmail.value = '';
+                    } catch (e) {
+                        powerMsg.textContent = 'Error granting powers: ' + (e.message || e);
+                    }
+                };
+                revokeBtn.onclick = async () => {
+                    const email = (grantEmail.value || '').trim().toLowerCase();
+                    if (!email) { powerMsg.textContent = 'Please enter an email address.'; return; }
+                    powerMsg.textContent = 'Revoking powers...';
+                    try {
+                        // Find the user by email
+                        const { data: authUsers } = await supabase.auth.admin.listUsers();
+                        const targetUser = authUsers?.users?.find(u => u.email?.toLowerCase() === email);
+                        
+                        if (!targetUser) {
+                            powerMsg.textContent = 'User not found.';
+                            return;
+                        }
+                        
+                        // Revoke user role in users table
+                        const { error } = await supabase
+                            .from('users')
+                            .update({ 
+                                is_dev: false,
+                                role_badge: null,
+                                role_granted_by: null,
+                                role_granted_at: null
+                            })
+                            .eq('id', targetUser.id);
+                        
+                        if (error) {
+                            powerMsg.textContent = 'Failed to revoke powers: ' + error.message;
+                            return;
+                        }
+                        
+                        powerMsg.textContent = `Successfully revoked powers from ${email}!`;
+                        grantEmail.value = '';
+                    } catch (e) {
+                        powerMsg.textContent = 'Error revoking powers: ' + (e.message || e);
                     }
                 };
             };
@@ -624,13 +714,15 @@
         }
 
         function finalizeAttempt() {
-            // Update user's total points
+            // Update user's total points and weekly points
             const newTotal = (userProfile.total_points || 0) + currentScore;
+            const newWeeklyTotal = (userProfile.weekly_points || 0) + currentScore;
             userProfile.total_points = newTotal;
+            userProfile.weekly_points = newWeeklyTotal;
             
-            // Update UI with new points
-            userPointsEl.textContent = `Points: ${newTotal}`;
-            mobileUserPointsEl.textContent = `Points: ${newTotal}`;
+            // Update UI with weekly points in header (current week)
+            userPointsEl.textContent = `Points: ${newWeeklyTotal}`;
+            mobileUserPointsEl.textContent = `Points: ${newWeeklyTotal}`;
             
             // Save to localStorage
             const userData = JSON.parse(localStorage.getItem('userData') || '{}');
@@ -640,7 +732,10 @@
             // Update in Supabase
             supabase
                 .from('users')
-                .update({ total_points: newTotal })
+                .update({ 
+                    total_points: newTotal,
+                    weekly_points: newWeeklyTotal
+                })
                 .eq('id', userId)
                 .then(({ error }) => {
                     if (error) console.error('Error updating points:', error);
@@ -705,6 +800,58 @@
             return recentCount < 5;
         }
 
+        // Weekly points reset functionality
+        function getCurrentWeekNumber() {
+            const now = new Date();
+            const startOfYear = new Date(now.getFullYear(), 0, 1);
+            const days = Math.floor((now - startOfYear) / (24 * 60 * 60 * 1000));
+            return Math.ceil((days + startOfYear.getDay() + 1) / 7);
+        }
+
+        function isSunday() {
+            return new Date().getDay() === 0;
+        }
+
+        function getWeekStartDate() {
+            const now = new Date();
+            const day = now.getDay();
+            const diff = now.getDate() - day;
+            return new Date(now.setDate(diff));
+        }
+
+        async function checkAndResetWeeklyPoints() {
+            const currentWeek = getCurrentWeekNumber();
+            const lastResetWeek = localStorage.getItem('lastPointsResetWeek');
+            
+            if (lastResetWeek !== currentWeek.toString()) {
+                // Reset weekly points for all users
+                await resetAllUsersWeeklyPoints();
+                localStorage.setItem('lastPointsResetWeek', currentWeek.toString());
+                console.log('Weekly points reset completed for week', currentWeek);
+            }
+        }
+
+        async function resetAllUsersWeeklyPoints() {
+            try {
+                // Update all users to reset their weekly_points
+                const { error } = await supabase
+                    .from('users')
+                    .update({ weekly_points: 0 })
+                    .neq('id', '00000000-0000-0000-0000-000000000000'); // Update all users
+                
+                if (error) {
+                    console.error('Error resetting weekly points:', error);
+                }
+            } catch (e) {
+                console.error('Failed to reset weekly points:', e);
+            }
+        }
+
+        // Initialize weekly points tracking
+        async function initializeWeeklyPoints() {
+            await checkAndResetWeeklyPoints();
+        }
+
         function getWeekNumber(date) {
             // kept for compatibility elsewhere; not used in limiter anymore
             const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
@@ -713,15 +860,16 @@
         }
 
         async function loadPosts() {
-            // Fetch posts with user info
+            // Fetch posts with user info, ordered by pinned status first, then by date
             const { data: posts, error } = await supabase
                 .from('posts')
-                .select('id, user_id, content, image_path, created_at, users:users!posts_user_id_fkey(full_name, profile_photo, is_dev)')
+                .select('id, user_id, content, image_path, created_at, is_pinned, users:users!posts_user_id_fkey(full_name, profile_photo, is_dev)')
+                .order('is_pinned', { ascending: false })
                 .order('created_at', { ascending: false });
             
             const container = document.getElementById('postsFeed');
             container.innerHTML = '';
-            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com');
+            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com') || userProfile?.is_dev;
             
             if (error) {
                 console.error('Error loading posts:', error);
@@ -751,14 +899,36 @@
                         <img src="${(post.users && post.users.profile_photo) || 'https://via.placeholder.com/40'}" />
                         <strong>${nameWithBadge}</strong>
                         <small>${postDate}</small>
+                        ${post.is_pinned ? '<span class="pinned-badge"><i class="fas fa-thumbtack"></i> Pinned</span>' : ''}
                     </div>
                     <div class="post-body">
                         <p>${escapeHtml(post.content || '')}</p>
                         ${post.image_path ? `<img src="${post.image_path}" alt="post image" />` : ''}
                         <div class="post-actions">
                             <button class="like-btn" data-post-id="${post.id}" aria-pressed="false"><i class="fas fa-heart"></i> <span class="like-text">Like</span> <span class="like-count" aria-live="polite">0</span></button>
+                            <button class="comment-btn" data-post-id="${post.id}"><i class="fas fa-comment"></i> Comment</button>
                             <button class="share-btn" data-post-id="${post.id}"><i class="fas fa-share"></i> Share</button>
+                            ${isDevEmail ? `<button class="pin-btn" data-post-id="${post.id}" data-pinned="${post.is_pinned || false}"><i class="fas fa-thumbtack"></i> ${post.is_pinned ? 'Unpin' : 'Pin'}</button>` : ''}
                             ${(post.user_id === userId || isDevEmail) ? `<button class=\"delete-btn\" data-post-id=\"${post.id}\"><i class=\"fas fa-trash\"></i> Delete</button>` : ''}
+                        </div>
+                        <div class="comments-section" id="comments-${post.id}" style="display: none;">
+                            <div class="comments-list" id="comments-list-${post.id}"></div>
+                            <div class="comment-input">
+                                <div class="emoji-picker">
+                                    <button type="button" class="emoji-btn" data-post-id="${post.id}">😀</button>
+                                    <button type="button" class="emoji-btn" data-post-id="${post.id}">😊</button>
+                                    <button type="button" class="emoji-btn" data-post-id="${post.id}">👍</button>
+                                    <button type="button" class="emoji-btn" data-post-id="${post.id}">❤️</button>
+                                    <button type="button" class="emoji-btn" data-post-id="${post.id}">🎉</button>
+                                    <button type="button" class="emoji-btn" data-post-id="${post.id}">🔥</button>
+                                    <button type="button" class="emoji-btn" data-post-id="${post.id}">💯</button>
+                                    <button type="button" class="emoji-btn" data-post-id="${post.id}">👏</button>
+                                </div>
+                                <div class="comment-form">
+                                    <input type="text" class="comment-text" placeholder="Write a comment..." data-post-id="${post.id}">
+                                    <button class="comment-submit" data-post-id="${post.id}">Post</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -777,6 +947,78 @@
                     const text = target.querySelector('p')?.innerText || 'Check out this post!';
                     const img = target.querySelector('img')?.src || null;
                     sharePost({ text, url: window.location.href + `#post-${postId}`, image: img });
+                });
+            });
+
+            // Attach comment toggle handlers
+            container.querySelectorAll('.comment-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const postId = btn.getAttribute('data-post-id');
+                    const commentsSection = document.getElementById(`comments-${postId}`);
+                    const commentsList = document.getElementById(`comments-list-${postId}`);
+                    
+                    if (commentsSection.style.display === 'none') {
+                        commentsSection.style.display = 'block';
+                        await loadComments(postId, commentsList);
+                    } else {
+                        commentsSection.style.display = 'none';
+                    }
+                });
+            });
+
+            // Attach emoji button handlers
+            container.querySelectorAll('.emoji-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const postId = btn.getAttribute('data-post-id');
+                    const emoji = btn.textContent;
+                    await addComment(postId, emoji);
+                });
+            });
+
+            // Attach comment submit handlers
+            container.querySelectorAll('.comment-submit').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const postId = btn.getAttribute('data-post-id');
+                    const textInput = container.querySelector(`.comment-text[data-post-id="${postId}"]`);
+                    const commentText = textInput.value.trim();
+                    
+                    if (commentText) {
+                        await addComment(postId, commentText);
+                        textInput.value = '';
+                    }
+                });
+            });
+
+            // Attach enter key handler for comment input
+            container.querySelectorAll('.comment-text').forEach(input => {
+                input.addEventListener('keypress', async (e) => {
+                    if (e.key === 'Enter') {
+                        const postId = input.getAttribute('data-post-id');
+                        const commentText = input.value.trim();
+                        
+                        if (commentText) {
+                            await addComment(postId, commentText);
+                            input.value = '';
+                        }
+                    }
+                });
+            });
+
+            // Attach pin handlers (dev only)
+            container.querySelectorAll('.pin-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const postId = btn.getAttribute('data-post-id');
+                    const isPinned = btn.getAttribute('data-pinned') === 'true';
+                    const { error } = await supabase
+                        .from('posts')
+                        .update({ is_pinned: !isPinned })
+                        .eq('id', postId);
+                    if (error) {
+                        console.error('Pin toggle failed:', error);
+                        alert(`Failed to ${isPinned ? 'unpin' : 'pin'} post: ${error.message}`);
+                        return;
+                    }
+                    loadPosts();
                 });
             });
 
@@ -801,6 +1043,72 @@
                     loadPosts();
                 });
             });
+        }
+
+        // Comment system functions
+        async function loadComments(postId, commentsListEl) {
+            try {
+                const { data: comments, error } = await supabase
+                    .from('post_comments')
+                    .select('id, content, created_at, users:users!post_comments_user_id_fkey(full_name, profile_photo)')
+                    .eq('post_id', postId)
+                    .order('created_at', { ascending: true });
+
+                if (error) {
+                    console.error('Error loading comments:', error);
+                    return;
+                }
+
+                commentsListEl.innerHTML = '';
+                
+                if (comments.length === 0) {
+                    commentsListEl.innerHTML = '<p style="color: #6b7280; font-style: italic; padding: 1rem;">No comments yet. Be the first to comment!</p>';
+                    return;
+                }
+
+                comments.forEach(comment => {
+                    const commentEl = document.createElement('div');
+                    commentEl.className = 'comment-item';
+                    commentEl.innerHTML = `
+                        <div class="comment-header">
+                            <img src="${comment.users?.profile_photo || 'https://via.placeholder.com/24'}" alt="${comment.users?.full_name || 'User'}" class="comment-avatar">
+                            <strong class="comment-author">${comment.users?.full_name || 'User'}</strong>
+                            <small class="comment-time">${new Date(comment.created_at).toLocaleString()}</small>
+                        </div>
+                        <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    `;
+                    commentsListEl.appendChild(commentEl);
+                });
+            } catch (e) {
+                console.error('Failed to load comments:', e);
+            }
+        }
+
+        async function addComment(postId, content) {
+            try {
+                const { error } = await supabase
+                    .from('post_comments')
+                    .insert([{
+                        post_id: postId,
+                        user_id: userId,
+                        content: content
+                    }]);
+
+                if (error) {
+                    console.error('Error adding comment:', error);
+                    alert('Failed to add comment: ' + error.message);
+                    return;
+                }
+
+                // Reload comments for this post
+                const commentsList = document.getElementById(`comments-list-${postId}`);
+                if (commentsList) {
+                    await loadComments(postId, commentsList);
+                }
+            } catch (e) {
+                console.error('Failed to add comment:', e);
+                alert('Failed to add comment. Please try again.');
+            }
         }
 
         // Likes: fetch counts and user-liked state, bind toggle actions
@@ -1359,7 +1667,7 @@
             const listEl = document.getElementById('announcementsList');
             const formWrap = document.getElementById('announceFormWrap');
             // Show form only for developer email
-            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com');
+            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com') || userProfile?.is_dev;
             if (formWrap) formWrap.style.display = isDevEmail ? 'block' : 'none';
 
             // Fetch announcements
@@ -1415,8 +1723,9 @@
             const body = (document.getElementById('announceBody').value || '').trim();
             if (!title || !body) { alert('Title and body required'); return; }
             // Restrict to developer email on client side (RLS should enforce on server)
-            if ((userProfile.email || '').toLowerCase() !== 'yadhavvsreelakam@gmail.com') {
-                alert('Only developer can post announcements.');
+            const isDevEmail = (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com' || userProfile?.is_dev;
+            if (!isDevEmail) {
+                alert('Only developers can post announcements.');
                 return;
             }
             const { error } = await supabase
@@ -1434,7 +1743,8 @@
                 document.getElementById('accountAvatar').src = userProfile.profile_photo || 'https://via.placeholder.com/80';
                 document.getElementById('accountName').innerHTML = escapeHtml(userProfile.full_name || 'Student');
                 document.getElementById('accountEmail').textContent = userProfile.email || '';
-                document.getElementById('accountPoints').textContent = `Points: ${userProfile.total_points || 0}`;
+                // Show total points in My Space (not weekly)
+                document.getElementById('accountPoints').textContent = `Total Points: ${userProfile.total_points || 0}`;
 
                 // Badges based on points tiers
                 const badgesEl = document.getElementById('accountBadges');
@@ -1484,6 +1794,9 @@
                 document.getElementById('followersCount').textContent = followerIdList.length;
                 document.getElementById('followingCount').textContent = followingIdList.length;
 
+                // Load points history
+                await loadPointsHistory();
+
                 // Fetch users for lists & discover (exclude self)
                 const { data: users } = await supabase
                     .from('users')
@@ -1499,28 +1812,30 @@
                 followersList.innerHTML = '';
                 discoverList.innerHTML = '';
 
-                function renderCard(u, isFollowing) {
-                    const row = document.createElement('div');
-                    row.className = 'leader-row';
-                    row.innerHTML = `
-                        <div class=\"leader-row-user\">
-                            <img src=\"${u.profile_photo || 'https://via.placeholder.com/40'}\" alt=\"${u.full_name}\">
-                            <strong>${u.full_name}</strong>
+                function renderConnectionCard(u, isFollowing) {
+                    const card = document.createElement('div');
+                    card.className = 'connection-item';
+                    card.innerHTML = `
+                        <img src="${u.profile_photo || 'https://via.placeholder.com/48'}" alt="${u.full_name}" class="connection-avatar">
+                        <div class="connection-info">
+                            <div class="connection-name">${u.full_name}</div>
+                            <div class="connection-points">${u.total_points || 0} points</div>
                         </div>
-                        <div>
-                            <span style=\"margin-right:.75rem;color:#6b7280\">${u.total_points || 0} pts</span>
-                            <button class=\"btn btn-primary\" data-user-id=\"${u.id}\" data-follow=\"${isFollowing ? '1' : '0'}\">${isFollowing ? 'Unfollow' : 'Follow'}</button>
+                        <div class="connection-actions">
+                            <button class="follow-btn ${isFollowing ? 'unfollow' : 'follow'}" data-user-id="${u.id}" data-follow="${isFollowing ? '1' : '0'}">
+                                ${isFollowing ? 'Unfollow' : 'Follow'}
+                            </button>
                         </div>
                     `;
-                    return row;
+                    return card;
                 }
 
                 const followerUsers = followerIdList.map(id => usersById[id]).filter(Boolean);
-                followerUsers.forEach(u => followersList.appendChild(renderCard(u, followingIdList.includes(u.id))));
+                followerUsers.forEach(u => followersList.appendChild(renderConnectionCard(u, followingIdList.includes(u.id))));
 
                 // Discover: users not self; show follow status
                 (users || []).filter(u => u.id !== userId).forEach(u => {
-                    discoverList.appendChild(renderCard(u, followingIdList.includes(u.id)));
+                    discoverList.appendChild(renderConnectionCard(u, followingIdList.includes(u.id)));
                 });
 
                 // Search handlers
@@ -1529,18 +1844,18 @@
                 if (fSearch) {
                     fSearch.oninput = () => {
                         const q = (fSearch.value || '').toLowerCase();
-                        followersList.querySelectorAll('.leader-row').forEach(row => {
-                            const name = row.querySelector('strong')?.textContent.toLowerCase() || '';
-                            row.style.display = name.includes(q) ? '' : 'none';
+                        followersList.querySelectorAll('.connection-item').forEach(item => {
+                            const name = item.querySelector('.connection-name')?.textContent.toLowerCase() || '';
+                            item.style.display = name.includes(q) ? '' : 'none';
                         });
                     };
                 }
                 if (gSearch) {
                     gSearch.oninput = () => {
                         const q = (gSearch.value || '').toLowerCase();
-                        discoverList.querySelectorAll('.leader-row').forEach(row => {
-                            const name = row.querySelector('strong')?.textContent.toLowerCase() || '';
-                            row.style.display = name.includes(q) ? '' : 'none';
+                        discoverList.querySelectorAll('.connection-item').forEach(item => {
+                            const name = item.querySelector('.connection-name')?.textContent.toLowerCase() || '';
+                            item.style.display = name.includes(q) ? '' : 'none';
                         });
                     };
                 }
@@ -1562,7 +1877,44 @@
                 }
                 attachFollowHandlers(followersList);
                 attachFollowHandlers(discoverList);
+
+                // Tab functionality
+                const tabBtns = document.querySelectorAll('.tab-btn');
+                const tabPanels = document.querySelectorAll('.tab-panel');
+                
+                tabBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const targetTab = btn.getAttribute('data-tab');
+                        
+                        // Remove active class from all tabs and panels
+                        tabBtns.forEach(b => b.classList.remove('active'));
+                        tabPanels.forEach(p => p.classList.remove('active'));
+                        
+                        // Add active class to clicked tab and corresponding panel
+                        btn.classList.add('active');
+                        document.getElementById(`${targetTab}-panel`).classList.add('active');
+                    });
+                });
             } catch (e) {
                 console.warn('loadAccount failed:', e);
+            }
+        }
+
+        async function loadPointsHistory() {
+            try {
+                // Get current week points
+                const currentWeekPoints = userProfile.weekly_points || 0;
+                const totalPoints = userProfile.total_points || 0;
+                
+                // Calculate weekly average (simplified - assuming 4 weeks of data)
+                const weeklyAverage = Math.round(totalPoints / 4);
+                
+                // Update summary stats
+                document.getElementById('currentWeekPoints').textContent = currentWeekPoints;
+                document.getElementById('totalPoints').textContent = totalPoints;
+                document.getElementById('averageWeekly').textContent = weeklyAverage;
+                
+            } catch (e) {
+                console.warn('loadPointsHistory failed:', e);
             }
         }

@@ -117,6 +117,22 @@
             vertical-align: middle;
             border: 1px solid rgba(0,0,0,0.08);
         }
+        .dev-badge.teacher {
+            background: linear-gradient(90deg, #10b981, #34d399);
+            color: white;
+        }
+        .dev-badge.manager {
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+            color: white;
+        }
+        .dev-badge.admin {
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+            color: white;
+        }
+        .dev-badge.moderator {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            color: white;
+        }
         
         .user-details .points {
             color: var(--secondary);
@@ -290,7 +306,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: conic-gradient(var(--secondary) 0%, #eee 0%);
+            background: conic-gradient(var(--primary) 0%, #eee 0%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -301,7 +317,7 @@
             position: absolute;
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--secondary);
+             color: var(--primary);
         }
         
         .question-container {
@@ -493,6 +509,474 @@
             color: #b91c1c;
         }
         .delete-btn:hover { background: #fef2f2; }
+        .pin-btn {
+            background: none;
+            border: 1px solid #e5e7eb;
+            padding: .4rem .8rem;
+            border-radius: 999px;
+            cursor: pointer;
+            color: #374151;
+        }
+        .pin-btn:hover { background: #f3f4f6; }
+        .pinned-badge {
+            background: linear-gradient(90deg, var(--secondary), #ffd966);
+            color: #1a1a1a;
+            padding: 0.2rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .comment-btn {
+            background: none;
+            border: 1px solid #e5e7eb;
+            padding: .4rem .8rem;
+            border-radius: 999px;
+            cursor: pointer;
+            color: #374151;
+        }
+        .comment-btn:hover { background: #f3f4f6; }
+        .comments-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .comments-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        .comment-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .comment-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .comment-author {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .comment-time {
+            color: #6b7280;
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+        .comment-content {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-left: 2rem;
+        }
+        .emoji-picker {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .emoji-btn {
+            background: none;
+            border: 1px solid #e5e7eb;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+        .emoji-btn:hover {
+            background: #f3f4f6;
+            transform: scale(1.1);
+        }
+        .comment-form {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .comment-text {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .comment-text:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 61, 124, 0.1);
+        }
+        .comment-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .comment-submit:hover {
+            background: var(--primary-light);
+        }
+
+        /* My Space Redesign Styles */
+        .my-space-container {
+            display: grid;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .profile-header-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(26, 61, 124, 0.2);
+        }
+
+        .profile-avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .profile-email {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-points {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            min-width: 100px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .badges-card, .connections-card, .points-history-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .card-title i {
+            color: var(--secondary);
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .points-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+        }
+
+        .points-stat {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+
+        .connections-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .tab-content {
+            position: relative;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .search-section {
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 61, 124, 0.1);
+        }
+
+        .connections-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .connection-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background 0.2s ease;
+        }
+
+        .connection-item:last-child {
+            border-bottom: none;
+        }
+
+        .connection-item:hover {
+            background: #f8f9fa;
+        }
+
+        .connection-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e5e7eb;
+        }
+
+        .connection-info {
+            flex: 1;
+        }
+
+        .connection-name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .connection-points {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .connection-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .follow-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .follow-btn.follow {
+            background: var(--primary);
+            color: white;
+        }
+
+        .follow-btn.unfollow {
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+        }
+
+        .follow-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Responsive Design for My Space */
+        @media (max-width: 768px) {
+            .my-space-container {
+                gap: 1.5rem;
+            }
+
+            .profile-header-card {
+                padding: 1.5rem;
+            }
+
+            .profile-avatar-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+            }
+
+            .profile-name {
+                font-size: 1.5rem;
+            }
+
+            .profile-stats {
+                gap: 1rem;
+            }
+
+            .stat-item {
+                min-width: 80px;
+                padding: 0.75rem;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .badges-card, .connections-card, .points-history-card {
+                padding: 1.5rem;
+            }
+
+            .badges-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .points-summary {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .connections-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                justify-content: flex-start;
+            }
+        }
         
         .create-post {
             background-color: white;
@@ -1120,38 +1604,91 @@
             <!-- Account Section -->
             <div class="section" id="section-account">
                 <h2 class="section-title">Your Space</h2>
-                <div class="settings-container" id="accountContainer" style="display:grid; gap:1.5rem;">
-                    <div class="account-header" style="display:flex; align-items:center; gap:1rem;">
-                        <img id="accountAvatar" src="logonew.png" alt="Avatar" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid var(--primary-light);">
-                        <div>
-                            <div id="accountName" style="font-weight:700; font-size:1.2rem;">Student</div>
-                            <div id="accountEmail" style="color:var(--gray); font-size:.9rem;">email@example.com</div>
-                            <div id="accountPoints" style="margin-top:.25rem; color:var(--primary)">Points: 0</div>
+                <div class="my-space-container">
+                    <!-- Profile Header Card -->
+                    <div class="profile-header-card">
+                        <div class="profile-avatar-section">
+                            <img id="accountAvatar" src="logonew.png" alt="Avatar" class="profile-avatar">
+                            <div class="profile-info">
+                                <h3 id="accountName" class="profile-name">Student</h3>
+                                <p id="accountEmail" class="profile-email">email@example.com</p>
+                                <div id="accountPoints" class="profile-points">Total Points: 0</div>
+                            </div>
                         </div>
-                    </div>
-                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1rem;">
-                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
-                            <h3 style="margin-bottom:1rem; color:var(--primary);">Badges</h3>
-                            <div id="accountBadges" style="display:flex; flex-wrap:wrap; gap:.5rem;"></div>
-                        </div>
-                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
-                            <h3 style="margin-bottom:1rem; color:var(--primary);">Connections</h3>
-                            <div style="display:flex; gap:1rem;">
-                                <div><div style="font-weight:700;" id="followersCount">0</div><div style="color:var(--gray);">Followers</div></div>
-                                <div><div style="font-weight:700;" id="followingCount">0</div><div style="color:var(--gray);">Following</div></div>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <div class="stat-number" id="followersCount">0</div>
+                                <div class="stat-label">Followers</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="followingCount">0</div>
+                                <div class="stat-label">Following</div>
                             </div>
                         </div>
                     </div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
-                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
-                            <h3 style="margin-bottom:1rem; color:var(--primary);">Followers</h3>
-                            <input id="followersSearch" type="text" placeholder="Search followers by name" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:.75rem;" />
-                            <div id="followersList" class="posts-feed" style="max-height:360px;"></div>
+
+                    <!-- Badges Card -->
+                    <div class="badges-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-trophy"></i>
+                            Achievements & Badges
+                        </h3>
+                        <div id="accountBadges" class="badges-grid"></div>
+                    </div>
+
+                    <!-- Points History Card -->
+                    <div class="points-history-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-line"></i>
+                            Points Summary
+                        </h3>
+                        <div class="points-summary">
+                            <div class="points-stat">
+                                <div class="stat-value" id="currentWeekPoints">0</div>
+                                <div class="stat-label">This Week</div>
+                            </div>
+                            <div class="points-stat">
+                                <div class="stat-value" id="totalPoints">0</div>
+                                <div class="stat-label">Total Earned</div>
+                            </div>
+                            <div class="points-stat">
+                                <div class="stat-value" id="averageWeekly">0</div>
+                                <div class="stat-label">Weekly Average</div>
+                            </div>
                         </div>
-                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
-                            <h3 style="margin-bottom:1rem; color:var(--primary);">Discover</h3>
-                            <input id="followingSearch" type="text" placeholder="Search people to follow" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:.75rem;" />
-                            <div id="discoverList" class="posts-feed" style="max-height:360px;"></div>
+                    </div>
+
+                    <!-- Connections Card -->
+                    <div class="connections-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-users"></i>
+                            Connections
+                        </h3>
+                        <div class="connections-tabs">
+                            <button class="tab-btn active" data-tab="followers">
+                                <i class="fas fa-user-friends"></i>
+                                Followers
+                            </button>
+                            <button class="tab-btn" data-tab="following">
+                                <i class="fas fa-search"></i>
+                                Discover
+                            </button>
+                        </div>
+                        
+                        <div class="tab-content">
+                            <div class="tab-panel active" id="followers-panel">
+                                <div class="search-section">
+                                    <input id="followersSearch" type="text" placeholder="Search followers by name" class="search-input" />
+                                </div>
+                                <div id="followersList" class="connections-list"></div>
+                            </div>
+                            
+                            <div class="tab-panel" id="following-panel">
+                                <div class="search-section">
+                                    <input id="followingSearch" type="text" placeholder="Search people to follow" class="search-input" />
+                                </div>
+                                <div id="discoverList" class="connections-list"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1292,6 +1829,29 @@
                             </div>
                             <div id="devIdeaMsg" style="margin-top:.5rem; color:#374151;"></div>
                         </div>
+                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                            <h3 style="margin-bottom:.75rem; color:var(--primary);">Developer Mode</h3>
+                            <p style="color:#6b7280; margin-bottom:.5rem;">Grant developer powers to other email addresses. This gives them the same privileges as yadhavvsreelakam@gmail.com.</p>
+                            <div style="margin-bottom:.75rem;">
+                                <label style="display:block; font-weight:600; margin-bottom:.25rem;">Email Address</label>
+                                <input type="email" id="devGrantEmail" placeholder="Enter email to grant developer powers" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                            </div>
+                            <div style="margin-bottom:.75rem;">
+                                <label style="display:block; font-weight:600; margin-bottom:.25rem;">Role Badge</label>
+                                <select id="devRoleSelect" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
+                                    <option value="developer">Developer</option>
+                                    <option value="teacher">Teacher</option>
+                                    <option value="manager">Manager</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="moderator">Moderator</option>
+                                </select>
+                            </div>
+                            <div style="margin-top:.5rem;">
+                                <button class="btn btn-primary" id="devGrantPowerBtn">Grant Powers</button>
+                                <button class="btn" id="devRevokePowerBtn" style="background:#dc2626; color:#fff; margin-left:.5rem;">Revoke Powers</button>
+                            </div>
+                            <div id="devPowerMsg" style="margin-top:.5rem; color:#374151;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1300,5 +1860,6 @@
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="scripts.js"></script>
+    <!--TRUNCATE TABLE quizzes RESTART IDENTITY CASCADE;!-->
 </body>
 </html>
