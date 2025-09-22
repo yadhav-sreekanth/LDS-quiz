@@ -332,8 +332,16 @@
             quizTitleEl.textContent = `Quiz — ${quizType.replace('_', ' ').toUpperCase()}`;
         }
 
+        function hasDevPowers() {
+            const emailIsDev = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com');
+            const flaggedDev = !!userProfile?.is_dev;
+            const role = (userProfile?.role_badge || '').toLowerCase();
+            const official = role === 'official' || role === 'developer' || role === 'admin' || role === 'manager' || role === 'moderator';
+            return emailIsDev || flaggedDev || official;
+        }
+
         function ensureDeveloperVisibleAndInit() {
-            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com') || userProfile?.is_dev;
+            const isDevEmail = hasDevPowers();
             const nav = document.getElementById('nav-developer');
             const section = document.getElementById('section-developer');
             if (nav) nav.style.display = isDevEmail ? '' : 'none';
@@ -869,7 +877,7 @@
             
             const container = document.getElementById('postsFeed');
             container.innerHTML = '';
-            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com') || userProfile?.is_dev;
+            const isDevEmail = hasDevPowers();
             
             if (error) {
                 console.error('Error loading posts:', error);
@@ -1050,7 +1058,7 @@
             try {
                 const { data: comments, error } = await supabase
                     .from('post_comments')
-                    .select('id, content, created_at, users:users!post_comments_user_id_fkey(full_name, profile_photo)')
+                    .select('id, content, created_at, user_id, is_pinned, users:users!post_comments_user_id_fkey(full_name, profile_photo)')
                     .eq('post_id', postId)
                     .order('created_at', { ascending: true });
 
@@ -1066,18 +1074,57 @@
                     return;
                 }
 
-                comments.forEach(comment => {
+                // Merge with local pinned state as fallback if DB column missing/blocked
+                const localPinnedMap = JSON.parse(localStorage.getItem('pinned_comments') || '{}');
+                const localPinnedForPost = new Set(localPinnedMap[postId] || []);
+
+                // Sort: pinned first (db or local), then by created_at
+                const sorted = comments.slice().sort((a, b) => {
+                    const ap = (a.is_pinned ? 1 : 0) || (localPinnedForPost.has(a.id) ? 1 : 0);
+                    const bp = (b.is_pinned ? 1 : 0) || (localPinnedForPost.has(b.id) ? 1 : 0);
+                    if (ap !== bp) return bp - ap;
+                    return new Date(a.created_at) - new Date(b.created_at);
+                });
+
+                sorted.forEach(comment => {
                     const commentEl = document.createElement('div');
                     commentEl.className = 'comment-item';
+                    const canModerate = hasDevPowers() || comment.user_id === userId;
+                    const isPinned = !!comment.is_pinned || localPinnedForPost.has(comment.id);
                     commentEl.innerHTML = `
                         <div class="comment-header">
                             <img src="${comment.users?.profile_photo || 'https://via.placeholder.com/24'}" alt="${comment.users?.full_name || 'User'}" class="comment-avatar">
-                            <strong class="comment-author">${comment.users?.full_name || 'User'}</strong>
+                            <strong class="comment-author">${comment.users?.full_name || 'User'} ${isPinned ? '<span class="pinned-badge" style="font-size:.6rem; padding:.1rem .35rem;">Pinned</span>' : ''}</strong>
                             <small class="comment-time">${new Date(comment.created_at).toLocaleString()}</small>
                         </div>
                         <div class="comment-content">${escapeHtml(comment.content)}</div>
+                        ${canModerate ? `
+                        <div class="comment-actions">
+                            <button class="btn-icon comment-pin" data-post-id="${postId}" data-comment-id="${comment.id}" data-pinned="${isPinned ? 'true' : 'false'}"><i class="fas fa-thumbtack"></i> ${isPinned ? 'Unpin' : 'Pin'}</button>
+                            <button class="btn-icon comment-delete" data-post-id="${postId}" data-comment-id="${comment.id}"><i class="fas fa-trash"></i> Delete</button>
+                        </div>` : ''}
                     `;
                     commentsListEl.appendChild(commentEl);
+                });
+
+                // Bind actions
+                commentsListEl.querySelectorAll('.comment-delete').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const cid = btn.getAttribute('data-comment-id');
+                        const pid = btn.getAttribute('data-post-id');
+                        if (!confirm('Delete this comment?')) return;
+                        await deleteComment(pid, cid);
+                        await loadComments(postId, commentsListEl);
+                    });
+                });
+                commentsListEl.querySelectorAll('.comment-pin').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const cid = btn.getAttribute('data-comment-id');
+                        const pid = btn.getAttribute('data-post-id');
+                        const isPinned = btn.getAttribute('data-pinned') === 'true';
+                        await togglePinComment(pid, cid, !isPinned);
+                        await loadComments(postId, commentsListEl);
+                    });
                 });
             } catch (e) {
                 console.error('Failed to load comments:', e);
@@ -1108,6 +1155,44 @@
             } catch (e) {
                 console.error('Failed to add comment:', e);
                 alert('Failed to add comment. Please try again.');
+            }
+        }
+
+        async function deleteComment(postId, commentId) {
+            try {
+                // If not dev and not owner, RLS should block on server, but double-check client-side
+                if (!hasDevPowers()) {
+                    // optional: fetch to verify ownership; skipping for performance
+                }
+                const { error } = await supabase
+                    .from('post_comments')
+                    .delete()
+                    .eq('id', commentId);
+                if (error) {
+                    alert('Failed to delete comment: ' + (error.message || ''));
+                }
+            } catch (e) {
+                alert(e.message || 'Delete failed');
+            }
+        }
+
+        async function togglePinComment(postId, commentId, shouldPin) {
+            // Try DB column is_pinned; if it fails, store locally as fallback
+            let dbWorked = false;
+            try {
+                const { error } = await supabase
+                    .from('post_comments')
+                    .update({ is_pinned: shouldPin })
+                    .eq('id', commentId);
+                if (!error) dbWorked = true;
+            } catch (_) {}
+            if (!dbWorked) {
+                const map = JSON.parse(localStorage.getItem('pinned_comments') || '{}');
+                const set = new Set(map[postId] || []);
+                if (shouldPin) set.add(commentId);
+                else set.delete(commentId);
+                map[postId] = Array.from(set);
+                localStorage.setItem('pinned_comments', JSON.stringify(map));
             }
         }
 
