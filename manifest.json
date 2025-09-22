@@ -1,6 +1,6 @@
 {
   "name": "Little Daffodils Quiz",
-  "short_name": "Quiz",
+  "short_name": "LDS Quiz",
   "start_url": "home.html",
   "display": "standalone",
   "background_color": "#ffffff",
