@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Symbol Preview & Download</title>
+  <style>
+    :root{--bg:#f5f7fb;--card:#fff;--accent:#1a3d7c}
+    body{font-family:Inter,system-ui,Arial;margin:0;background:var(--bg);display:flex;align-items:center;justify-content:center;height:100vh}
+    .card{background:var(--card);padding:28px;border-radius:16px;box-shadow:0 10px 30px rgba(20,30,60,.08);max-width:820px;width:100%;display:grid;grid-template-columns:1fr 320px;gap:20px}
+    .left{display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center}
+    .symbol-wrap{width:260px;height:260px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:linear-gradient(180deg,#fff,#fbfdff);box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+    .controls{display:flex;flex-direction:column;gap:8px;width:100%}
+    .row{display:flex;gap:8px}
+    button{padding:.7rem 1rem;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+    .btn-primary{background:var(--accent);color:white}
+    .btn-ghost{background:#f3f4f6;color:#111;border:1px solid #e6e9ef}
+    .right{display:flex;flex-direction:column;gap:10px}
+    .hint{font-size:.95rem;color:#444}
+    input[type="text"]{width:100%;padding:.6rem;border-radius:8px;border:1px solid #e6e9ef}
+    label{font-weight:600;font-size:.9rem;color:#333}
+    .small{font-size:.85rem;color:#666}
+    @media (max-width:880px){.card{grid-template-columns:1fr;max-width:420px}}
+  </style>
+</head>
+<body>
+
+  <div class="card" role="application" aria-label="Symbol preview and download">
+    <div class="left">
+      <div class="symbol-wrap" id="symbolWrap" aria-hidden="false">
+        <!-- Inserted SVG will appear here -->
+        <svg id="symbolSVG" xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 100 100" role="img" aria-label="Example symbol">
+          <!-- Example symbol: stylized daffodil-like emblem -->
+          <defs>
+            <linearGradient id="g" x1="0" x2="1">
+              <stop offset="0" stop-color="#ffd700"/>
+              <stop offset="1" stop-color="#ff9f1c"/>
+            </linearGradient>
+            <filter id="s" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.12"/>
+            </filter>
+          </defs>
+
+          <g filter="url(#s)" transform="translate(50 50)">
+            <circle r="22" fill="url(#g)" />
+            <g id="petals" transform="rotate(0)">
+              <!-- 6 petals -->
+              <g fill="#fff" opacity="0.92">
+                <path d="M0,-34 C9,-34 18,-25 20,-16 C10,-18 0,-12 0,0 C0,-12 -10,-18 -20,-16 C-18,-25 -9,-34 0,-34z" transform="rotate(0) translate(0,10)" />
+              </g>
+              <g transform="rotate(60)" fill="#fff" opacity="0.92">
+                <path d="M0,-34 C9,-34 18,-25 20,-16 C10,-18 0,-12 0,0 C0,-12 -10,-18 -20,-16 C-18,-25 -9,-34 0,-34z" transform="translate(0,10)"/>
+              </g>
+              <g transform="rotate(120)" fill="#fff" opacity="0.92">
+                <path d="M0,-34 C9,-34 18,-25 20,-16 C10,-18 0,-12 0,0 C0,-12 -10,-18 -20,-16 C-18,-25 -9,-34 0,-34z" transform="translate(0,10)"/>
+              </g>
+              <g transform="rotate(180)" fill="#fff" opacity="0.92">
+                <path d="M0,-34 C9,-34 18,-25 20,-16 C10,-18 0,-12 0,0 C0,-12 -10,-18 -20,-16 C-18,-25 -9,-34 0,-34z" transform="translate(0,10)"/>
+              </g>
+              <g transform="rotate(240)" fill="#fff" opacity="0.92">
+                <path d="M0,-34 C9,-34 18,-25 20,-16 C10,-18 0,-12 0,0 C0,-12 -10,-18 -20,-16 C-18,-25 -9,-34 0,-34z" transform="translate(0,10)"/>
+              </g>
+              <g transform="rotate(300)" fill="#fff" opacity="0.92">
+                <path d="M0,-34 C9,-34 18,-25 20,-16 C10,-18 0,-12 0,0 C0,-12 -10,-18 -20,-16 C-18,-25 -9,-34 0,-34z" transform="translate(0,10)"/>
+              </g>
+            </g>
+
+            <circle r="10" fill="#fff" opacity=".08" />
+          </g>
+        </svg>
+      </div>
+
+      <div class="controls" style="width:260px;">
+        <div class="row">
+          <button id="downloadSvgBtn" class="btn-ghost" title="Download original SVG">Download SVG</button>
+          <button id="downloadPngBtn" class="btn-primary" title="Download PNG snapshot">Download PNG</button>
+        </div>
+
+        <div class="row" style="margin-top:6px">
+          <button id="download48" class="btn-ghost">PNG 48×48</button>
+          <button id="download256" class="btn-ghost">PNG 256×256</button>
+        </div>
+
+        <div style="margin-top:10px">
+          <label for="filename">Filename (without extension)</label>
+          <input id="filename" type="text" value="little-daffodil" />
+          <p class="small">You can change the filename before downloading.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <h3 style="margin:0;color:var(--accent)">Symbol preview & download</h3>
+      <p class="hint">This page renders an SVG symbol and provides buttons to download it as SVG or rasterized PNG at a chosen size. Works entirely in the browser (no server needed).</p>
+
+      <details>
+        <summary style="cursor:pointer;padding:.5rem 0;margin-top:8px;font-weight:600">How it works</summary>
+        <div class="small" style="margin-top:6px">
+          The raw SVG markup is serialized and downloaded for SVG files. For PNG, the SVG is drawn into a canvas at requested pixel dimensions, then the canvas content is exported as a PNG blob and downloaded.
+        </div>
+      </details>
+
+      <div style="margin-top:auto">
+        <p class="small">Tip: drop this file next to your existing `home.html` (see your uploaded file) so you can link to it or open directly. :contentReference[oaicite:2]{index=2}</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Utilities
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }
+
+  function getSvgElement() {
+    return document.getElementById('symbolSVG');
+  }
+
+  // Download raw SVG
+  document.getElementById('downloadSvgBtn').addEventListener('click', () => {
+    const svg = getSvgElement();
+    // Ensure xml namespace & proper width/height in exported SVG
+    const clone = svg.cloneNode(true);
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+    // Optional: add background rect if you want white background on PNG exports
+    // const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    // bg.setAttribute('width', clone.getAttribute('width') || '100%');
+    // bg.setAttribute('height', clone.getAttribute('height') || '100%');
+    // bg.setAttribute('fill', '#ffffff');
+    // clone.insertBefore(bg, clone.firstChild);
+
+    const svgText = new XMLSerializer().serializeToString(clone);
+    const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+    const fname = (document.getElementById('filename').value || 'symbol').replace(/\s+/g,'-') + '.svg';
+    downloadBlob(blob, fname);
+  });
+
+  // Render SVG to canvas and download PNG
+  async function downloadPng(w = 512, h = 512, nameSuffix = '') {
+    const svg = getSvgElement();
+    const svgText = new XMLSerializer().serializeToString(svg.cloneNode(true));
+
+    // Create a data URL (ensure UTF-8 is encoded)
+    const svg64 = btoa(unescape(encodeURIComponent(svgText)));
+    const dataUrl = 'data:image/svg+xml;base64,' + svg64;
+
+    const img = new Image();
+    // Important for cross-origin-free export
+    img.crossOrigin = 'anonymous';
+    img.src = dataUrl;
+
+    await new Promise((res, rej) => {
+      img.onload = res;
+      img.onerror = () => rej(new Error('Failed to load SVG as image'));
+    });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    // Optional: fill white background so PNG doesn't become transparent
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // Compute aspect fit: preserve original viewBox ratio
+    const viewW = svg.viewBox.baseVal && svg.viewBox.baseVal.width ? svg.viewBox.baseVal.width : (svg.width.baseVal?.value || 100);
+    const viewH = svg.viewBox.baseVal && svg.viewBox.baseVal.height ? svg.viewBox.baseVal.height : (svg.height.baseVal?.value || 100);
+    const scale = Math.min(canvas.width / viewW, canvas.height / viewH);
+    const dx = (canvas.width - viewW * scale) / 2;
+    const dy = (canvas.height - viewH * scale) / 2;
+
+    ctx.drawImage(img, dx, dy, viewW * scale, viewH * scale);
+
+    canvas.toBlob(blob => {
+      const fname = (document.getElementById('filename').value || 'symbol').replace(/\s+/g,'-') + nameSuffix + '.png';
+      downloadBlob(blob, fname);
+    }, 'image/png');
+  }
+
+  document.getElementById('downloadPngBtn').addEventListener('click', () => downloadPng(1024,1024,'-1024'));
+  document.getElementById('download48').addEventListener('click', () => downloadPng(48,48,'-48'));
+  document.getElementById('download256').addEventListener('click', () => downloadPng(256,256,'-256'));
+</script>
+</body>
+</html>
