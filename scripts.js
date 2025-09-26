@@ -20,6 +20,40 @@
             return 'lower_primary';
         }
 
+        // Role gating helpers placed near top-level helpers
+        function hasMonitoringPower() {
+            const inferred = Array.isArray(userProfile?.leaderboard_badges) && userProfile.leaderboard_badges[0] ? String(userProfile.leaderboard_badges[0]).toLowerCase() : '';
+            const role = (userProfile?.role_badge || inferred || '').toLowerCase();
+            if (!role) return false;
+            // Only developer, official, teacher should see Monitoring
+            return ['developer','official','teacher'].includes(role) || !!userProfile?.is_dev || ((userProfile?.email||'').toLowerCase()==='yadhavvsreelakam@gmail.com');
+        }
+
+        function canStartQuizByRole() {
+            const inferred = Array.isArray(userProfile?.leaderboard_badges) && userProfile.leaderboard_badges[0] ? String(userProfile.leaderboard_badges[0]).toLowerCase() : '';
+            const role = (userProfile?.role_badge || inferred || '').toLowerCase();
+            if (!role) return true;
+            if (role === 'developer' || !!userProfile?.is_dev || ((userProfile?.email||'').toLowerCase()==='yadhavvsreelakam@gmail.com')) return true;
+            if (['principal','senior_principal','chairman','official'].includes(role)) return false;
+            return true;
+        }
+
+        function updateNavAndQuizVisibility() {
+            try {
+                const navMon = document.getElementById('nav-monitoring');
+                if (navMon) navMon.style.display = hasMonitoringPower() ? '' : 'none';
+                const devNav = document.getElementById('nav-developer');
+                if (devNav) devNav.style.display = hasDevPowers() ? '' : 'none';
+                const devSection = document.getElementById('section-developer');
+                if (devSection) devSection.style.display = hasDevPowers() ? '' : 'none';
+                const allowed = canStartQuizByRole();
+                if (startQuizBtn) {
+                    startQuizBtn.disabled = !allowed;
+                    startQuizBtn.title = allowed ? '' : 'Your role cannot start quizzes';
+                }
+            } catch (_) {}
+        }
+
         // Fisher–Yates shuffle (pure)
         function shuffleArray(arr) {
             const a = arr.slice();
@@ -133,6 +167,8 @@
             // Persist fresh profile to local cache and render
             userData[userId] = userProfile;
             localStorage.setItem('userData', JSON.stringify(userData));
+            // Hydrate roles from user_roles if present and then render
+            try { await hydrateRolesForCurrentUser(); } catch (_) {}
             renderUserSummary(userProfile);
             
             // Navigation functionality
@@ -151,8 +187,21 @@
                     if (section === 'announcements') loadAnnouncements();
                     if (section === 'account') loadAccount();
                     if (section === 'developer') ensureDeveloperVisibleAndInit();
+                    if (section === 'monitoring') loadMonitoring();
+                    if (section === 'support') initSupport();
                 });
             });
+
+            // My Space header settings shortcut
+            const openSettingsBtn = document.getElementById('openSettingsBtn');
+            if (openSettingsBtn) {
+                openSettingsBtn.onclick = () => {
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    document.querySelector('.nav-item[data-section="settings"]').classList.add('active');
+                    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+                    document.getElementById('section-settings').classList.add('active');
+                };
+            }
             
             // Mobile nav toggle
             document.querySelector('.nav-toggle').addEventListener('click', function() {
@@ -238,6 +287,10 @@
             
             // Developer nav visibility
             ensureDeveloperVisibleAndInit();
+            updateNavAndQuizVisibility?.();
+
+            // Presence and activity tracking
+            initPresenceAndActivity?.();
             
             // Initialize weekly points system
             await initializeWeeklyPoints();
@@ -305,12 +358,12 @@
         function renderUserSummary(profile) {
             const displayName = profile.full_name || 'Student';
             const isDev = (profile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com' || profile.is_dev;
-            const roleBadge = profile.role_badge || (isDev ? 'DEV' : '');
+            const roleBadge = profile.role_badge || (isDev ? 'developer' : '');
             
             let badgeHtml = '';
             if (roleBadge) {
                 const badgeClass = roleBadge.toLowerCase();
-                badgeHtml = `<span class="dev-badge ${badgeClass}">${roleBadge.toUpperCase()}</span>`;
+                badgeHtml = `<span class="dev-badge ${badgeClass}">${(roleBadge || '').toString().toUpperCase()}</span>`;
             }
             
             userNameEl.innerHTML = `${displayName} ${badgeHtml}`;
@@ -330,18 +383,31 @@
             // Set quiz type based on DOB
             const quizType = determineQuizTypeFromDOB(profile.dob);
             quizTitleEl.textContent = `Quiz — ${quizType.replace('_', ' ').toUpperCase()}`;
+            // Update nav visibility and quiz gating
+            if (typeof updateNavAndQuizVisibility === 'function') {
+                updateNavAndQuizVisibility();
+            }
         }
 
         function hasDevPowers() {
             const emailIsDev = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com');
             const flaggedDev = !!userProfile?.is_dev;
+            const inferred = Array.isArray(userProfile?.leaderboard_badges) && userProfile.leaderboard_badges[0] ? String(userProfile.leaderboard_badges[0]).toLowerCase() : '';
+            const role = (userProfile?.role_badge || inferred || '').toLowerCase();
+            const elevated = ['official','developer','principal','senior_principal','chairman','teacher'].includes(role);
+            return emailIsDev || flaggedDev || elevated;
+        }
+
+        function hasAdminPowers() {
+            const emailIsDev = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com');
+            const flaggedDev = !!userProfile?.is_dev;
             const role = (userProfile?.role_badge || '').toLowerCase();
-            const official = role === 'official' || role === 'developer' || role === 'admin' || role === 'manager' || role === 'moderator';
-            return emailIsDev || flaggedDev || official;
+            const adminRoles = ['official','developer','principal','senior_principal','chairman'];
+            return emailIsDev || flaggedDev || adminRoles.includes(role);
         }
 
         function ensureDeveloperVisibleAndInit() {
-            const isDevEmail = hasDevPowers();
+            const isDevEmail = hasAdminPowers();
             const nav = document.getElementById('nav-developer');
             const section = document.getElementById('section-developer');
             if (nav) nav.style.display = isDevEmail ? '' : 'none';
@@ -456,78 +522,86 @@
                     }
                 };
                 grantBtn.onclick = async () => {
-                    const email = (grantEmail.value || '').trim().toLowerCase();
+                    const query = (grantEmail.value || '').trim();
                     const role = (roleSelect.value || 'developer');
-                    if (!email) { powerMsg.textContent = 'Please enter an email address.'; return; }
+                    if (!query) { powerMsg.textContent = 'Enter a name or user id.'; return; }
                     powerMsg.textContent = 'Granting powers...';
                     try {
-                        // First, find the user by email
-                        const { data: authUsers } = await supabase.auth.admin.listUsers();
-                        const targetUser = authUsers?.users?.find(u => u.email?.toLowerCase() === email);
-                        
-                        if (!targetUser) {
-                            powerMsg.textContent = 'User not found. They need to sign up first.';
-                            return;
+                        // Try by exact UUID first, else name search
+                        let target = null;
+                        const uuidRegex = /^[0-9a-fA-F-]{36}$/;
+                        if (uuidRegex.test(query)) {
+                            const { data } = await supabase.from('users').select('id, full_name').eq('id', query).maybeSingle();
+                            if (data) target = data;
                         }
-                        
-                        // Update user role in users table
-                        const { error } = await supabase
-                            .from('users')
-                            .update({ 
-                                is_dev: true,
-                                role_badge: role,
-                                role_granted_by: userId,
-                                role_granted_at: new Date().toISOString()
-                            })
-                            .eq('id', targetUser.id);
-                        
-                        if (error) {
-                            powerMsg.textContent = 'Failed to grant powers: ' + error.message;
-                            return;
+                        if (!target) {
+                            const { data } = await supabase.from('users').select('id, full_name').ilike('full_name', query).limit(1);
+                            if (data && data[0]) target = data[0];
                         }
-                        
-                        powerMsg.textContent = `Successfully granted ${role} powers to ${email}!`;
+                        if (!target) { powerMsg.textContent = 'User not found in users table.'; return; }
+                        // Prefer RPC helper; fallback to direct update
+                        let rpcErr = null;
+                        try {
+                            await supabase.rpc('grant_roles_sync', { p_user_id: target.id, p_roles: ['dev','developer'].includes(role) ? ['dev'] : [role] });
+                        } catch (e) { rpcErr = e; }
+                        if (rpcErr) {
+                            const { error } = await supabase
+                                .from('users')
+                                .update({ 
+                                    is_dev: role === 'developer' || role === 'dev',
+                                    role_badge: role,
+                                    role_granted_by: userId,
+                                    role_granted_at: new Date().toISOString(),
+                                    leaderboard_badges: [role]
+                                })
+                                .eq('id', target.id);
+                            if (error) { powerMsg.textContent = 'Failed to grant: ' + error.message; return; }
+                        }
+                        powerMsg.textContent = `Granted ${role} to ${target.full_name}.`;
                         grantEmail.value = '';
                     } catch (e) {
-                        powerMsg.textContent = 'Error granting powers: ' + (e.message || e);
+                        powerMsg.textContent = 'Error granting: ' + (e.message || e);
                     }
                 };
                 revokeBtn.onclick = async () => {
-                    const email = (grantEmail.value || '').trim().toLowerCase();
-                    if (!email) { powerMsg.textContent = 'Please enter an email address.'; return; }
+                    const query = (grantEmail.value || '').trim();
+                    if (!query) { powerMsg.textContent = 'Enter a name or user id.'; return; }
                     powerMsg.textContent = 'Revoking powers...';
                     try {
-                        // Find the user by email
-                        const { data: authUsers } = await supabase.auth.admin.listUsers();
-                        const targetUser = authUsers?.users?.find(u => u.email?.toLowerCase() === email);
-                        
-                        if (!targetUser) {
-                            powerMsg.textContent = 'User not found.';
-                            return;
+                        let target = null;
+                        const uuidRegex = /^[0-9a-fA-F-]{36}$/;
+                        if (uuidRegex.test(query)) {
+                            const { data } = await supabase.from('users').select('id, full_name').eq('id', query).maybeSingle();
+                            if (data) target = data;
                         }
-                        
-                        // Revoke user role in users table
-                        const { error } = await supabase
-                            .from('users')
-                            .update({ 
-                                is_dev: false,
-                                role_badge: null,
-                                role_granted_by: null,
-                                role_granted_at: null
-                            })
-                            .eq('id', targetUser.id);
-                        
-                        if (error) {
-                            powerMsg.textContent = 'Failed to revoke powers: ' + error.message;
-                            return;
+                        if (!target) {
+                            const { data } = await supabase.from('users').select('id, full_name').ilike('full_name', query).limit(1);
+                            if (data && data[0]) target = data[0];
                         }
-                        
-                        powerMsg.textContent = `Successfully revoked powers from ${email}!`;
+                        if (!target) { powerMsg.textContent = 'User not found in users table.'; return; }
+                        let rpcErr = null;
+                        try { await supabase.rpc('revoke_roles_sync', { p_user_id: target.id }); } catch (e) { rpcErr = e; }
+                        if (rpcErr) {
+                            const { error } = await supabase
+                                .from('users')
+                                .update({ 
+                                    is_dev: false,
+                                    role_badge: null,
+                                    role_granted_by: null,
+                                    role_granted_at: null,
+                                    leaderboard_badges: null
+                                })
+                                .eq('id', target.id);
+                            if (error) { powerMsg.textContent = 'Failed to revoke: ' + error.message; return; }
+                        }
+                        powerMsg.textContent = `Revoked roles from ${target.full_name}.`;
                         grantEmail.value = '';
                     } catch (e) {
-                        powerMsg.textContent = 'Error revoking powers: ' + (e.message || e);
+                        powerMsg.textContent = 'Error revoking: ' + (e.message || e);
                     }
                 };
+                // Also bind Manage Users panel
+                try { bindAdminManageUsers(); } catch (_) {}
             };
             bind();
         }
@@ -561,6 +635,10 @@
         }
 
         async function startQuiz() {
+            if (!canStartQuizByRole?.()) {
+                alert('Your role cannot start quizzes.');
+                return;
+            }
             const quizType = determineQuizTypeFromDOB(userProfile.dob);
             
             // Check attempt limit (max 5 in the last 7 days)
@@ -871,7 +949,7 @@
             // Fetch posts with user info, ordered by pinned status first, then by date
             const { data: posts, error } = await supabase
                 .from('posts')
-                .select('id, user_id, content, image_path, created_at, is_pinned, users:users!posts_user_id_fkey(full_name, profile_photo, is_dev)')
+                .select('id, user_id, content, image_path, created_at, is_pinned, users:users!posts_user_id_fkey(full_name, profile_photo, is_dev, role_badge, leaderboard_badges)')
                 .order('is_pinned', { ascending: false })
                 .order('created_at', { ascending: false });
             
@@ -899,8 +977,10 @@
                 const postDate = new Date(post.created_at).toLocaleString();
                 
                 const displayName = (post.users && post.users.full_name) || 'User';
-                const nameWithBadge = (post.users && post.users.is_dev)
-                    ? `${displayName} <span class="dev-badge">DEV</span>`
+                const role = (post.users && (post.users.role_badge||'')) || '';
+                const isDevOrRole = (post.users && (post.users.is_dev || (role.toLowerCase()==='developer')));
+                const nameWithBadge = isDevOrRole
+                    ? `${displayName} <span class="dev-badge developer">DEVELOPER</span>`
                     : displayName;
                 el.innerHTML = `
                     <div class="post-head">
@@ -1058,7 +1138,7 @@
             try {
                 const { data: comments, error } = await supabase
                     .from('post_comments')
-                    .select('id, content, created_at, user_id, is_pinned, users:users!post_comments_user_id_fkey(full_name, profile_photo)')
+                    .select('id, content, created_at, user_id, is_pinned, users:users!post_comments_user_id_fkey(full_name, profile_photo, is_dev, role_badge)')
                     .eq('post_id', postId)
                     .order('created_at', { ascending: true });
 
@@ -1094,7 +1174,7 @@
                     commentEl.innerHTML = `
                         <div class="comment-header">
                             <img src="${comment.users?.profile_photo || 'https://via.placeholder.com/24'}" alt="${comment.users?.full_name || 'User'}" class="comment-avatar">
-                            <strong class="comment-author">${comment.users?.full_name || 'User'} ${isPinned ? '<span class="pinned-badge" style="font-size:.6rem; padding:.1rem .35rem;">Pinned</span>' : ''}</strong>
+                            <strong class="comment-author">${comment.users?.full_name || 'User'} ${(comment.users?.is_dev || (String(comment.users?.role_badge||'').toLowerCase()==='developer')) ? '<span class="dev-badge developer" style="margin-left:.25rem;">DEVELOPER</span>' : ''} ${isPinned ? '<span class="pinned-badge" style="font-size:.6rem; padding:.1rem .35rem; margin-left:.25rem;">Pinned</span>' : ''}</strong>
                             <small class="comment-time">${new Date(comment.created_at).toLocaleString()}</small>
                         </div>
                         <div class="comment-content">${escapeHtml(comment.content)}</div>
@@ -1437,7 +1517,7 @@
                         <div class="leader-rank">${medals[index]}</div>
                         <img class="leader-img" src="${user.profile_photo || 'https://via.placeholder.com/80'}" alt="${user.full_name}">
                         <div class="leader-info">
-                        <strong>${user.full_name}${user.is_dev ? ' <span class=\"dev-badge\">DEV</span>' : ''}</strong>
+                        <strong>${user.full_name}${(user.is_dev || (user.role_badge||'').toLowerCase()==='developer') ? ' <span class=\"dev-badge developer\">DEVELOPER</span>' : ''}</strong>
                             <span>${user.total_points || 0} pts</span>
                         </div>
                     `;
@@ -1453,7 +1533,7 @@
                         <div class="leader-row-user">
                             <span>${index + 1}.</span>
                             <img src="${user.profile_photo || 'https://via.placeholder.com/40'}" alt="${user.full_name}">
-                        <strong>${user.full_name}${user.is_dev ? ' <span class=\"dev-badge\">DEV</span>' : ''}</strong>
+                        <strong>${user.full_name}${(user.is_dev || (user.role_badge||'').toLowerCase()==='developer') ? ' <span class=\"dev-badge developer\">DEVELOPER</span>' : ''}</strong>
                         </div>
                         <span>${user.total_points || 0} pts</span>
                     `;
@@ -1831,11 +1911,17 @@
                 // Show total points in My Space (not weekly)
                 document.getElementById('accountPoints').textContent = `Total Points: ${userProfile.total_points || 0}`;
 
-                // Badges based on points tiers
+                // Badges based on points tiers + role badges (up to 2)
                 const badgesEl = document.getElementById('accountBadges');
                 badgesEl.innerHTML = '';
                 const pts = userProfile.total_points || 0;
                 const badges = [];
+                const roles = [];
+                if ((userProfile.role_badge||'').toLowerCase()) roles.push(userProfile.role_badge);
+                if (Array.isArray(userProfile.leaderboard_badges)) {
+                    userProfile.leaderboard_badges.forEach(b => { if (b && roles.length < 2) roles.push(b); });
+                }
+                roles.forEach(r => badges.push({ name: String(r).replace('_',' ').toUpperCase(), color: '#eef2ff', textColor:'#1a3d7c', solid:false }));
                 if (pts >= 10) badges.push({ name: 'Bronze Achiever', color: '#cd7f32' });
                 if (pts >= 30) badges.push({ name: 'Silver Scholar', color: '#c0c0c0' });
                 if (pts >= 60) badges.push({ name: 'Gold Genius', color: '#ffd700' });
@@ -1843,7 +1929,7 @@
                 badges.forEach(b => {
                     const tag = document.createElement('span');
                     tag.textContent = b.name;
-                    tag.style.cssText = `display:inline-block;padding:.3rem .6rem;border-radius:999px;background:${b.color};color:#111;font-weight:600;font-size:.8rem;border:1px solid rgba(0,0,0,.08)`;
+                    tag.style.cssText = `display:inline-block;padding:.3rem .6rem;border-radius:999px;background:${b.color};color:${b.textColor||'#111'};font-weight:600;font-size:.8rem;border:1px solid rgba(0,0,0,.08)`;
                     badgesEl.appendChild(tag);
                 });
                 // Awards from table
@@ -2002,4 +2088,120 @@
             } catch (e) {
                 console.warn('loadPointsHistory failed:', e);
             }
+        }
+
+        // Admin Manage Users: list online users by default, allow search filter
+        function bindAdminManageUsers() {
+            const search = document.getElementById('adminUserSearch');
+            const results = document.getElementById('adminUserResults');
+            const controls = document.getElementById('adminUserControls');
+            const msg = document.getElementById('adminUserMsg');
+            const onlineOnlyEl = document.getElementById('adminOnlineOnly');
+            const refreshBtn = document.getElementById('adminRefreshUsers');
+            if (!search || search._bound) return; search._bound = true;
+            let selectedId = null;
+
+            async function loadAdminUserList() {
+                try {
+                    const q = (search.value||'').trim().toLowerCase();
+                    const onlineOnly = !!(onlineOnlyEl && onlineOnlyEl.checked);
+                    const [{ data: users }, { data: act }] = await Promise.all([
+                        supabase.from('users').select('id, full_name, total_points, role_badge, profile_photo').order('full_name'),
+                        supabase.from('user_activity').select('user_id, is_online, last_active_at')
+                    ]);
+                    const map = Object.fromEntries((act||[]).map(a => [a.user_id, a]));
+                    results.innerHTML = '';
+                    (users||[])
+                        .filter(u => !q || (u.full_name||'').toLowerCase().includes(q))
+                        .filter(u => !onlineOnly || (map[u.id]?.is_online))
+                        .forEach(u => {
+                            const row = document.createElement('div');
+                            row.style.cssText = 'padding:.35rem .5rem; border-bottom:1px solid #eee; cursor:pointer; display:flex; align-items:center; gap:.5rem;';
+                            row.innerHTML = `
+                                <img src="${u.profile_photo||'https://via.placeholder.com/28'}" style="width:28px;height:28px;border-radius:999px;" alt=""/>
+                                <div style="flex:1;">
+                                    <div>${escapeHtml(u.full_name)} <small style=\"color:#64748b\">${u.role_badge||''}</small></div>
+                                    <div style=\"font-size:.75rem;color:#64748b\">${map[u.id]?.is_online ? 'Online' : 'Offline'} • ${map[u.id]?.last_active_at ? new Date(map[u.id].last_active_at).toLocaleString() : '-'}</div>
+                                </div>
+                                <div style=\"font-weight:600\">${u.total_points||0} pts</div>`;
+                            row.onclick = () => { selectedId = u.id; controls.style.display = 'block'; msg.textContent = `Selected ${u.full_name}`; };
+                            results.appendChild(row);
+                        });
+                } catch (e) {
+                    results.innerHTML = '<p style="color:#ef4444">Failed to load users.</p>';
+                }
+            }
+
+            search.oninput = loadAdminUserList;
+            if (onlineOnlyEl) onlineOnlyEl.addEventListener('change', loadAdminUserList);
+            if (refreshBtn) refreshBtn.addEventListener('click', loadAdminUserList);
+            loadAdminUserList();
+
+            const applyPoints = document.getElementById('adminApplyPoints');
+            const deltaEl = document.getElementById('adminPointsDelta');
+            if (applyPoints) applyPoints.onclick = async () => {
+                if (!selectedId) { msg.textContent='Select a user'; return; }
+                const delta = parseInt(deltaEl.value||'0', 10);
+                if (!delta) { msg.textContent='Enter a non-zero delta'; return; }
+                const { data } = await supabase.from('users').select('total_points, weekly_points').eq('id', selectedId).single();
+                const newTotals = { total_points: (data?.total_points||0)+delta, weekly_points: (data?.weekly_points||0)+delta };
+                const { error } = await supabase.from('users').update(newTotals).eq('id', selectedId);
+                msg.textContent = error ? ('Failed: '+error.message) : 'Points updated';
+            };
+
+            const applyRolesBtn = document.getElementById('adminApplyRoles');
+            if (applyRolesBtn) applyRolesBtn.onclick = async () => {
+                if (!selectedId) { msg.textContent='Select a user'; return; }
+                const r1 = (document.getElementById('adminRole1').value||'').toLowerCase();
+                const r2 = (document.getElementById('adminRole2').value||'').toLowerCase();
+                const badges = [r1,r2].filter(Boolean).slice(0,2);
+                const updates = { role_badge: r1 || null, leaderboard_badges: (badges.length? badges: null), is_dev: badges.includes('developer') };
+                const { error } = await supabase.from('users').update(updates).eq('id', selectedId);
+                msg.textContent = error ? ('Failed: '+error.message) : 'Roles updated';
+            };
+
+            const revokeRolesBtn = document.getElementById('adminRevokeRoles');
+            if (revokeRolesBtn) revokeRolesBtn.onclick = async () => {
+                if (!selectedId) { msg.textContent='Select a user'; return; }
+                const { error } = await supabase.from('users').update({ role_badge: null, leaderboard_badges: null, is_dev: false }).eq('id', selectedId);
+                msg.textContent = error ? ('Failed: '+error.message) : 'Roles revoked';
+            };
+
+            const addFollowerBtn = document.getElementById('adminAddFollower');
+            if (addFollowerBtn) addFollowerBtn.onclick = async () => {
+                if (!selectedId) { msg.textContent='Select a user'; return; }
+                const fid = (document.getElementById('adminFollowerUserId').value||'').trim();
+                if (!fid) { msg.textContent='Enter follower user id'; return; }
+                const { error } = await supabase.from('follows').insert([{ follower_id: fid, followed_id: selectedId }]);
+                msg.textContent = error ? ('Failed: '+error.message) : 'Follower added';
+            };
+
+            const removeFollowerBtn = document.getElementById('adminRemoveFollower');
+            if (removeFollowerBtn) removeFollowerBtn.onclick = async () => {
+                if (!selectedId) { msg.textContent='Select a user'; return; }
+                const fid = (document.getElementById('adminFollowerUserId').value||'').trim();
+                if (!fid) { msg.textContent='Enter follower user id'; return; }
+                const { error } = await supabase.from('follows').delete().eq('follower_id', fid).eq('followed_id', selectedId);
+                msg.textContent = error ? ('Failed: '+error.message) : 'Follower removed';
+            };
+
+            const deleteUserBtn = document.getElementById('adminDeleteUser');
+            if (deleteUserBtn) deleteUserBtn.onclick = async () => {
+                if (!selectedId) { msg.textContent='Select a user'; return; }
+                if (!confirm('Delete this user?')) return;
+                try {
+                    const targetId = selectedId;
+                    await supabase.from('post_likes').delete().or(`user_id.eq.${targetId}`);
+                    const { data: pids } = await supabase.from('posts').select('id').eq('user_id', targetId);
+                    if (pids && pids.length) await supabase.from('post_likes').delete().in('post_id', pids.map(p=>p.id));
+                    await supabase.from('posts').delete().eq('user_id', targetId);
+                    await supabase.from('follows').delete().or(`follower_id.eq.${targetId},followed_id.eq.${targetId}`);
+                    await supabase.from('awards').delete().eq('user_id', targetId);
+                    await supabase.from('attempts').delete().eq('user_id', targetId);
+                    await supabase.from('users').delete().eq('id', targetId);
+                    msg.textContent = 'User deleted';
+                    controls.style.display = 'none';
+                    await loadAdminUserList();
+                } catch (e) { msg.textContent = 'Delete failed'; }
+            };
         }

@@ -37,7 +37,7 @@
         </div>
 
 
-        <div class="sidebar" id="sidebar">
+        <div class="sidebar" id="sidebar" style="overflow-y:auto; max-height: calc(100vh - 80px);">
             <ul class="nav-list" style="gap: 10px;">
                 <li class="nav-item active" data-section="quiz">
                     <i class="fas fa-brain"></i>
@@ -59,10 +59,20 @@
                     <span>Announcements</span>
                 </li>
                 <br/>
+                <li class="nav-item" data-section="monitoring" id="nav-monitoring" style="display:none;">
+                    <i class="fas fa-eye"></i>
+                    <span>Monitoring</span>
+                </li>
+                <br/>
                 
                 <li class="nav-item" data-section="developer" id="nav-developer" style="display:none;">
                     <i class="fas fa-code"></i>
                     <span>Developer</span>
+                </li>
+                <br/>
+                <li class="nav-item" data-section="support" id="nav-support">
+                    <i class="fas fa-life-ring"></i>
+                    <span>Support</span>
                 </li>
                 <div class="divider" style="margin-top: 10px; margin-bottom: 30px; border-bottom: 1px solid #eee;"> <br></div>
                 <li class="nav-item" data-section="account">
@@ -242,7 +252,7 @@
                 <h2 class="section-title">Your Space</h2>
                 <div class="my-space-container">
                     <!-- Profile Header Card -->
-                    <div class="profile-header-card">
+                    <div class="profile-header-card" style="display:flex; align-items:center; gap:1rem;">
                         <div class="profile-avatar-section">
                             <img id="accountAvatar" src="logonew.png" alt="Avatar" class="profile-avatar">
                             <div class="profile-info">
@@ -261,6 +271,9 @@
                                 <div class="stat-label">Following</div>
                             </div>
                         </div>
+                        <button id="openSettingsBtn" title="Settings" style="margin-left:auto; background:transparent; border:none; cursor:pointer; font-size:1.1rem; color:#6b7280;">
+                            <i class="fas fa-cog"></i>
+                        </button>
                     </div>
 
                     <!-- Badges Card -->
@@ -348,7 +361,7 @@
                 </div>
             </div>
 
-            <!-- Settings Section -->
+            <!-- Settings Section (moved access also into My Space header via icon) -->
             <div class="section" id="section-settings">
                 <h2 class="section-title">Settings</h2>
                 <div class="settings-container">
@@ -477,9 +490,10 @@
                                 <select id="devRoleSelect" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
                                     <option value="developer">Developer</option>
                                     <option value="teacher">Teacher</option>
-                                    <option value="manager">Manager</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="moderator">Moderator</option>
+                                    <option value="official">Official</option>
+                                    <option value="principal">Principal</option>
+                                    <option value="senior_principal">Senior Principal</option>
+                                    <option value="chairman">Chairman</option>
                                 </select>
                             </div>
                             <div style="margin-top:.5rem;">
@@ -487,6 +501,135 @@
                                 <button class="btn" id="devRevokePowerBtn" style="background:#dc2626; color:#fff; margin-left:.5rem;">Revoke Powers</button>
                             </div>
                             <div id="devPowerMsg" style="margin-top:.5rem; color:#374151;"></div>
+                        </div>
+
+                        <!-- Manage Users Panel (no email needed) -->
+                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                            <h3 style="margin-bottom:.75rem; color:var(--primary);">Manage Users</h3>
+                            <p style="color:#6b7280; margin-bottom:.5rem;">Search registered users, adjust points, followers, badges, or delete account.</p>
+                            <div style="display:grid; gap:.5rem; grid-template-columns: 1fr;">
+                                <input type="text" id="adminUserSearch" placeholder="Search by name..." style="padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                <div style="display:flex; align-items:center; gap:.75rem;">
+                                    <label style="display:flex; align-items:center; gap:.35rem; cursor:pointer;">
+                                        <input type="checkbox" id="adminOnlineOnly" checked />
+                                        <span>Show online only</span>
+                                    </label>
+                                    <button class="btn" id="adminRefreshUsers" style="background:#e5e7eb;">Refresh</button>
+                                </div>
+                                <div id="adminUserResults" style="max-height:180px; overflow:auto; border:1px solid #eee; border-radius:8px; padding:.5rem;"></div>
+                                <div id="adminUserControls" style="display:none; border-top:1px dashed #e5e7eb; padding-top:.75rem;">
+                                    <div style="display:grid; gap:.5rem; grid-template-columns: repeat(2, minmax(0,1fr));">
+                                        <div>
+                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Points Adjustment</label>
+                                            <div style="display:flex; gap:.5rem;">
+                                                <input type="number" id="adminPointsDelta" placeholder="e.g. 10 or -5" style="flex:1; padding:.5rem .6rem; border:1px solid #ddd; border-radius:8px;" />
+                                                <button class="btn btn-primary" id="adminApplyPoints">Apply</button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Role Badge</label>
+                                            <select id="adminRole1" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
+                                                <option value="">None</option>
+                                                <option value="developer">Developer</option>
+                                                <option value="teacher">Teacher</option>
+                                                <option value="official">Official</option>
+                                                <option value="principal">Principal</option>
+                                                <option value="senior_principal">Senior Principal</option>
+                                                <option value="chairman">Chairman</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Second Role (optional)</label>
+                                            <select id="adminRole2" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
+                                                <option value="">None</option>
+                                                <option value="developer">Developer</option>
+                                                <option value="teacher">Teacher</option>
+                                                <option value="official">Official</option>
+                                                <option value="principal">Principal</option>
+                                                <option value="senior_principal">Senior Principal</option>
+                                                <option value="chairman">Chairman</option>
+                                            </select>
+                                        </div>
+                                        <div style="display:flex; align-items:end; gap:.5rem;">
+                                            <button class="btn" id="adminApplyRoles" style="background:#1d4ed8; color:#fff;">Apply Roles</button>
+                                            <button class="btn" id="adminRevokeRoles" style="background:#dc2626; color:#fff;">Revoke Roles</button>
+                                        </div>
+                                        <div>
+                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Followers: Add/Remove</label>
+                                            <div style="display:flex; gap:.5rem;">
+                                                <input type="text" id="adminFollowerUserId" placeholder="Follower user id" style="flex:1; padding:.5rem .6rem; border:1px solid #ddd; border-radius:8px;" />
+                                                <button class="btn" id="adminAddFollower" style="background:#16a34a; color:#fff;">Add</button>
+                                                <button class="btn" id="adminRemoveFollower" style="background:#f59e0b; color:#111;">Remove</button>
+                                            </div>
+                                        </div>
+                                        <div style="grid-column: 1/-1; display:flex; justify-content:space-between;">
+                                            <button class="btn" id="adminDeleteUser" style="background:#b91c1c; color:#fff;">Delete User</button>
+                                            <div id="adminUserMsg" style="color:#374151;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monitoring Section -->
+            <div class="section" id="section-monitoring">
+                <h2 class="section-title">Monitoring</h2>
+                <div class="settings-container">
+                    <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                        <div style="display:flex; gap:1rem; align-items:center; margin-bottom:.5rem;">
+                            <div><strong>Registered:</strong> <span id="monTotalUsers">0</span></div>
+                            <div><strong>Online now:</strong> <span id="monOnlineUsers">0</span></div>
+                        </div>
+                        <div id="monTable" style="overflow:auto; max-height:420px; border:1px solid #eee; border-radius:8px;">
+                            <table style="width:100%; border-collapse:collapse;">
+                                <thead>
+                                    <tr style="text-align:left; background:#f8fafc;">
+                                        <th style="padding:.5rem; border-bottom:1px solid #e5e7eb;">Name</th>
+                                        <th style="padding:.5rem; border-bottom:1px solid #e5e7eb;">Role</th>
+                                        <th style="padding:.5rem; border-bottom:1px solid #e5e7eb;">Active</th>
+                                        <th style="padding:.5rem; border-bottom:1px solid #e5e7eb;">Last Active</th>
+                                        <th style="padding:.5rem; border-bottom:1px solid #e5e7eb;">Tab Switches</th>
+                                        <th style="padding:.5rem; border-bottom:1px solid #e5e7eb;">Page Leaves</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monTbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Section -->
+            <div class="section" id="section-support">
+                <h2 class="section-title">Support</h2>
+                <div class="settings-container">
+                    <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06); display:grid; gap:1rem;">
+                        <div id="supportStaffPanel" style="display:none;">
+                            <h3 style="margin:0; color:var(--primary);">Student Messages</h3>
+                            <div style="display:grid; grid-template-columns: 260px 1fr; gap:1rem;">
+                                <div id="supportThreads" style="border:1px solid #eee; border-radius:8px; max-height:420px; overflow:auto;"></div>
+                                <div style="display:grid; grid-template-rows: 1fr auto; gap:.5rem;">
+                                    <div id="supportMessages" style="border:1px solid #eee; border-radius:8px; padding:.5rem; max-height:420px; overflow:auto;"></div>
+                                    <div style="display:flex; gap:.5rem;">
+                                        <input type="file" id="supportMedia" accept="image/*,video/*,audio/*" style="display:none;" />
+                                        <input type="text" id="supportInput" placeholder="Type a reply..." style="flex:1; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                        <button class="btn" id="supportAttachBtn"><i class="fas fa-paperclip"></i></button>
+                                        <button class="btn btn-primary" id="supportSendBtn">Send</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="supportStudentPanel" style="display:none;">
+                            <div id="supportStudentMessages" style="border:1px solid #eee; border-radius:8px; padding:.5rem; max-height:420px; overflow:auto;"></div>
+                            <div style="display:flex; gap:.5rem;">
+                                <input type="file" id="supportStudentMedia" accept="image/*,video/*,audio/*" style="display:none;" />
+                                <input type="text" id="supportStudentInput" placeholder="Write a message to staff..." style="flex:1; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                <button class="btn" id="supportStudentAttach"><i class="fas fa-paperclip"></i></button>
+                                <button class="btn btn-primary" id="supportStudentSend">Send</button>
+                            </div>
                         </div>
                     </div>
                 </div>
