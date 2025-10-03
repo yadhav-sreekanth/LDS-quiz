@@ -391,7 +391,8 @@
     }
     
     .founder-img {
-      width: 100%;
+      width: 90%;
+      margin-LEFT: 20PX;
       height: 300px;
       object-fit: cover;
     }
