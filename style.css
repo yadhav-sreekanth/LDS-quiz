@@ -669,10 +669,6 @@
 }
 
 @media (max-width: 768px) {
-  header {
- display: none;
-  }
-  
   .nav-links {
     flex-wrap: wrap;
     justify-content: center;
@@ -680,7 +676,7 @@
   }
   
   .hero h1 {
-    font-size: 2.8rem;
+    font-size: 1.8rem;
   }
   
   .hero-logo {
@@ -715,6 +711,16 @@
     font-size: 1.2rem;
   }
   
+  .hero-content #heading{
+    font-size: 34px !important; 
+  }
+    .hero-content #headering{
+    font-size: 18px !important;
+  }
+p{
+  font-size: 14px !important;
+  text-align: center;
+}
   .hero-logo {
     width: 120px;
     height: 120px;
@@ -751,7 +757,12 @@
   .nav-links {
     gap: 0.8rem;
   }
-  
+   .hero-content #heading{
+    font-size: 32px !important; 
+  }
+    .hero-content #headering{
+    font-size: 15px !important;
+  }
   #joinBtn {
     padding: 0.5rem 1.2rem;
     font-size: 0.9rem;
@@ -792,7 +803,9 @@
   header {
     padding: 0.7rem 1rem;
   }
-  
+  #about .href{
+    font-size: 13px;
+  }
   .nav-logo img {
     width: 40px;
     height: 40px;
@@ -854,13 +867,21 @@
     padding: 1.5rem;
     font-size: 0.9rem;
   }
+   .hero-content #heading{
+    font-size: 28px !important; 
+  }
+    .hero-content #headering{
+    font-size: 14px !important;
+  }
 }
 
 @media (max-width: 374px) {
   .nav-logo span {
     font-size: 0.9rem;
   }
-  
+    #about .href{
+    font-size: 10px;
+  }
   .nav-links {
     gap: 0.4rem;
   }
@@ -888,3 +909,9 @@
     font-size: 0.9rem;
   }
 }
+  .hero-content #heading{
+    font-size: 3rem;
+  }
+    .hero-content #headering{
+    font-size: 20px;
+  } 

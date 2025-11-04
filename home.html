@@ -59,6 +59,11 @@
                     <span>Announcements</span>
                 </li>
                 <br/>
+                                <li class="nav-item" data-section="support" id="nav-support">
+                    <i class="fas fa-life-ring"></i>
+                    <span>Support</span>
+                </li>
+                <br/>
                 <li class="nav-item" data-section="monitoring" id="nav-monitoring" style="display:none;">
                     <i class="fas fa-eye"></i>
                     <span>Monitoring</span>
@@ -70,10 +75,7 @@
                     <span>Developer</span>
                 </li>
                 <br/>
-                <li class="nav-item" data-section="support" id="nav-support">
-                    <i class="fas fa-life-ring"></i>
-                    <span>Support</span>
-                </li>
+
                 <div class="divider" style="margin-top: 10px; margin-bottom: 30px; border-bottom: 1px solid #eee;"> <br></div>
                 <li class="nav-item" data-section="account">
                     <i class="fas fa-user"></i>
@@ -601,44 +603,63 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Support Section -->
-            <div class="section" id="section-support">
-                <h2 class="section-title">Support</h2>
-                <div class="settings-container">
-                    <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06); display:grid; gap:1rem;">
-                        <div id="supportStaffPanel" style="display:none;">
-                            <h3 style="margin:0; color:var(--primary);">Student Messages</h3>
-                            <div style="display:grid; grid-template-columns: 260px 1fr; gap:1rem;">
-                                <div id="supportThreads" style="border:1px solid #eee; border-radius:8px; max-height:420px; overflow:auto;"></div>
-                                <div style="display:grid; grid-template-rows: 1fr auto; gap:.5rem;">
-                                    <div id="supportMessages" style="border:1px solid #eee; border-radius:8px; padding:.5rem; max-height:420px; overflow:auto;"></div>
-                                    <div style="display:flex; gap:.5rem;">
-                                        <input type="file" id="supportMedia" accept="image/*,video/*,audio/*" style="display:none;" />
-                                        <input type="text" id="supportInput" placeholder="Type a reply..." style="flex:1; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
-                                        <button class="btn" id="supportAttachBtn"><i class="fas fa-paperclip"></i></button>
-                                        <button class="btn btn-primary" id="supportSendBtn">Send</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="supportStudentPanel" style="display:none;">
-                            <div id="supportStudentMessages" style="border:1px solid #eee; border-radius:8px; padding:.5rem; max-height:420px; overflow:auto;"></div>
-                            <div style="display:flex; gap:.5rem;">
-                                <input type="file" id="supportStudentMedia" accept="image/*,video/*,audio/*" style="display:none;" />
-                                <input type="text" id="supportStudentInput" placeholder="Write a message to staff..." style="flex:1; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
-                                <button class="btn" id="supportStudentAttach"><i class="fas fa-paperclip"></i></button>
-                                <button class="btn btn-primary" id="supportStudentSend">Send</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- Support Section -->
+<div class="section" id="section-support">
+  <h2 class="section-title">Support</h2>
+  
+  <div class="support-container">
+    
+    <!-- LEFT SIDE (Threads + Chat) -->
+    <div class="support-left">
+      
+      <!-- Staff Panel -->
+      <div id="supportStaffPanel" class="support-panel" style="display:none;">
+        <h3 class="support-title">Student Messages</h3>
+        <div class="support-grid">
+          <!-- Thread List -->
+          <div id="supportThreads" class="support-threads"></div>
+          
+          <!-- Chat Area -->
+          <div class="support-chat-area">
+            <div id="supportMessages" class="support-messages"></div>
+            <div class="support-input">
+              <input type="file" id="supportMedia" accept="image/*,video/*,audio/*" hidden>
+              <input type="text" id="supportInput" placeholder="Type a reply..." />
+              <button id="supportAttachBtn"><i class="fas fa-paperclip"></i></button>
+              <button id="supportSendBtn" class="btn-primary">Send</button>
             </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Student Panel -->
+      <div id="supportStudentPanel" class="support-panel" style="display:none;">
+        <div id="supportStudentMessages" class="support-messages"></div>
+        <div class="support-input">
+          <input type="file" id="supportStudentMedia" accept="image/*,video/*,audio/*" hidden>
+          <input type="text" id="supportStudentInput" placeholder="Write a message to staff..." />
+          <button id="supportStudentAttach"><i class="fas fa-paperclip"></i></button>
+          <button id="supportStudentSend" class="btn-primary">Send</button>
+        </div>
+      </div>
     </div>
+
+    <!-- RIGHT SIDE (User Profile) -->
+    <div class="support-right" id="supportProfile">
+      <div class="profile-card">
+        <img id="supportProfilePic" src="logonew.png" alt="Profile Photo" />
+        <h3 id="supportProfileName">Select a User</h3>
+        <p id="supportProfileRole">Role: —</p>
+        <p id="supportProfilePoints">Points: —</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="scripts.js"></script>
+    <script src="support.js"></script>
     <!--TRUNCATE TABLE quizzes RESTART IDENTITY CASCADE;!-->
 </body>
 </html>

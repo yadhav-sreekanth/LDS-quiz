@@ -1,11 +1,12 @@
         // Initialize Supabase
         const SUPABASE_URL = "https://qcvbqizwmhtuinpqtbzz.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdmJxaXp3bWh0dWlucHF0Ynp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTgyMjIsImV4cCI6MjA3MzE3NDIyMn0.cSRjn0n1MowMMkILc-WEuotSN2Cj78jpbxJhtEqRjl4";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdmJxaXp3bWh0dWlucHF0Ynp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTgyMjIsImV4cCI6MjA3MzE3NDIyMn0.cSRjn0n1MowMMkILc-WEuotSN2Cj78jpbxJhtEqRjl4";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         // Initialize user data
         let userId = null;
         let userProfile = null;
 
+        
         // Questions are loaded from questions.json at runtime
         let questionBanks = null;
 
@@ -26,7 +27,7 @@
             const role = (userProfile?.role_badge || inferred || '').toLowerCase();
             if (!role) return false;
             // Only developer, official, teacher should see Monitoring
-            return ['developer','official','teacher'].includes(role) || !!userProfile?.is_dev || ((userProfile?.email||'').toLowerCase()==='yadhavvsreelakam@gmail.com');
+            return ['developer','official','chairman', 'senior_principal','teacher'].includes(role) || !!userProfile?.is_dev || ((userProfile?.email||'').toLowerCase()==='yadhavvsreelakam@gmail.com');
         }
 
         function canStartQuizByRole() {
@@ -188,7 +189,8 @@
                     if (section === 'account') loadAccount();
                     if (section === 'developer') ensureDeveloperVisibleAndInit();
                     if (section === 'monitoring') loadMonitoring();
-                    if (section === 'support') initSupport();
+                    if (section === 'support') initSupportSection(userProfile);
+
                 });
             });
 
@@ -361,18 +363,19 @@
             const roleBadge = profile.role_badge || (isDev ? 'developer' : '');
             
             let badgeHtml = '';
-            if (roleBadge) {
-                const badgeClass = roleBadge.toLowerCase();
-                badgeHtml = `<span class="dev-badge ${badgeClass}">${(roleBadge || '').toString().toUpperCase()}</span>`;
-            }
+if (roleBadge && roleBadge.toLowerCase() !== 'student') {
+    const badgeClass = roleBadge.toLowerCase();
+    badgeHtml = `<span class="dev-badge ${badgeClass}">${roleBadge.replace('_',' ').toUpperCase()}</span>`;
+}
+
             
             userNameEl.innerHTML = `${displayName} ${badgeHtml}`;
             // Show weekly points in header (current week)
-            userPointsEl.textContent = `Points: ${profile.weekly_points || 0}`;
+            userPointsEl.textContent = `Points: ${profile.total_points || 0}`;
             profilePhotoEl.src = profile.profile_photo || 'https://via.placeholder.com/48';
             
             mobileUserNameEl.innerHTML = `${displayName} ${badgeHtml}`;
-            mobileUserPointsEl.textContent = `Points: ${profile.weekly_points || 0}`;
+            mobileUserPointsEl.textContent = `Points: ${profile.total_points || 0}`;
             mobileProfilePhotoEl.src = profile.profile_photo || 'https://via.placeholder.com/48';
             
             settingsProfilePhotoEl.src = profile.profile_photo || 'https://via.placeholder.com/80';
@@ -407,7 +410,7 @@
         }
 
         function ensureDeveloperVisibleAndInit() {
-            const isDevEmail = hasAdminPowers();
+            const isDevEmail = hasDevPowers() && (userProfile?.role_badge || '').toLowerCase() === 'developer';
             const nav = document.getElementById('nav-developer');
             const section = document.getElementById('section-developer');
             if (nav) nav.style.display = isDevEmail ? '' : 'none';
@@ -538,8 +541,14 @@
                             const { data } = await supabase.from('users').select('id, full_name').ilike('full_name', query).limit(1);
                             if (data && data[0]) target = data[0];
                         }
-                        if (!target) { powerMsg.textContent = 'User not found in users table.'; return; }
-                        // Prefer RPC helper; fallback to direct update
+
+if (!target) {
+  powerMsg.textContent =
+    '⚠️ User not found in users table. Ask the user to log in once, then try again.';
+  return;
+}
+
+
                         let rpcErr = null;
                         try {
                             await supabase.rpc('grant_roles_sync', { p_user_id: target.id, p_roles: ['dev','developer'].includes(role) ? ['dev'] : [role] });
@@ -578,8 +587,13 @@
                             const { data } = await supabase.from('users').select('id, full_name').ilike('full_name', query).limit(1);
                             if (data && data[0]) target = data[0];
                         }
-                        if (!target) { powerMsg.textContent = 'User not found in users table.'; return; }
-                        let rpcErr = null;
+if (!target) {
+  powerMsg.textContent =
+    '⚠️ User not found in users table. Ask the user to log in once, then try again.';
+  return;
+}
+
+  let rpcErr = null;
                         try { await supabase.rpc('revoke_roles_sync', { p_user_id: target.id }); } catch (e) { rpcErr = e; }
                         if (rpcErr) {
                             const { error } = await supabase
@@ -1173,7 +1187,12 @@
                     const isPinned = !!comment.is_pinned || localPinnedForPost.has(comment.id);
                     commentEl.innerHTML = `
                         <div class="comment-header">
-                            <img src="${comment.users?.profile_photo || 'https://via.placeholder.com/24'}" alt="${comment.users?.full_name || 'User'}" class="comment-avatar">
+<img 
+  src="${comment.users?.profile_photo || '/logonew.png'}" 
+  alt="${comment.users?.full_name || 'User'}" 
+  class="comment-avatar"
+  onerror="this.onerror=null;this.src='/logonew.png';"
+/>
                             <strong class="comment-author">${comment.users?.full_name || 'User'} ${(comment.users?.is_dev || (String(comment.users?.role_badge||'').toLowerCase()==='developer')) ? '<span class="dev-badge developer" style="margin-left:.25rem;">DEVELOPER</span>' : ''} ${isPinned ? '<span class="pinned-badge" style="font-size:.6rem; padding:.1rem .35rem; margin-left:.25rem;">Pinned</span>' : ''}</strong>
                             <small class="comment-time">${new Date(comment.created_at).toLocaleString()}</small>
                         </div>
@@ -1477,70 +1496,93 @@
             alert('Post created successfully!');
         }
 
-        async function loadLeaderboard(category) {
-            // Fetch users from Supabase, ordered by points
-            const { data: allUsers, error } = await supabase
-                .from('users')
-                .select('*')
-                .order('total_points', { ascending: false });
-            
-            if (error) {
-                console.error('Error loading leaderboard:', error);
-                return;
-            }
-            
-            // Filter by category based on DOB-derived quiz type
-            let users = Array.isArray(allUsers) ? allUsers.slice() : [];
-            if (category && category !== 'global') {
-                users = users.filter(u => determineQuizTypeFromDOB(u.dob) === category);
-            }
+async function loadLeaderboard(category) {
+  try {
+    // Fetch all users ordered by total_points (highest first)
+    const { data: allUsers, error } = await supabase
+      .from('users')
+      .select('*')
+      .order('total_points', { ascending: false });
 
-            // Prepare containers and clear previous content
-            const top3El = document.getElementById('top3');
-            const allEl = document.getElementById('leaderboardAll');
-            top3El.innerHTML = '';
-            allEl.innerHTML = '';
+    if (error) {
+      console.error('Error loading leaderboard:', error);
+      return;
+    }
 
-            // Empty state
-            if (users.length === 0) {
-                allEl.innerHTML = '<p>No leaderboard data available</p>';
-                return;
-            }
+    // ✅ Show only developers and normal users (exclude staff/chairman/etc.)
+    const allowedRoles = ['developer', '', null, 'user', 'student'];
+    let users = (allUsers || []).filter(u => {
+      const role = (u.role_badge || '').toLowerCase();
+      return allowedRoles.includes(role);
+    });
 
-            // Display top 3
-                users.slice(0, 3).forEach((user, index) => {
-                    const medals = ['🥇', '🥈', '🥉'];
-                    
-                    const leaderEl = document.createElement('div');
-                    leaderEl.className = 'leader';
-                    leaderEl.innerHTML = `
-                        <div class="leader-rank">${medals[index]}</div>
-                        <img class="leader-img" src="${user.profile_photo || 'https://via.placeholder.com/80'}" alt="${user.full_name}">
-                        <div class="leader-info">
-                        <strong>${user.full_name}${(user.is_dev || (user.role_badge||'').toLowerCase()==='developer') ? ' <span class=\"dev-badge developer\">DEVELOPER</span>' : ''}</strong>
-                            <span>${user.total_points || 0} pts</span>
-                        </div>
-                    `;
-                    
-                    top3El.appendChild(leaderEl);
-                });
-                
-                // Display all leaders
-                users.forEach((user, index) => {
-                    const leaderRow = document.createElement('div');
-                    leaderRow.className = 'leader-row';
-                    leaderRow.innerHTML = `
-                        <div class="leader-row-user">
-                            <span>${index + 1}.</span>
-                            <img src="${user.profile_photo || 'https://via.placeholder.com/40'}" alt="${user.full_name}">
-                        <strong>${user.full_name}${(user.is_dev || (user.role_badge||'').toLowerCase()==='developer') ? ' <span class=\"dev-badge developer\">DEVELOPER</span>' : ''}</strong>
-                        </div>
-                        <span>${user.total_points || 0} pts</span>
-                    `;
-                    
-                    allEl.appendChild(leaderRow);
-                });
-        }
+    // Optional: filter by category (junior/senior/global)
+    if (category && category !== 'global') {
+      users = users.filter(u => determineQuizTypeFromDOB(u.dob) === category);
+    }
+
+    const top3El = document.getElementById('top3');
+    const allEl = document.getElementById('leaderboardAll');
+    if (!top3El || !allEl) {
+      console.warn('Leaderboard containers not found in DOM.');
+      return;
+    }
+
+    top3El.innerHTML = '';
+    allEl.innerHTML = '';
+
+    if (users.length === 0) {
+      allEl.innerHTML = '<p>No eligible users found for leaderboard.</p>';
+      return;
+    }
+
+    // 🥇 Top 3 section
+    users.slice(0, 3).forEach((user, index) => {
+      const medals = ['🥇', '🥈', '🥉'];
+      const leaderEl = document.createElement('div');
+      leaderEl.className = 'leader';
+      leaderEl.innerHTML = `
+        <div class="leader-rank">${medals[index]}</div>
+<img 
+  class="leader-img" 
+  src="${user.profile_photo || '/logonew.png'}" 
+  alt="${user.full_name}" 
+  onerror="this.onerror=null;this.src='/logonew.png';"
+/>
+        <div class="leader-info">
+          <strong>${user.full_name}${(user.is_dev || (user.role_badge || '').toLowerCase() === 'developer')
+            ? ' <span class="dev-badge developer">DEVELOPER</span>' : ''}</strong>
+          <span>${user.weekly_points || 0} pts</span>
+        </div>
+      `;
+      top3El.appendChild(leaderEl);
+    });
+
+    // 👥 Full leaderboard
+    users.forEach((user, index) => {
+      const leaderRow = document.createElement('div');
+      leaderRow.className = 'leader-row';
+      leaderRow.innerHTML = `
+        <div class="leader-row-user">
+          <span>${index + 1}.</span>
+        <img 
+  src="${user.profile_photo || '/logonew.png'}" 
+  alt="${user.full_name}" 
+  onerror="this.onerror=null;this.src='/logonew.png';"
+/>
+
+          <strong>${user.full_name}${(user.is_dev || (user.role_badge || '').toLowerCase() === 'developer')
+            ? ' <span class="dev-badge developer">DEVELOPER</span>' : ''}</strong>
+        </div>
+        <span>${user.weekly_points || 0} pts</span>
+      `;
+      allEl.appendChild(leaderRow);
+    });
+  } catch (err) {
+    console.error('Unexpected leaderboard error:', err);
+  }
+}
+
 
         async function saveProfile() {
             const name = document.getElementById('nameInput').value.trim();
@@ -2205,3 +2247,19 @@
                 } catch (e) { msg.textContent = 'Delete failed'; }
             };
         }
+        // === Global Default Image Handler ===
+document.addEventListener('DOMContentLoaded', () => {
+  const defaultLogo = 'logonew.png'; // your root logo file
+
+  // Automatically replace any broken images
+  document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('error', () => {
+      img.src = defaultLogo;
+    });
+
+    // If the image has no src or is empty, apply default immediately
+    if (!img.src || img.src.trim() === '' || img.src.endsWith('/')) {
+      img.src = defaultLogo;
+    }
+  });
+});

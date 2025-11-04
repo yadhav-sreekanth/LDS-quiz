@@ -745,11 +745,31 @@
             color: var(--secondary);
         }
 
-        .badges-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
+       .badges-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.badges-grid .badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  height: 80px;
+  border-radius: 50px;
+  text-align: center;
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+
+.badges-grid .badge.bronze {
+  background-color: #d97706; /* Bronze color */
+  color: #fff;
+}
+
 
         .points-summary {
             display: grid;
@@ -1127,14 +1147,140 @@
             border: 3px solid var(--primary-light);
         }
         
-        .leader-info {
-            text-align: center;
-        }
-        
-        .leader-info strong {
-            display: block;
-            margin-bottom: 0.5rem;
-        }
+.leader-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.leader-info strong {
+  font-size: 1.1rem;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.leader-info .points {
+  background: #1e293b;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+}
+.leader-info span {
+  color: #000000; /* gold tone */
+  background: rgba(178, 242, 15, 0.088);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+/* 🌟 Universal Badge Base */
+.dev-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: transform 0.25s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.dev-badge:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+}
+
+/* 🔄 Pulse animation */
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 6px rgba(255,255,255,0.3); }
+  50% { box-shadow: 0 0 20px rgba(255,255,255,0.7); }
+  100% { box-shadow: 0 0 6px rgba(255,255,255,0.3); }
+}
+
+/* 🌟 Specific Roles */
+
+/* 🟡 Chairman — Glowing Royal Gold */
+.dev-badge.chairman {
+  background: linear-gradient(135deg, #facc15, #eab308, #b45309);
+  color: #1a1a1a;
+  border: 1px solid #eab308;
+  animation: pulse-glow 2.2s infinite ease-in-out;
+  box-shadow: 0 0 15px rgba(250,204,21,0.5);
+}
+
+/* 🔵 Principal — Deep Sapphire Pulse */
+.dev-badge.principal {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff;
+  border: 1px solid #3b82f6;
+  animation: pulse-glow 3s infinite ease-in-out;
+  box-shadow: 0 0 12px rgba(37,99,235,0.4);
+}
+
+/* 💜 Senior Principal — Amethyst Shine */
+.dev-badge.senior_principal {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: #fff;
+  border: 1px solid #a78bfa;
+  animation: pulse-glow 3s infinite ease-in-out;
+  box-shadow: 0 0 12px rgba(139,92,246,0.5);
+}
+
+/* ⚫ Developer — Carbon Steel with Power Pulse */
+.dev-badge.developer {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #f1f5f9;
+  border: 1px solid #475569;
+  animation: pulse-glow 2s infinite ease-in-out;
+  box-shadow: 0 0 15px rgba(15,23,42,0.6);
+}
+
+/* 🧊 Official — Cool Steel */
+.dev-badge.official {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: #fff;
+  border: 1px solid #3b82f6;
+  box-shadow: 0 0 8px rgba(59,130,246,0.5);
+}
+
+/* 🟢 Teacher — Emerald Calm */
+.dev-badge.teacher {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff;
+  border: 1px solid #10b981;
+  box-shadow: 0 0 8px rgba(16,185,129,0.4);
+}
+
+/* 🟣 Manager — Royal Pulse */
+.dev-badge.manager {
+  background: linear-gradient(135deg, #7e22ce, #9333ea);
+  color: #fff;
+  border: 1px solid #a855f7;
+  animation: pulse-glow 3s infinite ease-in-out;
+}
+
+/* 🧑‍🎓 Hide badge for students */
+.dev-badge.student {
+  display: none !important;
+}
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 8px rgba(250,204,21,0.4); }
+  50% { box-shadow: 0 0 20px rgba(250,204,21,0.8); }
+}
+.dev-badge.chairman { animation: pulse-gold 2s infinite ease-in-out; }
+
         
         .all-leaders {
             margin-top: 2rem;
@@ -1381,4 +1527,510 @@
         padding-bottom: 0.5rem;
         border-bottom: 1px solid #eee;
     }
+}
+.support-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.support-left {
+  background: #fff;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+}
+
+.support-right {
+  background: #fff;
+  border-radius: 15px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+}
+
+.profile-card img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 3px solid var(--primary);
+}
+
+.support-threads {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow-y: auto;
+  height: 420px;
+  padding: 0.5rem;
+}
+
+.support-messages {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  height: 420px;
+  overflow-y: auto;
+  padding: 0.8rem;
+  background: #f8f9fa;
+}
+
+.support-input {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.support-input input[type="text"] {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.support-input button {
+  padding: 0.7rem 1rem;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.support-input button:hover {
+  background: #0d2b5a;
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1rem;
+}
+.chat-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  max-width: 80%;
+}
+
+.chat-message.mine {
+  margin-left: auto;
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.chat-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary);
+}
+
+.chat-body {
+  background: #fff;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.chat-message.mine .chat-body {
+  background: var(--primary);
+  color: #fff;
+}
+
+.chat-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.2rem;
+}
+
+.chat-message.mine .chat-name {
+  color: #ffd700;
+}
+
+.chat-text {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+.support-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  background: #f8faff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+  min-height: 500px;
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1rem;
+  height: 100%;
+}
+
+.support-threads {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.support-chat-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  padding: 1rem;
+}
+
+.support-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: .5rem;
+}
+
+.support-input {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.support-input input[type="text"] {
+  flex: 1;
+  padding: .6rem .8rem;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: .95rem;
+}
+
+.support-input button {
+  padding: .6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Profile Card (Right Side) */
+.support-right {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+.profile-card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+  text-align: center;
+  width: 100%;
+  max-width: 300px;
+}
+
+.profile-card img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: .8rem;
+  border: 3px solid var(--primary);
+}
+
+.profile-card h3 {
+  margin: 0.5rem 0;
+  color: var(--primary);
+}
+
+.profile-card p {
+  margin: 0.2rem 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+/* -------------------------
+   💬 Support Chat Styles
+------------------------- */
+
+.support-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.support-left {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  min-height: 550px;
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1rem;
+  min-height: 450px;
+}
+
+.support-threads {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow-y: auto;
+  max-height: 450px;
+  background: #fafafa;
+}
+
+.support-thread {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.support-thread:hover {
+  background: #f0f4ff;
+}
+
+.support-chat-area {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.support-messages {
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 420px;
+}
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.message img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+}
+
+.message-content {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  max-width: 80%;
+  line-height: 1.5;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.message-content.staff {
+  background: #e6f0ff;
+}
+
+.support-input {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-top: 1px solid #eee;
+  background: #fff;
+}
+
+.support-input input[type="text"] {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.support-input button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+
+.support-right {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.profile-card img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary-light);
+  margin-bottom: 1rem;
+}
+
+.profile-card h3 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.profile-card p {
+  color: var(--gray);
+  margin: 0.25rem 0;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .support-container {
+    grid-template-columns: 1fr;
+  }
+  .support-right {
+    order: -1;
+    margin-bottom: 1.5rem;
+  }
+}
+/* --- Fix for developer badge spacing in posts, comments, and leaderboard --- */
+.dev-badge.developer {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  background: #facc15;
+  color: #000;
+  font-weight: 600;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-left: 6px;
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Keep username and badge on same line */
+strong, .post-author-name, .post-user-name, .leader-info strong, .leader-row-user strong {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Fix flex parent (prevent stacking name and badge) */
+.post-user, .post-header, .leader-info, .leader-row-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Optional: tighter card layout for posts */
+.post-card, .leader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+/* 📱 Responsive Layout Fixes */
+@media (max-width: 1200px) {
+  .support-container {
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.2rem;
+  }
+  .support-grid {
+    grid-template-columns: 220px 1fr;
+  }
+  .profile-card img {
+    width: 85px;
+    height: 85px;
+  }
+}
+
+@media (max-width: 992px) {
+  .support-container {
+    grid-template-columns: 1fr;
+  }
+  .support-right {
+    order: -1;
+    margin-bottom: 1.5rem;
+  }
+  .support-grid {
+    grid-template-columns: 1fr;
+  }
+  .support-threads {
+    max-height: 300px;
+  }
+  .support-chat-area {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .support-container {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .support-left,
+  .support-right {
+    padding: 1rem;
+  }
+  .message img {
+    width: 32px;
+    height: 32px;
+  }
+  .message-content {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
+  }
+  .support-input input[type="text"] {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+  .support-input button {
+    padding: 0.5rem 0.8rem;
+  }
+  .profile-card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .support-container {
+    padding: 0.8rem;
+  }
+  .support-left,
+  .support-right {
+    padding: 0.8rem;
+  }
+  .support-input {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .support-input input[type="text"],
+  .support-input button {
+    width: 100%;
+  }
+  .message-content {
+    max-width: 100%;
+  }
+  .profile-card img {
+    width: 70px;
+    height: 70px;
+  }
 }

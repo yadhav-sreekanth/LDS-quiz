@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Little Daffodils Quiz Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  <title>Little Daffodils Quiz Club</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -12,6 +11,238 @@
    <link rel="icon" href="logonew.png">
 
 </head>
+
+<!-- Add this style tag in the <head> section, after your existing stylesheet link -->
+<style>
+  /* Mobile-first base styles */
+  @media screen and (max-width: 768px) {
+    .container {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+    }
+    
+    /* Improved header for mobile */
+    header {
+      padding: 0.5rem;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .logo {
+      flex-direction: column;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .logo img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .logo-text h1 {
+      font-size: 1.2rem;
+      margin-bottom: 0.2rem;
+    }
+    
+    .school-name {
+      font-size: 0.9rem;
+    }
+    
+    /* Improved sidebar navigation */
+    .sidebar {
+      position: fixed;
+      left: -100%;
+      top: 0;
+      width: 80%;
+      height: 100vh;
+      background: white;
+      z-index: 1000;
+      transition: left 0.3s ease;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .sidebar.active {
+      left: 0;
+    }
+    
+    .nav-list {
+      padding: 1rem;
+    }
+    
+    .nav-item {
+      padding: 0.8rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+    }
+    
+    /* Main content adjustments */
+    .main-content {
+      margin-left: 0;
+      padding: 1rem;
+    }
+    
+    .section {
+      padding: 1rem;
+    }
+    
+    /* Quiz section improvements */
+    .quiz-container {
+      padding: 1rem;
+      margin: 0;
+    }
+    
+    .options-list button {
+      width: 100%;
+      margin-bottom: 0.8rem;
+      padding: 1rem;
+    }
+    
+    /* Posts section */
+    .posts-container {
+      padding: 0;
+    }
+    
+    .create-post {
+      padding: 1rem;
+    }
+    
+    /* Leaderboard improvements */
+    .leaderboard-tabs {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .leaderboard-tab {
+      flex: 1 1 calc(50% - 0.5rem);
+      padding: 0.8rem;
+      font-size: 0.9rem;
+    }
+    
+    /* Settings improvements */
+    .settings-container {
+      padding: 1rem;
+    }
+    
+    .settings-form {
+      padding: 1rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    /* Mobile menu toggle */
+    .nav-toggle {
+      display: block;
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1001;
+      background: var(--primary);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    
+    /* User profile section */
+    .user-info {
+      flex-direction: column;
+      text-align: center;
+      padding: 0.5rem;
+    }
+    
+    .user-details {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
+    
+    /* Modal improvements */
+    .modal-content {
+      width: 95%;
+      margin: 1rem;
+    }
+    
+    .tabs button {
+      padding: 0.8rem;
+      font-size: 0.9rem;
+    }
+    
+    /* Branch cards */
+    .branch-card {
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    /* Form inputs */
+    input, textarea, select {
+      font-size: 16px; /* Prevents iOS zoom */
+    }
+    
+    /* Button improvements */
+    .btn {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.8rem;
+    }
+    
+    /* Profile section */
+    .profile-header-card {
+      flex-direction: column;
+      text-align: center;
+      padding: 1rem;
+    }
+    
+    .profile-stats {
+      margin-top: 1rem;
+      justify-content: center;
+    }
+    
+    /* Badges display */
+    .badges-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    
+    /* Points summary */
+    .points-summary {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    /* Connections */
+    .connections-tabs {
+      flex-direction: column;
+    }
+    
+    .connections-list {
+      max-height: 300px;
+    }
+  }
+
+  /* Additional improvements for very small screens */
+  @media screen and (max-width: 374px) {
+    .logo-text h1 {
+      font-size: 1rem;
+    }
+    
+    .school-name {
+      font-size: 0.8rem;
+    }
+    
+    .nav-item {
+      padding: 0.6rem;
+      font-size: 0.9rem;
+    }
+    
+    .section-title {
+      font-size: 1.5rem;
+    }
+  }
+</style>
 <body>
   <!-- Header & Navbxar -->
   <header id="header">
@@ -37,7 +268,7 @@
     
     </div>
     <div class="hero-content">
-      <h1 style="font-size: 45px;">Little Daffodils Quiz Club <br/><h1 style="font-size: 29px;">A Space Where Young Minds Shine Brighter</h1>  </h1>
+      <h1 id="heading">Little Daffodils Quiz Club <br/><h1 id="headering">A Space Where Young Minds Shine Brighter</h1>  </h1>
       <p class="tagline">Love • Service • Sacrifice</p>
       <button id="startBtn">Start Now</button>
     </div>
@@ -62,7 +293,12 @@
           <div style="position: relative;">
           <input type="password" id="passwordInput" placeholder="Password" required>
           <i id="togglePassword" class="fa fa-eye" style="position:absolute; right:12px; top:40%; transform:translateY(-50%); cursor:pointer; color:#6b7280;"></i></div>
-          <input type="date" placeholder="Date of Birth" required>
+            <input type="date" placeholder="Date of Birth" required
+              onfocus="(this.type='date')"
+              onblur="if(!this.value)this.type='text'"
+              style="min-height:44px;"
+              name="dob" 
+              id="dob">
           <button type="submit">Sign Up</button>
         </form>
 
@@ -77,20 +313,34 @@
       </div>
     </div>
   </div>
+<!-- About Section -->
+<section class="about" id="about">
+  <h2 class="section-title">About Little Daffodils School</h2>
+  <p>
+    Established on <b>9th May 1990</b> by our founder <b>Mr. N Ramachandran Nair</b>, 
+    Little Daffodils School is a prestigious institution in Calicut (Kerala), 
+    affiliated with the <b>Central Board of Secondary Education (CBSE), Delhi</b>. 
+    Since its inception, the school has stood as a beacon of quality education, 
+    nurturing young minds with values, knowledge, and discipline. Our commitment 
+    has always been to provide not just education, but an environment where 
+    character, creativity, and leadership blossom.
+    <br/>
+   <div style="align-items: center;  justify-content: center; display: flex;"><a class="href" href="https://www.littledaffodilsschool.com/index.php"
+       style=" text-decoration: none; color: rgb(255, 255, 255); border-radius: 50px; padding: 7px 15px; border: solid 1px; background: #003e56;">
+       Click here to learn more about the school
+    </a></div> 
+  </p>
+</section>
 
-  <!-- About Section -->
-  <section class="about" id="about">
-    <h2 class="section-title">About Little Daffodils School</h2>
-    <p>
-      Established on <b>9th May 1990</b> by our founder <b>Mr. N Ramachandran Nair</b>, 
-      Little Daffodils School is a prestigious institution in Calicut (Kerala), 
-      affiliated with the <b>Central Board of Secondary Education (CBSE), Delhi</b>. 
-      Since its inception, the school has stood as a beacon of quality education, 
-      nurturing young minds with values, knowledge, and discipline. Our commitment 
-      has always been to provide not just education, but an environment where 
-      character, creativity, and leadership blossom.<br/><a href="https://www.littledaffodilsschool.com/index.php" style="text-decoration: solid; color:red ;">Click here to learn more about the school</a>
-    </p>
-  </section>
+<style>
+  #about .href:hover {
+    background: #ff0000 !important;
+    color: #ffffff !important;
+    transition: all 0.7s ease; 
+    transform: scale(1.08); /* Slight zoom-in effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+</style>
 
   <!-- About Website -->
   <section class="website-info">
@@ -130,7 +380,7 @@
   <!-- Contact Section -->
   <section class="contact" id="contact">
     <h2 class="section-title">Contact Us</h2>
-    <div class="branches">
+    <div class="branches" >
       <div class="branch-card">
         <h3>Main Branch (Westhill)</h3>
         <p>Near Vikramaidan, Westhill, Kozhikode - 673005</p>
@@ -163,7 +413,23 @@ document.getElementById('togglePassword').addEventListener('click', function() {
         icon.classList.add('fa-eye');
     }
 });
+
+// Add this to your scripts.js
+const navToggle = document.querySelector('.nav-toggle');
+const sidebar = document.querySelector('.sidebar');
+
+navToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('active');
+});
+
+// Close sidebar when clicking outside
+document.addEventListener('click', (e) => {
+  if (!sidebar.contains(e.target) && !navToggle.contains(e.target)) {
+    sidebar.classList.remove('active');
+  }
+});
 </script>
+
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
