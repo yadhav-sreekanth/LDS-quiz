@@ -152,7 +152,7 @@
                         full_name: session.user.user_metadata?.name || 'Student',
                         dob: session.user.user_metadata?.dob || '2010-01-01',
                         total_points: 0,
-                        profile_photo: 'https://via.placeholder.com/48'
+                        profile_photo: 'logonew.png'
                     };
                     await ensureUserExists(fresh);
                     userProfile = { ...fresh, email: session.user.email };
@@ -1498,11 +1498,16 @@ if (!target) {
 
 async function loadLeaderboard(category) {
   try {
-    // Fetch all users ordered by total_points (highest first)
+    // 🧹 Clear local caches before fresh fetch
+    sessionStorage.removeItem('leaderboardCache');
+    localStorage.removeItem('userData');
+
+    // 🧠 Fetch directly from Supabase, no cache
     const { data: allUsers, error } = await supabase
       .from('users')
-      .select('*')
-      .order('total_points', { ascending: false });
+      .select('*', { head: false, count: 'exact' })
+      .order('total_points', { ascending: false })
+      .throwOnError();
 
     if (error) {
       console.error('Error loading leaderboard:', error);

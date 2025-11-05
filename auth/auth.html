@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verifying...</title>
+</head>
+<body>
+  <p style="font-family:sans-serif;text-align:center;margin-top:40vh;">Verifying your account...</p>
+  
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+    const SUPABASE_URL = "https://qcvbqizwmhtuinpqtbzz.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdmJxaXp3bWh0dWlucHF0Ynp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTgyMjIsImV4cCI6MjA3MzE3NDIyMn0.cSRjn0n1MowMMkILc-WEuotSN2Cj78jpbxJhtEqRjl4";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Wait for verification to complete and session to be restored
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error) {
+      document.body.innerHTML = "<h3>Verification failed. Try signing in again.</h3>";
+    } else if (data?.session) {
+      // Redirect to your main app page
+      window.location.href = "/home.html";
+    } else {
+      document.body.innerHTML = "<h3>Verified! Redirecting...</h3>";
+      setTimeout(() => window.location.href = "/home.html", 1000);
+    }
+  </script>
+</body>
+</html>

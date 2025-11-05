@@ -101,13 +101,15 @@ if (signUpForm) {
 
     try {
       // Supabase signup
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { name, dob } // stores extra info in user metadata
-        }
-      });
+const { data: authData, error: authError } = await supabase.auth.signUp({
+  email,
+  password,
+  options: {
+    data: { name, dob }, // store extra info in metadata
+    emailRedirectTo: 'https://yadhav-sreekanth.github.io/auth/callback'
+  }
+});
+
 
       if (authError) {
         alert("Sign Up Error: " + authError.message);
