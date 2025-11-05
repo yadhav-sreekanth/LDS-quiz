@@ -106,7 +106,7 @@ const { data: authData, error: authError } = await supabase.auth.signUp({
   password,
   options: {
     data: { name, dob }, // store extra info in metadata
-    emailRedirectTo: 'https://yadhav-sreekanth.github.io/auth/callback'
+    emailRedirectTo: 'https://yadhav-sreekanth.github.io/MathauraX/auth/callback.html'
   }
 });
 
