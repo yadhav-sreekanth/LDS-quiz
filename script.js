@@ -106,7 +106,7 @@ const { data: authData, error: authError } = await supabase.auth.signUp({
   password,
   options: {
     data: { name, dob }, // store extra info in metadata
-    emailRedirectTo: 'https://yadhav-sreekanth.github.io/LDS-quiz/auth/callback.html'
+    emailRedirectTo: 'https://yadhav-sreekanth.github.io/LDS-quiz/auth/auth.html'
   }
 });
 
