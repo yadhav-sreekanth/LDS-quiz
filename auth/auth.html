@@ -14,17 +14,15 @@
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdmJxaXp3bWh0dWlucHF0Ynp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTgyMjIsImV4cCI6MjA3MzE3NDIyMn0.cSRjn0n1MowMMkILc-WEuotSN2Cj78jpbxJhtEqRjl4";
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Wait for verification to complete and session to be restored
     const { data, error } = await supabase.auth.getSession();
 
     if (error) {
       document.body.innerHTML = "<h3>Verification failed. Try signing in again.</h3>";
     } else if (data?.session) {
-      // Redirect to your main app page
-      window.location.href = "/home.html";
+      window.location.href = "index.html"; // relative path
     } else {
       document.body.innerHTML = "<h3>Verified! Redirecting...</h3>";
-      setTimeout(() => window.location.href = "/home.html", 1000);
+      setTimeout(() => window.location.href = "home.html", 1000); // ✅ fixed
     }
   </script>
 </body>

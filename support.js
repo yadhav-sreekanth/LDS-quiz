@@ -9,7 +9,7 @@ let currentUser = null;
 async function initSupportSection(user) {
   currentUser = user;
   
-const isStaff = user.is_dev || ['staff', 'developer', 'admin']
+const isStaff = user.is_dev || ['staff', 'developer', 'teacher', 'principal', 'chairman',  'admin']
   .includes((user.role_badge || '').toLowerCase());
 
   if (isStaff) {

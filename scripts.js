@@ -438,24 +438,28 @@ if (roleBadge && roleBadge.toLowerCase() !== 'student') {
                 const grantEmail = document.getElementById('devGrantEmail');
                 const roleSelect = document.getElementById('devRoleSelect');
                 const powerMsg = document.getElementById('devPowerMsg');
-                if (!loadBtn || loadBtn._bound) return; // already bound
-                loadBtn._bound = true;
                 loadBtn.onclick = async () => {
-                    msg.textContent = 'Loading questions.json...';
-                    const content = await devLoadQuestionsFromStorage();
-                    ed.value = content || '';
-                    msg.textContent = content ? 'Loaded from Storage (config/questions.json)' : 'Loaded local fallback (questions.json)';
-                };
-                validateBtn.onclick = () => {
-                    try {
-                        const parsed = JSON.parse(ed.value || '{}');
-                        const cats = ['early_years','lower_primary','upper_primary'];
-                        cats.forEach(c => { if (!Array.isArray(parsed[c])) throw new Error(`Category ${c} must be an array`); });
-                        msg.textContent = 'Valid JSON ✔';
-                    } catch (e) {
-                        msg.textContent = 'Invalid JSON: ' + (e.message || e);
-                    }
-                };
+  msg.textContent = '⏳ Loading questions.json from Supabase...';
+  ed.value = ''; // clear editor first
+  try {
+    const content = await devLoadQuestionsFromStorage();
+
+    if (content && content.trim().startsWith('{')) {
+      ed.value = content;
+      msg.textContent = '✅ Loaded successfully from Supabase Storage (config/questions.json)';
+    } else if (content && content.trim().length > 0) {
+      ed.value = content;
+      msg.textContent = '⚠️ File loaded but not valid JSON — please fix before saving.';
+    } else {
+      ed.value = '{\n  "early_years": [],\n  "lower_primary": [],\n  "upper_primary": [],\n  "cbse": []\n}';
+      msg.textContent = '⚠️ No valid file found. Default JSON inserted.';
+    }
+  } catch (e) {
+    msg.textContent = `❌ Load failed: ${e.message || e}`;
+    console.error('Developer Load Error:', e);
+  }
+};
+
                 saveBtn.onclick = async () => {
                     try {
                         JSON.parse(ed.value || '{}');
@@ -1556,7 +1560,8 @@ async function loadLeaderboard(category) {
 />
         <div class="leader-info">
           <strong>${user.full_name}${(user.is_dev || (user.role_badge || '').toLowerCase() === 'developer')
-            ? ' <span class="dev-badge developer">DEVELOPER</span>' : ''}</strong>
+            ? ' <span class="dev-badge developer">DEV</span>' : ''}</strong>
+            
           <span>${user.weekly_points || 0} pts</span>
         </div>
       `;
@@ -1577,8 +1582,9 @@ async function loadLeaderboard(category) {
 />
 
           <strong>${user.full_name}${(user.is_dev || (user.role_badge || '').toLowerCase() === 'developer')
-            ? ' <span class="dev-badge developer">DEVELOPER</span>' : ''}</strong>
+            ? ' <span class="dev-badge developer">DEV</span>' : ''}</strong>
         </div>
+        
         <span>${user.weekly_points || 0} pts</span>
       `;
       allEl.appendChild(leaderRow);
@@ -1587,6 +1593,8 @@ async function loadLeaderboard(category) {
     console.error('Unexpected leaderboard error:', err);
   }
 }
+
+
 
 
         async function saveProfile() {

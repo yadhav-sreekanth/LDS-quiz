@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="media.css">
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -41,62 +42,68 @@
         </div>
 
 
-        <div class="sidebar" id="sidebar" style="overflow-y:auto; max-height: calc(100vh - 80px);">
-            <ul class="nav-list" style="gap: 10px;">
-                <li class="nav-item active" data-section="quiz">
-                    <i class="fas fa-brain"></i>
-                    <span>Dashboard</span>
-                </li>
-<br/>
-                <li class="nav-item" data-section="leaderboard">
-                    <i class="fas fa-trophy"></i>
-                    <span>Leaderboard</span>
-                </li>
-<br/>
-                <li class="nav-item" data-section="posts">
-                    <i class="fas fa-comments"></i>
-                    <span>Posts</span>
-                </li>
-                <br/>
-                <li class="nav-item" data-section="announcements">
-                    <i class="fas fa-bullhorn"></i>
-                    <span>Announcements</span>
-                </li>
-                <br/>
-                                <li class="nav-item" data-section="support" id="nav-support">
-                    <i class="fas fa-life-ring"></i>
-                    <span>Support</span>
-                </li>
-                <br/>
-                <li class="nav-item" data-section="monitoring" id="nav-monitoring" style="display:none;">
-                    <i class="fas fa-eye"></i>
-                    <span>Monitoring</span>
-                </li>
-                <br/>
-                
-                <li class="nav-item" data-section="developer" id="nav-developer" style="display:none;">
-                    <i class="fas fa-code"></i>
-                    <span>Developer</span>
-                </li>
-                <br/>
+        <div class="sidebar" id="sidebar">
+    <ul class="nav-list">
+        <li class="nav-item active" data-section="quiz">
+            <i class="fas fa-brain"></i><span>Dashboard</span>
+        </li>
 
-                <div class="divider" style="margin-top: 10px; margin-bottom: 30px; border-bottom: 1px solid #eee;"> <br></div>
-                <li class="nav-item" data-section="account">
-                    <i class="fas fa-user"></i>
-                    <span>My Space</span>
-                </li>
+        <li class="nav-item" data-section="leaderboard">
+            <i class="fas fa-trophy"></i><span>Leaderboard</span>
+        </li>
 
-                <li class="nav-item" data-section="settings">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </li>
-                </div>
-            </ul>
-        </div>
+        <li class="nav-item" data-section="posts">
+            <i class="fas fa-comments"></i><span>Posts</span>
+        </li>
+
+        <li class="nav-item" data-section="announcements">
+            <i class="fas fa-bullhorn"></i><span>Announcements</span>
+        </li>
+
+        <li class="nav-item" data-section="support">
+            <i class="fas fa-life-ring"></i><span>Support</span>
+        </li>
+
+        <li class="nav-item" data-section="monitoring" id="nav-monitoring" style="display:none;">
+            <i class="fas fa-eye"></i><span>Monitoring</span>
+        </li>
+
+        <li class="nav-item" data-section="developer" id="nav-developer" style="display:none;">
+            <i class="fas fa-code"></i><span>Developer</span>
+        </li>
+
+        <hr class="divider">
+
+        <li class="nav-item" data-section="account">
+            <i class="fas fa-user"></i><span>My Space</span>
+        </li>
+
+        <li class="nav-item" data-section="settings">
+            <i class="fas fa-cog"></i><span>Settings</span>
+        </li>
+    </ul>
+</div>
+<style>
+    .sidebar {
+   overflow-y: auto  !important;
+   height: calc(100vh - 0px) !important; /* adjust as needed */
+}
+
+.nav-list {
+   display: flex  !important;
+   flex-direction: column  !important;
+   gap: 14px  !important;     /* replaces <br/> */
+}
+
+.divider{
+      border-top: 1px solid rgba(0, 0, 0, 0.1); /* light gray line */
+        
+}
+</style>
 
         <div class="main-content">
             <div class="mobile-user">
-                <img id="mobileProfilePhoto" src="https://via.placeholder.com/48" alt="Profile">
+                <img id="mobileProfilePhoto" src="logonew.png" alt="Profile">
                 <div class="user-details">
                     <span class="name" id="mobileUserName">Student</span>
                     <span class="points" id="mobileUserPoints">Points: 0</span>
@@ -259,6 +266,7 @@
                 <div class="my-space-container">
                     <!-- Profile Header Card -->
                     <div class="profile-header-card" style="display:flex; align-items:center; gap:1rem;">
+                                    
                         <div class="profile-avatar-section">
                             <img id="accountAvatar" src="logonew.png" alt="Avatar" class="profile-avatar">
                             <div class="profile-info">
@@ -267,6 +275,7 @@
                                 <div id="accountPoints" class="profile-points">Total Points: 0</div>
                             </div>
                         </div>
+                        
                         <div class="profile-stats">
                             <div class="stat-item">
                                 <div class="stat-number" id="followersCount">0</div>
@@ -277,8 +286,8 @@
                                 <div class="stat-label">Following</div>
                             </div>
                         </div>
-                        <button id="openSettingsBtn" title="Settings" style="margin-left:auto; background:transparent; border:none; cursor:pointer; font-size:1.1rem; color:#6b7280;">
-                            <i class="fas fa-cog"></i>
+ <button id="openSettingsBtn" title="Settings" style="margin-left:auto; background:transparent; border:none; cursor:pointer; font-size:1.1rem; color:#6b7280;">
+                            <i class="fas fa-cog " style="color: white;"></i>
                         </button>
                     </div>
 
@@ -375,8 +384,9 @@
                         <div class="profile-picture">
                             <img id="settingsProfilePhoto" src="https://via.placeholder.com/80" alt="Profile">
                             <div>
-                                <p>Update your profile picture</p>
+                                <p class="profileupdate">Update your profile picture</p>
                                 <input type="file" id="photoInput" accept="image/*">
+                                
                             </div>
                         </div>
                         
@@ -406,14 +416,19 @@
                         </div>
                         
                         <div class="action-buttons">
-                            <button class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+                            <button class="btn btn-primary" id="saveProfileBtn">Save</button>
                             <button class="btn btn-logout" id="logoutBtn">Logout</button>
-                            <button class="btn btn-danger" id="deleteAccountBtn">Delete Account</button>
                         </div>
                     </div>
                 </div>
             </div>
+<style>
+    @media  (max-width:408) {
+        .action-buttons{
 
+        }
+    }
+</style>
             <!-- Developer Section (visible only to developer email) -->
             <div class="section" id="section-developer">
                 <h2 class="section-title">Developer Tools</h2>
@@ -661,9 +676,10 @@
 </div>
 
 
+
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="scripts.js"></script>
+    <script src="monitoring.js"></script>
     <script src="support.js"></script>
-    <!--TRUNCATE TABLE quizzes RESTART IDENTITY CASCADE;!-->
 </body>
 </html>
