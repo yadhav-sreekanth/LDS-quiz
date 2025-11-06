@@ -1002,7 +1002,7 @@ if (!target) {
                     : displayName;
                 el.innerHTML = `
                     <div class="post-head">
-                        <img src="${(post.users && post.users.profile_photo) || 'https://via.placeholder.com/40'}" />
+                        <img src="${(post.users && post.users.profile_photo) || 'logonew.png'}" />
                         <strong>${nameWithBadge}</strong>
                         <small>${postDate}</small>
                         ${post.is_pinned ? '<span class="pinned-badge"><i class="fas fa-thumbtack"></i> Pinned</span>' : ''}
@@ -1960,7 +1960,7 @@ async function loadLeaderboard(category) {
         async function loadAccount() {
             try {
                 // Header summary
-                document.getElementById('accountAvatar').src = userProfile.profile_photo || 'https://via.placeholder.com/80';
+                document.getElementById('accountAvatar').src = userProfile.profile_photo || 'logonew.png';
                 document.getElementById('accountName').innerHTML = escapeHtml(userProfile.full_name || 'Student');
                 document.getElementById('accountEmail').textContent = userProfile.email || '';
                 // Show total points in My Space (not weekly)
