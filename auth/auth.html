@@ -6,7 +6,7 @@
 </head>
 <body>
   <p style="font-family:sans-serif;text-align:center;margin-top:40vh;">Verifying your account...</p>
-  
+
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -19,10 +19,13 @@
     if (error) {
       document.body.innerHTML = "<h3>Verification failed. Try signing in again.</h3>";
     } else if (data?.session) {
-      window.location.href = "/index.html"; // relative path
+      // ✅ Redirect to root index.html no matter where this file is located
+      window.location.href = `${window.location.origin}/index.html`;
     } else {
       document.body.innerHTML = "<h3>Verified! Redirecting...</h3>";
-      setTimeout(() => window.location.href = "/home.html", 1000); // ✅ fixed
+      setTimeout(() => {
+        window.location.href = `${window.location.origin}/index.html`;
+      }, 1000);
     }
   </script>
 </body>
