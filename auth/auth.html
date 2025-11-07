@@ -16,19 +16,19 @@
 
     const { data, error } = await supabase.auth.getSession();
 
-    // ✅ Automatically detect project base path (e.g., /LDS-quiz/)
-    const basePath = window.location.pathname.split("/")[1];
-    const redirectPath = `/${basePath}/index.html`;
+    // ✅ Dynamically get your repo path (e.g., /LDS-quiz/)
+    const repoName = window.location.pathname.split("/")[1];
+    const redirectTo = `/${repoName}/index.html`;
 
     if (error) {
       document.body.innerHTML = "<h3>Verification failed. Try signing in again.</h3>";
     } else if (data?.session) {
-      // redirect if user already has a session
-      window.location.href = redirectPath;
+      // user already has session
+      window.location.href = redirectTo;
     } else {
       document.body.innerHTML = "<h3>Verified! Redirecting...</h3>";
       setTimeout(() => {
-        window.location.href = redirectPath;
+        window.location.href = redirectTo;
       }, 1000);
     }
   </script>
