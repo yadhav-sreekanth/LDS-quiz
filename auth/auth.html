@@ -16,15 +16,18 @@
 
     const { data, error } = await supabase.auth.getSession();
 
+    // ✅ Define your GitHub Pages project path
+    const PROJECT_PATH = "/LDS-quiz/";
+
     if (error) {
       document.body.innerHTML = "<h3>Verification failed. Try signing in again.</h3>";
     } else if (data?.session) {
-      // ✅ Redirect to root index.html no matter where this file is located
-      window.location.href = `${window.location.origin}/index.html`;
+      // Redirect to LDS-quiz root index.html
+      window.location.href = `${window.location.origin}${PROJECT_PATH}index.html`;
     } else {
       document.body.innerHTML = "<h3>Verified! Redirecting...</h3>";
       setTimeout(() => {
-        window.location.href = `${window.location.origin}/index.html`;
+        window.location.href = `${window.location.origin}${PROJECT_PATH}index.html`;
       }, 1000);
     }
   </script>
