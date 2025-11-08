@@ -23,16 +23,36 @@
         <div class="logo">
             <img src="logonew.png" alt="Little Daffodils logo" />
             <div class="logo-text">
-                <h1>Little Daffodils Quiz Club</h1>
+<h1 style="white-space: normal; word-wrap: break-word;  line-height: 1.2;">
+  Little Daffodils Quiz Club
+</h1>
                 <div class="school-name">Little Daffodils School</div>
             </div>
         </div>
         <div class="user-info">
             <img id="profilePhoto" src="https://via.placeholder.com/48" alt="Profile">
             <div class="user-details">
-                <span class="name" id="userName">Student</span>
+                <span class="name" id="userName">Student</span> 
                 <span class="points" id="userPoints">Points: 0</span>
+                
+                <style>
+                      .user-details {
+    display: flex !important;
+    flex-direction: column !important;   /* <-- Add this */
+    align-items: flex-start !important;    /* <-- keeps right alignment neat */
+    gap: 2px;
+  } 
+
+                    @media (max-width: 790px) {
+.user-details { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.user-details span { display:inline-flex;  }
+.dev-badge { margin-left:4px; font-size:0.75rem; padding:2px 6px; border-radius:6px; background:#4b6cb7; color:white; }}
+</style>
+
+
+
             </div>
+            
         </div>
     </header>
 
@@ -214,7 +234,7 @@
 
             <!-- Posts Section -->
             <div class="section" id="section-posts">
-                <h2 class="section-title">Community Posts</h2>
+                <h2 class="section-title">Share your thoughts</h2>
                 <div class="posts-container">
                     <div class="posts-feed" id="postsFeed" aria-live="polite">
                         <!-- Posts will be loaded here -->
@@ -243,6 +263,8 @@
                         <button class="leaderboard-tab" data-category="early_years">Early Years</button>
                         <button class="leaderboard-tab" data-category="lower_primary">Lower Primary</button>
                         <button class="leaderboard-tab" data-category="upper_primary">Upper Primary</button>
+                        <button class="leaderboard-tab" data-category="all">All Time</button>
+
                     </div>
                     
                     <div class="top-three" id="top3">
@@ -422,13 +444,7 @@
                     </div>
                 </div>
             </div>
-<style>
-    @media  (max-width:408) {
-        .action-buttons{
 
-        }
-    }
-</style>
             <!-- Developer Section (visible only to developer email) -->
             <div class="section" id="section-developer">
                 <h2 class="section-title">Developer Tools</h2>
@@ -501,9 +517,9 @@
                         </div>
                         <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
                             <h3 style="margin-bottom:.75rem; color:var(--primary);">Developer Mode</h3>
-                            <p style="color:#6b7280; margin-bottom:.5rem;">Grant developer powers to other email addresses. This gives them the same privileges as yadhavvsreelakam@gmail.com.</p>
+                            <p style="color:#6b7280; margin-bottom:.5rem;">Grant developer powers to other users. This gives them the some privileges the developer.</p>
                             <div style="margin-bottom:.75rem;">
-                                <label style="display:block; font-weight:600; margin-bottom:.25rem;">Email Address</label>
+                                <label style="display:block; font-weight:600; margin-bottom:.25rem;">Name or Database UID</label>
                                 <input type="email" id="devGrantEmail" placeholder="Enter email to grant developer powers" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
                             </div>
                             <div style="margin-bottom:.75rem;">
@@ -517,7 +533,7 @@
                                     <option value="chairman">Chairman</option>
                                 </select>
                             </div>
-                            <div style="margin-top:.5rem;">
+                            <div style="margin-top:.5rem;" class="buttoner">
                                 <button class="btn btn-primary" id="devGrantPowerBtn">Grant Powers</button>
                                 <button class="btn" id="devRevokePowerBtn" style="background:#dc2626; color:#fff; margin-left:.5rem;">Revoke Powers</button>
                             </div>
@@ -527,7 +543,7 @@
                         <!-- Manage Users Panel (no email needed) -->
                         <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
                             <h3 style="margin-bottom:.75rem; color:var(--primary);">Manage Users</h3>
-                            <p style="color:#6b7280; margin-bottom:.5rem;">Search registered users, adjust points, followers, badges, or delete account.</p>
+                            <p style="color:#6b7280; margin-bottom:.5rem;">Search registered users, badges, or delete account.</p>
                             <div style="display:grid; gap:.5rem; grid-template-columns: 1fr;">
                                 <input type="text" id="adminUserSearch" placeholder="Search by name..." style="padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
                                 <div style="display:flex; align-items:center; gap:.75rem;">
@@ -575,14 +591,7 @@
                                             <button class="btn" id="adminApplyRoles" style="background:#1d4ed8; color:#fff;">Apply Roles</button>
                                             <button class="btn" id="adminRevokeRoles" style="background:#dc2626; color:#fff;">Revoke Roles</button>
                                         </div>
-                                        <div>
-                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Followers: Add/Remove</label>
-                                            <div style="display:flex; gap:.5rem;">
-                                                <input type="text" id="adminFollowerUserId" placeholder="Follower user id" style="flex:1; padding:.5rem .6rem; border:1px solid #ddd; border-radius:8px;" />
-                                                <button class="btn" id="adminAddFollower" style="background:#16a34a; color:#fff;">Add</button>
-                                                <button class="btn" id="adminRemoveFollower" style="background:#f59e0b; color:#111;">Remove</button>
-                                            </div>
-                                        </div>
+                                    
                                         <div style="grid-column: 1/-1; display:flex; justify-content:space-between;">
                                             <button class="btn" id="adminDeleteUser" style="background:#b91c1c; color:#fff;">Delete User</button>
                                             <div id="adminUserMsg" style="color:#374151;"></div>

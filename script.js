@@ -190,12 +190,29 @@ if (signInForm) {
       [data.user.id]: userData
     }));
 
-    alert("Welcome back!");
-    console.log("User signed in:", data);
-    closeModalFunc();
+// Show animation overlay
+const animation = document.getElementById("loginAnimation");
+const animationLogo = document.getElementById("animationLogo");
+const animationText = document.getElementById("animationText");
 
-    // Redirect to home.html
-    window.location.href = "home.html";
+// Display overlay
+animation.style.display = "flex";
+
+// Close modal
+closeModalFunc();
+
+// Trigger animations
+setTimeout(() => {
+  animationLogo.classList.add("animate");
+  animationText.classList.add("animate");
+}, 50);
+
+// Redirect after animation
+setTimeout(() => {
+  animation.style.display = "none";
+  window.location.href = "home.html";
+}, 2500); // 2.5s animation
+
   });
 }
 

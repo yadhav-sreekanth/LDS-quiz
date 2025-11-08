@@ -6,7 +6,14 @@
         let userId = null;
         let userProfile = null;
 
-        
+        function hasModeratorPower(profile) {
+    const role = (profile?.role_badge || '').toLowerCase();
+    return (
+        profile?.is_dev ||
+        ['developer', 'teacher', 'chairman', 'official'].includes(role)
+    );
+}
+
         // Questions are loaded from questions.json at runtime
         let questionBanks = null;
 
@@ -35,7 +42,7 @@
             const role = (userProfile?.role_badge || inferred || '').toLowerCase();
             if (!role) return true;
             if (role === 'developer' || !!userProfile?.is_dev || ((userProfile?.email||'').toLowerCase()==='yadhavvsreelakam@gmail.com')) return true;
-            if (['principal','senior_principal','chairman','official'].includes(role)) return false;
+            if (['principal','senior_principal','teacher','chairman','official'].includes(role)) return false;
             return true;
         }
 
@@ -996,10 +1003,13 @@ if (!target) {
                 
                 const displayName = (post.users && post.users.full_name) || 'User';
                 const role = (post.users && (post.users.role_badge||'')) || '';
-                const isDevOrRole = (post.users && (post.users.is_dev || (role.toLowerCase()==='developer')));
-                const nameWithBadge = isDevOrRole
-                    ? `${displayName} <span class="dev-badge developer">DEVELOPER</span>`
-                    : displayName;
+               let nameWithBadge = displayName;
+if (role) {
+  nameWithBadge += ` <span class="dev-badge ${role.toLowerCase()}">${role.replace('_',' ').toUpperCase()}</span>`;
+} else if (post.users?.is_dev) {
+  nameWithBadge += ` <span class="dev-badge developer">DEVELOPER</span>`;
+}
+
                 el.innerHTML = `
                     <div class="post-head">
                         <img src="${(post.users && post.users.profile_photo) || 'logonew.png'}" />
@@ -1111,22 +1121,93 @@ if (!target) {
             });
 
             // Attach pin handlers (dev only)
-            container.querySelectorAll('.pin-btn').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    const postId = btn.getAttribute('data-post-id');
-                    const isPinned = btn.getAttribute('data-pinned') === 'true';
-                    const { error } = await supabase
-                        .from('posts')
-                        .update({ is_pinned: !isPinned })
-                        .eq('id', postId);
-                    if (error) {
-                        console.error('Pin toggle failed:', error);
-                        alert(`Failed to ${isPinned ? 'unpin' : 'pin'} post: ${error.message}`);
-                        return;
-                    }
-                    loadPosts();
-                });
-            });
+document.addEventListener('click', async (e) => {
+    const pinBtn = e.target.closest('.pin-btn');
+    const deleteBtn = e.target.closest('.delete-btn');
+
+    // ✅ Fetch logged-in user profile
+    const { data: { user } } = await supabase.auth.getUser();
+    const { data: profile, error: profErr } = await supabase
+        .from('users')
+        .select('id, role_badge, is_dev')
+        .eq('id', user.id)
+        .single();
+
+    if (profErr || !profile) {
+        console.error('Error fetching user profile:', profErr);
+        alert('Could not verify permissions.');
+        return;
+    }
+
+    const canModerate = hasModeratorPower(profile);
+
+if (pinBtn) {
+    const postId = pinBtn.dataset.postId;
+    const isPinned = pinBtn.dataset.pinned === 'true';
+
+    if (!canModerate) {
+        alert('Only developers, teachers, chairman, or officials can pin/unpin posts.');
+        return;
+    }
+
+    const { error } = await supabase
+        .from('posts')
+        .update({ is_pinned: !isPinned })
+        .eq('id', postId);
+
+    if (error) {
+        console.error('Error updating pin:', error);
+        alert('Failed to update pin status.');
+        return;
+    }
+
+    // ✅ Reload posts so pinned one goes to top & shows icon
+    await loadPosts();
+
+    alert(`Post ${!isPinned ? 'pinned' : 'unpinned'} successfully!`);
+}
+
+
+    // 🔹 Handle delete
+    if (deleteBtn) {
+        const postId = deleteBtn.dataset.postId;
+
+        // Fetch the post to check ownership
+        const { data: postData, error: postErr } = await supabase
+            .from('posts')
+            .select('user_id')
+            .eq('id', postId)
+            .single();
+
+        if (postErr || !postData) {
+            console.error('Error fetching post:', postErr);
+            alert('Unable to find post.');
+            return;
+        }
+
+        if (postData.user_id !== profile.id && !canModerate) {
+            alert('You don’t have permission to delete this post.');
+            return;
+        }
+
+        if (!confirm('Are you sure you want to delete this post?')) return;
+
+        const { error } = await supabase
+            .from('posts')
+            .delete()
+            .eq('id', postId);
+
+        if (error) {
+            console.error('Error deleting post:', error);
+            alert('Failed to delete post.');
+            return;
+        }
+
+        document.getElementById(`post-${postId}`)?.remove();
+        alert('Post deleted successfully.');
+    }
+});
+
 
             // Attach delete handlers (own posts only)
             container.querySelectorAll('.delete-btn').forEach(btn => {
@@ -1191,16 +1272,46 @@ if (!target) {
                     const isPinned = !!comment.is_pinned || localPinnedForPost.has(comment.id);
                     commentEl.innerHTML = `
                         <div class="comment-header">
-<img 
-  src="${comment.users?.profile_photo || '/logonew.png'}" 
-  alt="${comment.users?.full_name || 'User'}" 
+<img
+  src="${comment.users?.profile_photo || userProfile?.profile_photo || 'logonew.png'}"
+  alt="${comment.users?.full_name || 'User'}"
   class="comment-avatar"
-  onerror="this.onerror=null;this.src='/logonew.png';"
+  style="width:40px; height:40px; border-radius:50%; object-fit:cover; aspect-ratio:1/1; object-position:center;"
+  onerror="this.onerror=null;this.src='logonew.png';"
 />
-                            <strong class="comment-author">${comment.users?.full_name || 'User'} ${(comment.users?.is_dev || (String(comment.users?.role_badge||'').toLowerCase()==='developer')) ? '<span class="dev-badge developer" style="margin-left:.25rem;">DEVELOPER</span>' : ''} ${isPinned ? '<span class="pinned-badge" style="font-size:.6rem; padding:.1rem .35rem; margin-left:.25rem;">Pinned</span>' : ''}</strong>
+<strong class="comment-author">
+  ${comment.users?.full_name || 'User'}
+  ${
+    comment.users?.role_badge
+      ? `<span class="dev-badge" style="margin-left:.25rem;">${comment.users.role_badge.toUpperCase()}</span>`
+      : ''
+  }
+  ${
+    isPinned
+      ? '<span class="pinned-badge" style="font-size:.6rem;padding:.1rem .35rem;margin-left:.25rem;">Pinned</span>'
+      : ''
+  }
+</strong>
+
                             <small class="comment-time">${new Date(comment.created_at).toLocaleString()}</small>
                         </div>
-                        <div class="comment-content">${escapeHtml(comment.content)}</div>
+<div class="comment-content"
+     style="margin-top:6px;margin-left:49px;
+            background:linear-gradient(135deg,#f9fafc 0%,#eef2f8 100%);
+            border:1px solid #dbe2ec;
+            padding:10px 16px;
+            border-radius:10px;
+            line-height:1.6;
+            margin-bottom:30px;
+            font-size:1.1rem;
+            color:#222;
+            width:fit-content;
+            max-width:90%;
+            word-wrap:break-word;
+            box-sizing:border-box;
+            box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+  ${escapeHtml(comment.content)}
+</div>
                         ${canModerate ? `
                         <div class="comment-actions">
                             <button class="btn-icon comment-pin" data-post-id="${postId}" data-comment-id="${comment.id}" data-pinned="${isPinned ? 'true' : 'false'}"><i class="fas fa-thumbtack"></i> ${isPinned ? 'Unpin' : 'Pin'}</button>
@@ -1499,34 +1610,39 @@ if (!target) {
             
             alert('Post created successfully!');
         }
-
 async function loadLeaderboard(category) {
   try {
-    // 🧹 Clear local caches before fresh fetch
     sessionStorage.removeItem('leaderboardCache');
     localStorage.removeItem('userData');
 
-    // 🧠 Fetch directly from Supabase, no cache
+    // 🧠 Fetch directly from Supabase
     const { data: allUsers, error } = await supabase
       .from('users')
-      .select('*', { head: false, count: 'exact' })
-      .order('total_points', { ascending: false })
-      .throwOnError();
+      .select('*')
+      .order(category === 'all_time' ? 'total_points' : 'weekly_points', { ascending: false });
 
     if (error) {
       console.error('Error loading leaderboard:', error);
       return;
     }
 
-    // ✅ Show only developers and normal users (exclude staff/chairman/etc.)
-    const allowedRoles = ['developer', '', null, 'user', 'student'];
+    console.log('✅ All users fetched:', allUsers?.length || 0, allUsers);
+
+    // 🧹 Normalize and filter
+    const allowedRoles = ['developer', 'user', 'student', '', null];
     let users = (allUsers || []).filter(u => {
-      const role = (u.role_badge || '').toLowerCase();
+      const role = (u.role_badge || '').trim().toLowerCase();
       return allowedRoles.includes(role);
     });
 
-    // Optional: filter by category (junior/senior/global)
-    if (category && category !== 'global') {
+    console.log('✅ Filtered users:', users.map(u => ({
+      name: u.full_name,
+      role: u.role_badge,
+      points: category === 'all_time' ? u.total_points : u.weekly_points
+    })));
+
+    // 🎯 Filter by category (not for global/all_time)
+    if (category && category !== 'global' && category !== 'all_time') {
       users = users.filter(u => determineQuizTypeFromDOB(u.dob) === category);
     }
 
@@ -1545,47 +1661,61 @@ async function loadLeaderboard(category) {
       return;
     }
 
-    // 🥇 Top 3 section
+    // 🥇 Top 3
     users.slice(0, 3).forEach((user, index) => {
       const medals = ['🥇', '🥈', '🥉'];
+      const points = category === 'all_time' ? (user.total_points || 0) : (user.weekly_points || 0);
+
       const leaderEl = document.createElement('div');
       leaderEl.className = 'leader';
       leaderEl.innerHTML = `
         <div class="leader-rank">${medals[index]}</div>
-<img 
-  class="leader-img" 
-  src="${user.profile_photo || '/logonew.png'}" 
-  alt="${user.full_name}" 
-  onerror="this.onerror=null;this.src='/logonew.png';"
-/>
+        <img 
+          class="leader-img" 
+          src="${user.profile_photo || '/logonew.png'}" 
+          alt="${user.full_name}" 
+          onerror="this.onerror=null;this.src='/logonew.png';"
+        />
         <div class="leader-info">
-          <strong>${user.full_name}${(user.is_dev || (user.role_badge || '').toLowerCase() === 'developer')
-            ? ' <span class="dev-badge developer">DEV</span>' : ''}</strong>
-            
-          <span>${user.weekly_points || 0} pts</span>
+   <strong>
+  ${user.full_name}
+  ${(user.is_dev || (user.role_badge || '').toLowerCase() === 'developer')
+    ? ' <span style="color: #ffffff; font-weight: 700;"class="dev-badge developer">DEV</span>'
+    : ''}
+</strong>
+
+          <span>${points} pts</span>
         </div>
       `;
       top3El.appendChild(leaderEl);
     });
 
-    // 👥 Full leaderboard
+    // 👥 All users
+      // 👥 Full leaderboard list
     users.forEach((user, index) => {
+      const points =
+        category === 'all_time'
+          ? (user.total_points || 0)
+          : (user.weekly_points || 0);
+
       const leaderRow = document.createElement('div');
       leaderRow.className = 'leader-row';
       leaderRow.innerHTML = `
         <div class="leader-row-user">
           <span>${index + 1}.</span>
-        <img 
-  src="${user.profile_photo || '/logonew.png'}" 
-  alt="${user.full_name}" 
-  onerror="this.onerror=null;this.src='/logonew.png';"
-/>
-
-          <strong>${user.full_name}${(user.is_dev || (user.role_badge || '').toLowerCase() === 'developer')
-            ? ' <span class="dev-badge developer">DEV</span>' : ''}</strong>
+          <img 
+            src="${user.profile_photo || '/logonew.png'}" 
+            alt="${user.full_name}" 
+            onerror="this.onerror=null;this.src='/logonew.png';"
+          />
+          <strong>
+            ${user.full_name}
+            ${(user.is_dev || (user.role_badge || '').toLowerCase() === 'developer')
+              ? ' <span class="dev-badge developer">DEV</span>' 
+              : ''}
+          </strong>
         </div>
-        
-        <span>${user.weekly_points || 0} pts</span>
+        <span>${points} pts</span>
       `;
       allEl.appendChild(leaderRow);
     });
@@ -1594,10 +1724,7 @@ async function loadLeaderboard(category) {
   }
 }
 
-
-
-
-        async function saveProfile() {
+async function saveProfile() {
             const name = document.getElementById('nameInput').value.trim();
             const email = document.getElementById('emailInput').value.trim();
             const password = document.getElementById('passwordInput').value;
@@ -1887,8 +2014,13 @@ async function loadLeaderboard(category) {
             const listEl = document.getElementById('announcementsList');
             const formWrap = document.getElementById('announceFormWrap');
             // Show form only for developer email
-            const isDevEmail = (userProfile && (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com') || userProfile?.is_dev;
-            if (formWrap) formWrap.style.display = isDevEmail ? 'block' : 'none';
+  const role = (userProfile?.role_badge || '').toLowerCase();
+const canAnnounce =
+  userProfile?.is_dev ||
+  ['developer', 'teacher', 'chairman', 'admin'].includes(role);
+
+if (formWrap) formWrap.style.display = canAnnounce ? 'block' : 'none';
+
 
             // Fetch announcements
             const { data, error } = await supabase
@@ -2145,121 +2277,235 @@ async function loadLeaderboard(category) {
             }
         }
 
-        // Admin Manage Users: list online users by default, allow search filter
-        function bindAdminManageUsers() {
-            const search = document.getElementById('adminUserSearch');
-            const results = document.getElementById('adminUserResults');
-            const controls = document.getElementById('adminUserControls');
-            const msg = document.getElementById('adminUserMsg');
-            const onlineOnlyEl = document.getElementById('adminOnlineOnly');
-            const refreshBtn = document.getElementById('adminRefreshUsers');
-            if (!search || search._bound) return; search._bound = true;
-            let selectedId = null;
+// Utility for safe text rendering
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>"']/g, s => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]
+    ));
+}
 
-            async function loadAdminUserList() {
-                try {
-                    const q = (search.value||'').trim().toLowerCase();
-                    const onlineOnly = !!(onlineOnlyEl && onlineOnlyEl.checked);
-                    const [{ data: users }, { data: act }] = await Promise.all([
-                        supabase.from('users').select('id, full_name, total_points, role_badge, profile_photo').order('full_name'),
-                        supabase.from('user_activity').select('user_id, is_online, last_active_at')
-                    ]);
-                    const map = Object.fromEntries((act||[]).map(a => [a.user_id, a]));
-                    results.innerHTML = '';
-                    (users||[])
-                        .filter(u => !q || (u.full_name||'').toLowerCase().includes(q))
-                        .filter(u => !onlineOnly || (map[u.id]?.is_online))
-                        .forEach(u => {
-                            const row = document.createElement('div');
-                            row.style.cssText = 'padding:.35rem .5rem; border-bottom:1px solid #eee; cursor:pointer; display:flex; align-items:center; gap:.5rem;';
-                            row.innerHTML = `
-                                <img src="${u.profile_photo||'https://via.placeholder.com/28'}" style="width:28px;height:28px;border-radius:999px;" alt=""/>
-                                <div style="flex:1;">
-                                    <div>${escapeHtml(u.full_name)} <small style=\"color:#64748b\">${u.role_badge||''}</small></div>
-                                    <div style=\"font-size:.75rem;color:#64748b\">${map[u.id]?.is_online ? 'Online' : 'Offline'} • ${map[u.id]?.last_active_at ? new Date(map[u.id].last_active_at).toLocaleString() : '-'}</div>
-                                </div>
-                                <div style=\"font-weight:600\">${u.total_points||0} pts</div>`;
-                            row.onclick = () => { selectedId = u.id; controls.style.display = 'block'; msg.textContent = `Selected ${u.full_name}`; };
-                            results.appendChild(row);
-                        });
-                } catch (e) {
-                    results.innerHTML = '<p style="color:#ef4444">Failed to load users.</p>';
-                }
-            }
+// Admin Manage Users: list online users by default, allow search filter
+function bindAdminManageUsers() {
+    const search = document.getElementById('adminUserSearch');
+    const results = document.getElementById('adminUserResults');
+    const controls = document.getElementById('adminUserControls');
+    const msg = document.getElementById('adminUserMsg');
+    const onlineOnlyEl = document.getElementById('adminOnlineOnly');
+    const refreshBtn = document.getElementById('adminRefreshUsers');
+    if (!search || search._bound) return;
+    search._bound = true;
 
-            search.oninput = loadAdminUserList;
-            if (onlineOnlyEl) onlineOnlyEl.addEventListener('change', loadAdminUserList);
-            if (refreshBtn) refreshBtn.addEventListener('click', loadAdminUserList);
-            loadAdminUserList();
+    let selectedId = null;
+    let selectedName = null;
 
-            const applyPoints = document.getElementById('adminApplyPoints');
-            const deltaEl = document.getElementById('adminPointsDelta');
-            if (applyPoints) applyPoints.onclick = async () => {
-                if (!selectedId) { msg.textContent='Select a user'; return; }
-                const delta = parseInt(deltaEl.value||'0', 10);
-                if (!delta) { msg.textContent='Enter a non-zero delta'; return; }
-                const { data } = await supabase.from('users').select('total_points, weekly_points').eq('id', selectedId).single();
-                const newTotals = { total_points: (data?.total_points||0)+delta, weekly_points: (data?.weekly_points||0)+delta };
-                const { error } = await supabase.from('users').update(newTotals).eq('id', selectedId);
-                msg.textContent = error ? ('Failed: '+error.message) : 'Points updated';
-            };
+    // Load list of users (with optional filters)
+    async function loadAdminUserList() {
+        try {
+            const q = (search.value || '').trim().toLowerCase();
+            const onlineOnly = !!(onlineOnlyEl && onlineOnlyEl.checked);
+            const [{ data: users }, { data: activity }] = await Promise.all([
+                supabase.from('users')
+                    .select('id, full_name, total_points, role_badge, profile_photo')
+                    .order('full_name', { ascending: true })
+                    .limit(50),
+                supabase.from('user_activity')
+                    .select('user_id, is_online, last_active_at')
+            ]);
 
-            const applyRolesBtn = document.getElementById('adminApplyRoles');
-            if (applyRolesBtn) applyRolesBtn.onclick = async () => {
-                if (!selectedId) { msg.textContent='Select a user'; return; }
-                const r1 = (document.getElementById('adminRole1').value||'').toLowerCase();
-                const r2 = (document.getElementById('adminRole2').value||'').toLowerCase();
-                const badges = [r1,r2].filter(Boolean).slice(0,2);
-                const updates = { role_badge: r1 || null, leaderboard_badges: (badges.length? badges: null), is_dev: badges.includes('developer') };
-                const { error } = await supabase.from('users').update(updates).eq('id', selectedId);
-                msg.textContent = error ? ('Failed: '+error.message) : 'Roles updated';
-            };
+            const actMap = Object.fromEntries((activity || []).map(a => [a.user_id, a]));
+            results.innerHTML = '';
 
-            const revokeRolesBtn = document.getElementById('adminRevokeRoles');
-            if (revokeRolesBtn) revokeRolesBtn.onclick = async () => {
-                if (!selectedId) { msg.textContent='Select a user'; return; }
-                const { error } = await supabase.from('users').update({ role_badge: null, leaderboard_badges: null, is_dev: false }).eq('id', selectedId);
-                msg.textContent = error ? ('Failed: '+error.message) : 'Roles revoked';
-            };
+            (users || [])
+                .filter(u => !q || (u.full_name || '').toLowerCase().includes(q))
+                .filter(u => !onlineOnly || actMap[u.id]?.is_online)
+                .forEach(u => {
+                    const row = document.createElement('div');
+                    row.className = 'admin-user-row';
+                    row.style.cssText = `
+                        padding:.4rem .6rem; border-bottom:1px solid #eee; 
+                        cursor:pointer; display:flex; align-items:center; gap:.5rem;
+                        border-radius:6px;
+                    `;
+                    const status = actMap[u.id]?.is_online ? '🟢 Online' : '⚫ Offline';
+                    const last = actMap[u.id]?.last_active_at
+                        ? new Date(actMap[u.id].last_active_at).toLocaleString()
+                        : '-';
+                    row.innerHTML = `
+                        <img src="${u.profile_photo || 'https://via.placeholder.com/28'}" 
+                             style="width:28px;height:28px;border-radius:999px;" alt="">
+                        <div style="flex:1;">
+                            <div>${escapeHtml(u.full_name)} 
+                                <small style="color:#64748b;">${u.role_badge || ''}</small>
+                            </div>
+                            <div style="font-size:.75rem;color:#64748b;">
+                                ${status} • ${last}
+                            </div>
+                        </div>
+                        <div style="font-weight:600;">${u.total_points || 0} pts</div>
+                    `;
+                    row.onclick = () => {
+                        selectedId = u.id;
+                        selectedName = u.full_name;
+                        controls.style.display = 'block';
+                        msg.textContent = `Selected ${u.full_name}`;
+                        document.querySelectorAll('.admin-user-row')
+                            .forEach(r => r.style.background = '');
+                        row.style.background = '#eef2ff';
+                    };
+                    results.appendChild(row);
+                });
 
-            const addFollowerBtn = document.getElementById('adminAddFollower');
-            if (addFollowerBtn) addFollowerBtn.onclick = async () => {
-                if (!selectedId) { msg.textContent='Select a user'; return; }
-                const fid = (document.getElementById('adminFollowerUserId').value||'').trim();
-                if (!fid) { msg.textContent='Enter follower user id'; return; }
-                const { error } = await supabase.from('follows').insert([{ follower_id: fid, followed_id: selectedId }]);
-                msg.textContent = error ? ('Failed: '+error.message) : 'Follower added';
-            };
+            if (!results.innerHTML)
+                results.innerHTML = '<p style="color:#6b7280;padding:.5rem;">No users found.</p>';
 
-            const removeFollowerBtn = document.getElementById('adminRemoveFollower');
-            if (removeFollowerBtn) removeFollowerBtn.onclick = async () => {
-                if (!selectedId) { msg.textContent='Select a user'; return; }
-                const fid = (document.getElementById('adminFollowerUserId').value||'').trim();
-                if (!fid) { msg.textContent='Enter follower user id'; return; }
-                const { error } = await supabase.from('follows').delete().eq('follower_id', fid).eq('followed_id', selectedId);
-                msg.textContent = error ? ('Failed: '+error.message) : 'Follower removed';
-            };
-
-            const deleteUserBtn = document.getElementById('adminDeleteUser');
-            if (deleteUserBtn) deleteUserBtn.onclick = async () => {
-                if (!selectedId) { msg.textContent='Select a user'; return; }
-                if (!confirm('Delete this user?')) return;
-                try {
-                    const targetId = selectedId;
-                    await supabase.from('post_likes').delete().or(`user_id.eq.${targetId}`);
-                    const { data: pids } = await supabase.from('posts').select('id').eq('user_id', targetId);
-                    if (pids && pids.length) await supabase.from('post_likes').delete().in('post_id', pids.map(p=>p.id));
-                    await supabase.from('posts').delete().eq('user_id', targetId);
-                    await supabase.from('follows').delete().or(`follower_id.eq.${targetId},followed_id.eq.${targetId}`);
-                    await supabase.from('awards').delete().eq('user_id', targetId);
-                    await supabase.from('attempts').delete().eq('user_id', targetId);
-                    await supabase.from('users').delete().eq('id', targetId);
-                    msg.textContent = 'User deleted';
-                    controls.style.display = 'none';
-                    await loadAdminUserList();
-                } catch (e) { msg.textContent = 'Delete failed'; }
-            };
+        } catch (e) {
+            console.error(e);
+            results.innerHTML = '<p style="color:#ef4444;">Failed to load users.</p>';
         }
+    }
+
+    // --- Event Listeners ---
+    search.oninput = loadAdminUserList;
+    onlineOnlyEl?.addEventListener('change', loadAdminUserList);
+    refreshBtn?.addEventListener('click', loadAdminUserList);
+    loadAdminUserList();
+
+    // --- Points Adjustment ---
+    const applyPoints = document.getElementById('adminApplyPoints');
+    const deltaEl = document.getElementById('adminPointsDelta');
+    applyPoints?.addEventListener('click', async () => {
+        if (!selectedId) return msg.textContent = '⚠️ Select a user first.';
+        const delta = parseInt(deltaEl.value || '0', 10);
+        if (!delta) return msg.textContent = '⚠️ Enter a non-zero number.';
+
+        const { data, error } = await supabase
+            .from('users')
+            .select('total_points, weekly_points')
+            .eq('id', selectedId)
+            .single();
+
+        if (error) return msg.textContent = '❌ Failed to fetch points.';
+
+        const newTotals = {
+            total_points: (data?.total_points || 0) + delta,
+            weekly_points: (data?.weekly_points || 0) + delta
+        };
+        const { error: updateError } = await supabase
+            .from('users')
+            .update(newTotals)
+            .eq('id', selectedId);
+
+        if (!updateError) {
+            msg.textContent = `✅ Points updated by ${delta}.`;
+            await supabase.from('points_adjustments').insert([{
+                user_id: selectedId,
+                delta,
+                adjusted_by: userId
+            }]);
+            await logAdminAction('adjust_points', { user: selectedId, delta });
+            loadAdminUserList();
+        } else msg.textContent = '❌ ' + updateError.message;
+    });
+
+    // --- Apply Roles ---
+    const applyRolesBtn = document.getElementById('adminApplyRoles');
+    applyRolesBtn?.addEventListener('click', async () => {
+        if (!selectedId) return msg.textContent = '⚠️ Select a user first.';
+        const r1 = document.getElementById('adminRole1').value.toLowerCase();
+        const r2 = document.getElementById('adminRole2').value.toLowerCase();
+        const badges = [r1, r2].filter(Boolean);
+        const updates = {
+            role_badge: r1 || null,
+            leaderboard_badges: badges.length ? badges : null,
+            is_dev: badges.includes('developer')
+        };
+        const { error } = await supabase.from('users').update(updates).eq('id', selectedId);
+        msg.textContent = error ? ('❌ ' + error.message) : '✅ Roles updated.';
+        await logAdminAction('update_roles', { user: selectedId, roles: badges });
+    });
+
+    // --- Revoke Roles ---
+    const revokeRolesBtn = document.getElementById('adminRevokeRoles');
+    revokeRolesBtn?.addEventListener('click', async () => {
+        if (!selectedId) return msg.textContent = '⚠️ Select a user first.';
+        const { error } = await supabase
+            .from('users')
+            .update({ role_badge: null, leaderboard_badges: null, is_dev: false })
+            .eq('id', selectedId);
+        msg.textContent = error ? ('❌ ' + error.message) : '✅ Roles revoked.';
+        await logAdminAction('revoke_roles', { user: selectedId });
+    });
+
+    // --- Follower Management ---
+    const followerInput = document.getElementById('adminFollowerUserId');
+    document.getElementById('adminAddFollower')?.addEventListener('click', async () => {
+        if (!selectedId) return msg.textContent = '⚠️ Select a user.';
+        const fid = (followerInput.value || '').trim();
+        if (!fid) return msg.textContent = '⚠️ Enter follower ID.';
+        const { error } = await supabase.from('follows').insert([{ follower_id: fid, followed_id: selectedId }]);
+        msg.textContent = error ? ('❌ ' + error.message) : '✅ Follower added.';
+        await logAdminAction('add_follower', { user: selectedId, follower: fid });
+    });
+
+    document.getElementById('adminRemoveFollower')?.addEventListener('click', async () => {
+        if (!selectedId) return msg.textContent = '⚠️ Select a user.';
+        const fid = (followerInput.value || '').trim();
+        if (!fid) return msg.textContent = '⚠️ Enter follower ID.';
+        const { error } = await supabase
+            .from('follows')
+            .delete()
+            .eq('follower_id', fid)
+            .eq('followed_id', selectedId);
+        msg.textContent = error ? ('❌ ' + error.message) : '✅ Follower removed.';
+        await logAdminAction('remove_follower', { user: selectedId, follower: fid });
+    });
+
+  // --- Delete User ---
+const deleteUserBtn = document.getElementById('adminDeleteUser');
+
+deleteUserBtn?.addEventListener('click', async () => {
+    if (!selectedId) {
+        alert('⚠️ Select a user first.');
+        return;
+    }
+    if (!confirm(`Delete ${selectedName}? This cannot be undone.`)) return;
+
+    try {
+        // Call the RPC to delete user and all related data
+        const { data, error } = await supabase.rpc('delete_user_cascade', {
+            target_ids: [selectedId] // pass as array
+        });
+
+        if (error) throw error;
+
+        // Log the admin action
+        await logAdminAction('delete_user', { user: selectedId });
+
+        // Refresh the user list
+        await loadAdminUserList();
+
+        alert('🗑️ User and all references deleted successfully.');
+    } catch (e) {
+        console.error(e);
+        alert('❌ Delete failed.');
+    }
+});
+
+    // --- Log Admin Actions ---
+    async function logAdminAction(action, details = {}) {
+        try {
+            await supabase.from('admin_audit_log').insert([{
+                actor_id: userId,
+                target_user_id: selectedId,
+                action,
+                details
+            }]);
+        } catch (e) {
+            console.warn('Audit log failed:', e.message);
+        }
+    }
+}
         // === Global Default Image Handler ===
 document.addEventListener('DOMContentLoaded', () => {
   const defaultLogo = 'logonew.png'; // your root logo file

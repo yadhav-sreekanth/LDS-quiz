@@ -1,3 +1,4 @@
+
         :root {
             --primary: #1a3d7c;
             --primary-light: #4c6fbf;
@@ -94,41 +95,172 @@
         .user-details .name {
             font-weight: 600;
         }
-
-        .dev-badge {
-            display: inline-block;
-            margin-left: .5rem;
-            padding: 0.1rem 0.45rem;
-            font-size: 0.65rem;
-            letter-spacing: 0.5px;
-            border-radius: 999px;
-            background: linear-gradient(90deg, var(--secondary), #ffd966);
-            color: #1a1a1a;
-            vertical-align: middle;
-            border: 1px solid rgba(0,0,0,0.08);
-        }
-        .dev-badge.teacher {
-            background: linear-gradient(90deg, #10b981, #34d399);
-            color: white;
-        }
-        .dev-badge.manager {
-            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
-            color: white;
-        }
-        .dev-badge.admin {
-            background: linear-gradient(90deg, #dc2626, #ef4444);
-            color: white;
-        }
-        .dev-badge.moderator {
-            background: linear-gradient(90deg, #f59e0b, #fbbf24);
-            color: white;
-        }
         
         .user-details .points {
             color: var(--secondary);
             font-weight: 500;
         }
         
+        /* 🪄 Base badge */
+[class^="dev-badge"], [class*=" dev-badge"] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 10px;
+  margin-left: 8px;
+  line-height: 1;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(255,255,255,0.4);
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+  animation: badgePulse 4s infinite ease-in-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ✨ Developer — Neon Electric Core */
+.dev-badge.developer {
+  background: linear-gradient(  135deg,
+  #0a0c2a,
+  #1b0064,
+  #32005f,
+  #004cff,
+  #00cfff,
+  #ffae00);
+background-size: 300% 300%;
+
+
+  box-shadow:
+    0 0 25px rgba(255, 0, 0, 0.8),
+    0 0 50px rgba(91, 0, 255, 0.5);
+  animation: gradientFlow 5s ease infinite, badgePulseDev 3s infinite ease-in-out;
+}
+@keyframes badgePulseDev {
+  0%, 100% { box-shadow: 0 0 20px rgba(46, 50, 51, 0.7), 0 0 40px rgba(91, 0, 255, 0.5); }
+  50% { box-shadow: 0 0 35px rgb(93, 98, 98), 0 0 70px rgba(90, 0, 255, 0.7); }
+}
+
+/* 👑 Chairman — Royal Gold Infinity */
+.dev-badge.chairman,.dev-badge.senior_principal {
+  background: linear-gradient(135deg, #ffcb00, #ff9900, #ffdd55);
+  background-size: 250% 250%;
+  box-shadow:
+    0 0 25px rgba(255, 200, 0, 0.8),
+    0 0 60px rgba(255, 120, 0, 0.6);
+  animation: gradientFlow 6s ease infinite, badgePulseChair 3s infinite ease-in-out;
+}
+@keyframes badgePulseChair {
+  0%, 100% { box-shadow: 0 0 18px rgba(255, 200, 0, 0.6), 0 0 40px rgba(255, 120, 0, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(255, 255, 150, 1), 0 0 60px rgba(255, 180, 0, 0.7); }
+}
+
+/* 🎓 Principal — Galaxy Amethyst Core */
+.dev-badge.principal {
+  background: linear-gradient(135deg, #6a00ff, #a801ef, #587f05);
+  background-size: 280% 280%;
+  box-shadow:
+    0 0 22px rgba(179, 0, 255, 0.6),
+    0 0 50px rgba(255, 0, 180, 0.5);
+  animation: gradientFlow 7s ease infinite, badgePulsePrincipal 3.5s infinite ease-in-out;
+}
+@keyframes badgePulsePrincipal {
+  0%, 100% { box-shadow: 0 0 20px rgba(179, 0, 255, 0.6), 0 0 40px rgba(255, 0, 180, 0.4); }
+  50% { box-shadow: 0 0 35px rgba(255, 130, 255, 1), 0 0 70px rgba(120, 0, 255, 0.7); }
+}
+
+/* 🏛️ Official — Ice Cyan Authority */
+.dev-badge.official {
+  background: linear-gradient(135deg, #044439, #00d9d9, #134802);
+  background-size: 250% 250%;
+  box-shadow:
+    0 0 22px rgba(0, 0, 0, 0.7),
+    0 0 45px rgba(0, 150, 255, 0.5);
+  animation: gradientFlow 6s ease infinite, badgePulseOfficial 3.5s infinite ease-in-out;
+}
+@keyframes badgePulseOfficial {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 195, 255, 0.6), 0 0 40px rgba(0, 120, 255, 0.4); }
+  50% { box-shadow: 0 0 35px rgba(0, 255, 234, 0.9), 0 0 70px rgba(0, 150, 255, 0.7); }
+}
+
+/* 📘 Teacher — Aurora Sky Wisdom */
+.dev-badge.teacher {
+  background: linear-gradient(135deg, #244435, #00ffa3, #0d5344);
+  background-size: 280% 280%;
+  box-shadow:
+    0 0 22px rgba(0, 255, 163, 0.7),
+    0 0 45px rgba(0, 200, 130, 0.5);
+  animation: gradientFlow 8s ease infinite, badgePulseTeacher 4s infinite ease-in-out;
+}
+@keyframes badgePulseTeacher {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 163, 0.6), 0 0 40px rgba(0, 180, 130, 0.4); }
+  50% { box-shadow: 0 0 35px rgba(120, 255, 200, 1), 0 0 70px rgba(0, 255, 163, 0.8); }
+}
+
+/* 🌠 Universal flowing gradient */
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 🌈 Animated shimmer line */
+[class^="dev-badge"]::before,
+[class*=" dev-badge"]::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -120%;
+  width: 280%;
+  height: 280%;
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255,255,255,0.5) 50%,
+    transparent 80%
+  );
+  transform: rotate(25deg);
+  animation: shineSweep 4s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes shineSweep {
+  0% { left: -120%; }
+  50% { left: 120%; }
+  100% { left: 120%; }
+}
+
+/* 💫 Floating sparkle */
+[class^="dev-badge"]::after,
+[class*=" dev-badge"]::after {
+  content: '✦';
+  position: absolute;
+  right: 8px;
+  top: 4px;
+  font-size: 0.75rem;
+  color: #fff;
+  opacity: 0.8;
+  animation: sparkle 2s infinite ease-in-out alternate;
+  z-index: 2;
+}
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.3) rotate(30deg); }
+}
+
+/* ⚡ Hover boost */
+[class^="dev-badge"]:hover,
+[class*=" dev-badge"]:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 35px rgba(255,255,255,0.6),
+    0 0 80px rgba(255,255,255,0.3);
+}
+
         /* Sidebar Styles */
         .sidebar {
             width: 280px;
@@ -1252,85 +1384,6 @@
   font-weight: 700;
   letter-spacing: 0.3px;
 }
-/* 🌟 Universal Badge Base */
-
-
-.dev-badge:hover {
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
-}
-
-/* 🔄 Pulse animation */
-@keyframes pulse-glow {
-  0% { box-shadow: 0 0 6px rgba(255,255,255,0.3); }
-  50% { box-shadow: 0 0 20px rgba(255,255,255,0.7); }
-  100% { box-shadow: 0 0 6px rgba(255,255,255,0.3); }
-}
-
-/* 🌟 Specific Roles */
-
-/* 🟡 Chairman — Glowing Royal Gold */
-.dev-badge.chairman {
-  background: linear-gradient(135deg, #facc15, #eab308, #b45309);
-  color: #1a1a1a;
-  border: 1px solid #eab308;
-  animation: pulse-glow 2.2s infinite ease-in-out;
-  box-shadow: 0 0 15px rgba(250,204,21,0.5);
-}
-
-/* 🔵 Principal — Deep Sapphire Pulse */
-.dev-badge.principal {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  color: #fff;
-  border: 1px solid #3b82f6;
-  animation: pulse-glow 3s infinite ease-in-out;
-  box-shadow: 0 0 12px rgba(37,99,235,0.4);
-}
-
-/* 💜 Senior Principal — Amethyst Shine */
-.dev-badge.senior_principal {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-  color: #fff;
-  border: 1px solid #a78bfa;
-  animation: pulse-glow 3s infinite ease-in-out;
-  box-shadow: 0 0 12px rgba(139,92,246,0.5);
-}
-
-
-/* 🧊 Official — Cool Steel */
-.dev-badge.official {
-  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-  color: #fff;
-  border: 1px solid #3b82f6;
-  box-shadow: 0 0 8px rgba(59,130,246,0.5);
-}
-
-/* 🟢 Teacher — Emerald Calm */
-.dev-badge.teacher {
-  background: linear-gradient(135deg, #059669, #10b981);
-  color: #fff;
-  border: 1px solid #10b981;
-  box-shadow: 0 0 8px rgba(16,185,129,0.4);
-}
-
-/* 🟣 Manager — Royal Pulse */
-.dev-badge.manager {
-  background: linear-gradient(135deg, #7e22ce, #9333ea);
-  color: #fff;
-  border: 1px solid #a855f7;
-  animation: pulse-glow 3s infinite ease-in-out;
-}
-
-/* 🧑‍🎓 Hide badge for students */
-.dev-badge.student {
-  display: none !important;
-}
-@keyframes pulse-gold {
-  0%, 100% { box-shadow: 0 0 8px rgba(250,204,21,0.4); }
-  50% { box-shadow: 0 0 20px rgba(250,204,21,0.8); }
-}
-.dev-badge.chairman { animation: pulse-gold 2s infinite ease-in-out; }
-
         
         .all-leaders {
             margin-top: 2rem;
@@ -1827,80 +1880,8 @@
   color: var(--gray);
   margin: 0.25rem 0;
 }
-/* --- Fix for developer badge spacing in posts, comments, and leaderboard --- */
-.dev-badge.developer {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #00c6ff, #0072ff);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.75rem;
-  padding: 4px 10px;
-  border-radius: 8px;
-  margin-left: 6px;
-  line-height: 1;
-  white-space: nowrap;
-  letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 0 12px rgba(0, 114, 255, 0.6),
-              0 0 24px rgba(0, 195, 255, 0.3);
-  animation: badgePulse 3s infinite ease-in-out;
-}
 
-/* Subtle pulse glow */
-@keyframes badgePulse {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(0, 114, 255, 0.6),
-                0 0 20px rgba(0, 195, 255, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(0, 195, 255, 0.9),
-                0 0 35px rgba(0, 114, 255, 0.6);
-  }
-}
 
-/* Twinkle sweep effect */
-.dev-badge.developer::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -100%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.8) 40%,
-    transparent 80%
-  );
-  transform: rotate(25deg);
-  animation: shineSweep 4s infinite ease-in-out;
-}
-
-@keyframes shineSweep {
-  0% { left: -120%; }
-  50% { left: 120%; }
-  100% { left: 120%; }
-}
-
-/* Optional sparkle */
-.dev-badge.developer::after {
-  content: '✦';
-  position: absolute;
-  right: 6px;
-  top: 2px;
-  font-size: 0.7rem;
-  color: #fff;
-  opacity: 0.8;
-  animation: sparkle 2s infinite ease-in-out;
-}
-
-@keyframes sparkle {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.3); }
-}
 
 
 /* Keep username and badge on same line */
@@ -2108,6 +2089,8 @@ strong, .post-author-name, .post-user-name, .leader-info strong, .leader-row-use
   transition: background 0.25s ease, transform 0.1s ease;
 }
 
+
+
 .post-btn:hover {
   background: var(--primary-light, #274d9b);
   transform: translateY(-1px);
@@ -2176,3 +2159,23 @@ strong, .post-author-name, .post-user-name, .leader-info strong, .leader-row-use
     overflow-wrap: anywhere;
   }
 }
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-details {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.user-details .name,
+.user-details .dev-badge {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+

@@ -9,6 +9,66 @@
   }
 }
 
+
+/* 🧠 When screen width is 381px or smaller, change text */
+@media (max-width: 381px) {
+.dev-badge.developer {
+  margin-left: 2px; /* smaller gap */
+}
+
+}
+@media (max-width: 423px) {
+.buttoner{
+  display: inline-flex;
+}
+
+}
+@media (max-width: 392px) {
+  .user-info {
+    flex-direction: column;         /* stack vertically */
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .user-info img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+  }
+
+  .user-details {
+    flex-direction: column;         /* name/badge on top, points below */
+    align-items: center;
+    gap: 4px;
+  }
+
+  .user-details .name {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+.user-details .points {
+  font-size: 0.9rem;
+  color: #e1ff00;
+  font-weight: 900;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  letter-spacing: 0.5px;
+}
+
+  
+
+  .dev-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    margin-left: 0;
+    margin-top: 2px;
+  }
+}
 /* 📱 Responsive Layout Fixes */
 @media (max-width: 1200px) {
   .support-container {
@@ -648,7 +708,7 @@
                     margin-top: 40px;
                 }
                 }
-                @media (max-width: 433px) {
+                @media (max-width: 498px) {
                     .leaderboard-tabs {
         flex-direction: column;
         gap: 0.5rem;
@@ -689,5 +749,6 @@
     content: none !important;
   }
 }
+
 
 /* END of responsive block */
