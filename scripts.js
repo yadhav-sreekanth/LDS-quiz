@@ -18,15 +18,13 @@
         let questionBanks = null;
 
         // Utility: determine quiz type from DOB (yyyy)
-        function determineQuizTypeFromDOB(dobString) {
-            if (!dobString) return 'lower_primary';
-            const y = new Date(dobString).getFullYear();
-            if (y === 2016 || y === 2015) return 'early_years';
-            if (y === 2014 || y === 2013) return 'lower_primary';
-            if ([2012, 2011, 2010].includes(y)) return 'upper_primary';
-            if (y <= 2009) return 'cbse';
-            return 'lower_primary';
-        }
+       function determineQuizTypeFromClass(cls) {
+  if ([10, 9, 8].includes(cls)) return 'upper_primary';
+  if ([7, 6].includes(cls)) return 'middle_primary';
+  if ([5, 4].includes(cls)) return 'lower_primary';
+  return 'lower_primary';
+}
+
 
         // Role gating helpers placed near top-level helpers
         function hasMonitoringPower() {
@@ -104,7 +102,7 @@
         const settingsProfilePhotoEl = document.getElementById('settingsProfilePhoto');
         const nameInputEl = document.getElementById('nameInput');
         const emailInputEl = document.getElementById('emailInput');
-        const dobInputEl = document.getElementById('dobInput');
+        const classInputEl = document.getElementById('classInput');
 
         const quizIntroEl = document.getElementById('quizIntro');
         const quizContainerEl = document.getElementById('quizContainer');
@@ -157,7 +155,7 @@
                     const fresh = {
                         id: userId,
                         full_name: session.user.user_metadata?.name || 'Student',
-                        dob: session.user.user_metadata?.dob || '2010-01-01',
+                        cls: session.user.user_metadata?.cls || 4, // default to 4 if not provided
                         total_points: 0,
                         profile_photo: 'logonew.png'
                     };
@@ -182,12 +180,12 @@
             // Navigation functionality
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.addEventListener('click', function() {
-                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                    this.classList.add('active');
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.clsList.remove('active'));
+                    this.clsList.add('active');
                     
                     const section = this.dataset.section;
-                    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-                    document.getElementById(`section-${section}`).classList.add('active');
+                    document.querySelectorAll('.section').forEach(sec => sec.clsList.remove('active'));
+                    document.getElementById(`section-${section}`).clsList.add('active');
                     
                     // Load section content if needed
                     if (section === 'leaderboard') loadLeaderboard('global');
@@ -205,16 +203,16 @@
             const openSettingsBtn = document.getElementById('openSettingsBtn');
             if (openSettingsBtn) {
                 openSettingsBtn.onclick = () => {
-                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                    document.querySelector('.nav-item[data-section="settings"]').classList.add('active');
-                    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-                    document.getElementById('section-settings').classList.add('active');
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.clsList.remove('active'));
+                    document.querySelector('.nav-item[data-section="settings"]').clsList.add('active');
+                    document.querySelectorAll('.section').forEach(sec => sec.clsList.remove('active'));
+                    document.getElementById('section-settings').clsList.add('active');
                 };
             }
             
             // Mobile nav toggle
             document.querySelector('.nav-toggle').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('open');
+                document.getElementById('sidebar').clsList.toggle('open');
             });
             
             // Start quiz button
@@ -233,8 +231,8 @@
             // Leaderboard tabs
             document.querySelectorAll('.leaderboard-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
-                    document.querySelectorAll('.leaderboard-tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
+                    document.querySelectorAll('.leaderboard-tab').forEach(t => t.clsList.remove('active'));
+                    this.clsList.add('active');
                     loadLeaderboard(this.dataset.category);
                 });
             });
@@ -336,7 +334,7 @@
                 const payload = {
                     id: profileLike.id,
                     full_name: profileLike.full_name || 'Student',
-                    dob: profileLike.dob || '2010-01-01',
+                    cls: profileLike.cls || 4, // default to 4 if no class provided
                     profile_photo: profileLike.profile_photo || null,
                     total_points: profileLike.total_points || 0,
                     // optional flag to mark developer account in users table
@@ -388,15 +386,16 @@ if (roleBadge && roleBadge.toLowerCase() !== 'student') {
             settingsProfilePhotoEl.src = profile.profile_photo || 'https://via.placeholder.com/80';
             nameInputEl.value = profile.full_name || '';
             emailInputEl.value = profile.email || '';
-            dobInputEl.value = profile.dob || '';
+            classInputEl.value = profile.cls || '';
             
-            // Set quiz type based on DOB
-            const quizType = determineQuizTypeFromDOB(profile.dob);
-            quizTitleEl.textContent = `Quiz — ${quizType.replace('_', ' ').toUpperCase()}`;
-            // Update nav visibility and quiz gating
-            if (typeof updateNavAndQuizVisibility === 'function') {
-                updateNavAndQuizVisibility();
-            }
+       // Set quiz type based on class
+const quizType = determineQuizTypeFromClass(profile.cls);
+quizTitleEl.textContent = `Quiz — ${quizType.replace('_', ' ').toUpperCase()}`;
+// Update nav visibility and quiz gating
+if (typeof updateNavAndQuizVisibility === 'function') {
+    updateNavAndQuizVisibility();
+}
+
         }
 
         function hasDevPowers() {
@@ -664,7 +663,8 @@ if (!target) {
                 alert('Your role cannot start quizzes.');
                 return;
             }
-            const quizType = determineQuizTypeFromDOB(userProfile.dob);
+          const quizType = determineQuizTypeFromClass(userProfile.cls);
+
             
             // Check attempt limit (max 5 in the last 7 days)
             const allowed = await checkAttemptLimit(userId, quizType);
@@ -741,7 +741,7 @@ if (!target) {
             
             opts.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'option';
+                btn.clsName = 'option';
                 btn.dataset.optId = opt.id;
                 btn.innerText = opt.text;
                 btn.addEventListener('click', () => selectOption(q.id, opt.id));
@@ -758,9 +758,9 @@ if (!target) {
 
         function selectOption(questionId, optionId) {
             // Mark selected option visually
-            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelectorAll('.option').forEach(opt => opt.clsList.remove('selected'));
             const selectedOpt = document.querySelector(`.option[data-opt-id="${optionId}"]`);
-            if (selectedOpt) selectedOpt.classList.add('selected');
+            if (selectedOpt) selectedOpt.clsList.add('selected');
             
             // Enable next button
             nextBtn.disabled = false;
@@ -865,13 +865,16 @@ if (!target) {
             } catch (e) { console.warn('award check failed', e); }
             
             // Record this attempt to prevent repetition
-            recordQuizAttempt(userProfile.dob);
+recordQuizAttempt(userProfile.cls);
             // Persist seen question ids for this user/type to avoid repeats on next quiz
-            try {
-                const quizType = determineQuizTypeFromDOB(userProfile.dob);
-                const ids = quizQuestions.map(q => String(q.id));
-                appendSeenQuestions(userId, quizType, ids);
-            } catch (e) { console.warn('store seen questions failed', e); }
+try {
+    const quizType = determineQuizTypeFromClass(userProfile.cls); // use class instead 
+    const ids = quizQuestions.map(q => String(q.id));
+    appendSeenQuestions(userId, quizType, ids);
+} catch (e) { 
+    console.warn('store seen questions failed', e); 
+}
+
             
             // Show results and hide quiz
             quizContainerEl.style.display = 'none';
@@ -886,21 +889,22 @@ if (!target) {
             } catch (_) {}
         }
 
-        function recordQuizAttempt(dob) {
-            const quizType = determineQuizTypeFromDOB(dob);
-            const attempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
-            if (!attempts[userId]) attempts[userId] = {};
-            let list = attempts[userId][quizType];
-            // Migration: previously stored as an object keyed by weekNumber; now use timestamp array
-            if (!Array.isArray(list)) list = [];
-            const nowTs = Date.now();
-            const sevenDaysAgo = nowTs - 7 * 24 * 60 * 60 * 1000;
-            // Push and prune to last 7 days and cap length
-            list.push(nowTs);
-            list = list.filter(ts => Number(ts) > sevenDaysAgo).slice(-50);
-            attempts[userId][quizType] = list;
-            localStorage.setItem('quizAttempts', JSON.stringify(attempts));
-        }
+      function recordQuizAttempt(cls) {
+    const quizType = determineQuizTypeFromClass(cls);
+    const attempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
+    if (!attempts[userId]) attempts[userId] = {};
+    let list = attempts[userId][quizType];
+    // Migration: previously stored as an object keyed by weekNumber; now use timestamp array
+    if (!Array.isArray(list)) list = [];
+    const nowTs = Date.now();
+    const sevenDaysAgo = nowTs - 7 * 24 * 60 * 60 * 1000;
+    // Push and prune to last 7 days and cap length
+    list.push(nowTs);
+    list = list.filter(ts => Number(ts) > sevenDaysAgo).slice(-50);
+    attempts[userId][quizType] = list;
+    localStorage.setItem('quizAttempts', JSON.stringify(attempts));
+}
+
 
         async function checkAttemptLimit(userId, quizType) {
             const attempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
@@ -995,7 +999,7 @@ if (!target) {
             
             posts.forEach(post => {
                 const el = document.createElement('div');
-                el.className = 'post';
+                el.clsName = 'post';
                 el.id = `post-${post.id}`;
                 
                 // Format date
@@ -1267,7 +1271,7 @@ if (pinBtn) {
 
                 sorted.forEach(comment => {
                     const commentEl = document.createElement('div');
-                    commentEl.className = 'comment-item';
+                    commentEl.clsName = 'comment-item';
                     const canModerate = hasDevPowers() || comment.user_id === userId;
                     const isPinned = !!comment.is_pinned || localPinnedForPost.has(comment.id);
                     commentEl.innerHTML = `
@@ -1550,7 +1554,7 @@ if (pinBtn) {
             await ensureUserExists({
                 id: userId,
                 full_name: (userProfile && userProfile.full_name) || 'Student',
-                dob: (userProfile && userProfile.dob) || '2010-01-01',
+                class: (userProfile && userProfile.cls) || 4,
                 profile_photo: (userProfile && userProfile.profile_photo) || null,
                 total_points: (userProfile && userProfile.total_points) || 0
             });
@@ -1641,10 +1645,11 @@ async function loadLeaderboard(category) {
       points: category === 'all_time' ? u.total_points : u.weekly_points
     })));
 
-    // 🎯 Filter by category (not for global/all_time)
-    if (category && category !== 'global' && category !== 'all_time') {
-      users = users.filter(u => determineQuizTypeFromDOB(u.dob) === category);
-    }
+// 🎯 Filter by category (not for global/all_time)
+if (category && category !== 'global' && category !== 'all_time') {
+  users = users.filter(u => determineQuizTypeFromClass(u.cls) === category);
+}
+
 
     const top3El = document.getElementById('top3');
     const allEl = document.getElementById('leaderboardAll');
@@ -1667,7 +1672,7 @@ async function loadLeaderboard(category) {
       const points = category === 'all_time' ? (user.total_points || 0) : (user.weekly_points || 0);
 
       const leaderEl = document.createElement('div');
-      leaderEl.className = 'leader';
+      leaderEl.clsName = 'leader';
       leaderEl.innerHTML = `
         <div class="leader-rank">${medals[index]}</div>
         <img 
@@ -1699,7 +1704,7 @@ async function loadLeaderboard(category) {
           : (user.weekly_points || 0);
 
       const leaderRow = document.createElement('div');
-      leaderRow.className = 'leader-row';
+      leaderRow.clsName = 'leader-row';
       leaderRow.innerHTML = `
         <div class="leader-row-user">
           <span>${index + 1}.</span>
@@ -1708,12 +1713,13 @@ async function loadLeaderboard(category) {
             alt="${user.full_name}" 
             onerror="this.onerror=null;this.src='/logonew.png';"
           />
-          <strong>
-            ${user.full_name}
-            ${(user.is_dev || (user.role_badge || '').toLowerCase() === 'developer')
-              ? ' <span class="dev-badge developer">DEV</span>' 
-              : ''}
-          </strong>
+      <strong>
+  ${user.full_name}
+  ${(user.is_dev || (user.role_badge || '').toLowerCase() === 'developer')
+    ? ' <span class="dev-badge developer hide-on-mobile" style="font-weight: 700;">DEV</span>'
+    : ''}
+</strong>
+
         </div>
         <span>${points} pts</span>
       `;
@@ -2041,7 +2047,7 @@ if (formWrap) formWrap.style.display = canAnnounce ? 'block' : 'none';
 
             data.forEach(a => {
                 const el = document.createElement('div');
-                el.className = 'post';
+                el.clsName = 'post';
                 const when = new Date(a.created_at).toLocaleString();
                 el.innerHTML = `
                     <div class="post-head">
@@ -2172,7 +2178,7 @@ if (formWrap) formWrap.style.display = canAnnounce ? 'block' : 'none';
 
                 function renderConnectionCard(u, isFollowing) {
                     const card = document.createElement('div');
-                    card.className = 'connection-item';
+                    card.clsName = 'connection-item';
                     card.innerHTML = `
                         <img src="${u.profile_photo || 'https://via.placeholder.com/48'}" alt="${u.full_name}" class="connection-avatar">
                         <div class="connection-info">
@@ -2245,12 +2251,12 @@ if (formWrap) formWrap.style.display = canAnnounce ? 'block' : 'none';
                         const targetTab = btn.getAttribute('data-tab');
                         
                         // Remove active class from all tabs and panels
-                        tabBtns.forEach(b => b.classList.remove('active'));
-                        tabPanels.forEach(p => p.classList.remove('active'));
+                        tabBtns.forEach(b => b.clsList.remove('active'));
+                        tabPanels.forEach(p => p.clsList.remove('active'));
                         
                         // Add active class to clicked tab and corresponding panel
-                        btn.classList.add('active');
-                        document.getElementById(`${targetTab}-panel`).classList.add('active');
+                        btn.clsList.add('active');
+                        document.getElementById(`${targetTab}-panel`).clsList.add('active');
                     });
                 });
             } catch (e) {
@@ -2321,7 +2327,7 @@ function bindAdminManageUsers() {
                 .filter(u => !onlineOnly || actMap[u.id]?.is_online)
                 .forEach(u => {
                     const row = document.createElement('div');
-                    row.className = 'admin-user-row';
+                    row.clsName = 'admin-user-row';
                     row.style.cssText = `
                         padding:.4rem .6rem; border-bottom:1px solid #eee; 
                         cursor:pointer; display:flex; align-items:center; gap:.5rem;

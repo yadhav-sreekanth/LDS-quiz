@@ -84,68 +84,77 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Form submission handlers
-if (signUpForm) {
-  signUpForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
+ signUpForm.addEventListener('submit', async function (e) {
+  e.preventDefault();
 
-    const name = this.querySelector('input[type="text"]').value;
-    const email = this.querySelector('input[type="email"]').value;
-    const password = this.querySelector('input[type="password"]').value;
-    const dob = this.querySelector('input[type="date"]').value;
+  const name = this.querySelector('input[type="text"]').value.trim();
+  const email = this.querySelector('input[type="email"]').value.trim();
+  const password = this.querySelector('input[type="password"]').value.trim();
+  const classValue = this.querySelector('#classSelect').value;
 
-    if (!name || !email || !password || !dob) {
-      alert('Please fill in all fields');
+  if (!name || !email || !password || !classValue) {
+    alert('Please fill in all fields');
+    return;
+  }
+
+  try {
+    // 1️⃣ Supabase auth signup (metadata must use `cls`)
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name, cls: parseInt(classValue, 10) },
+        emailRedirectTo: 'https://yadhav-sreekanth.github.io/LDS-quiz/auth/auth.html'
+      }
+    });
+
+    if (authError) {
+      alert('Sign-Up Error: ' + authError.message);
+      console.error(authError);
       return;
     }
 
-    try {
-      // Supabase signup
-const { data: authData, error: authError } = await supabase.auth.signUp({
-  email,
-  password,
-  options: {
-    data: { name, dob }, // store extra info in metadata
-    emailRedirectTo: 'https://yadhav-sreekanth.github.io/LDS-quiz/auth/auth.html'
+    if (!authData.user) {
+      alert('Signup failed: no user returned.');
+      return;
+    }
+
+    // 2️⃣ Promotion logic (optional — promote after June)
+    function getCurrentClass(userClass) {
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const juneFirst = new Date(currentYear, 5, 1); // June = 5 (0-based)
+      let cls = parseInt(userClass, 10);
+      if (today >= juneFirst && cls < 10) cls += 1;
+      return cls;
+    }
+
+    const currentClass = getCurrentClass(classValue);
+
+    // 3️⃣ Insert into your `users` table (use `cls`)
+    const { error: tableError } = await supabase
+      .from('users')
+      .insert([{
+        id: authData.user.id,
+        full_name: name,
+        cls: currentClass,
+        total_points: 0
+      }]);
+
+    if (tableError) {
+      console.error('Error storing data in users table:', tableError);
+      // optional: continue anyway
+    }
+
+    alert('Check your email to confirm your account!');
+    closeModalFunc();
+
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    alert('An unexpected error occurred. Please try again.');
   }
 });
 
-
-      if (authError) {
-        alert("Sign Up Error: " + authError.message);
-        console.error(authError);
-        return;
-      }
-
-      // Store user data in a separate table
-const { data: tableData, error: tableError } = await supabase
-  .from('users')
-  .insert([
-    {
-      id: authData.user.id,
-      full_name: name,   // ✅ matches your schema
-      dob: dob           // ✅ matches your schema
-      // email is already stored in auth.users
-      // created_at not needed (not in your schema)
-    }
-  ]);
-
-
-      if (tableError) {
-        console.error("Error storing data in table:", tableError);
-        // Don't show this error to user as auth was successful
-      }
-
-      alert("Check your email to confirm your account!");
-      console.log("User signed up:", authData);
-      closeModalFunc();
-
-    } catch (error) {
-      console.error("Unexpected error:", error);
-      alert("An unexpected error occurred. Please try again.");
-    }
-  });
-}
 
 // Add this to your script.js file after successful sign-in
 if (signInForm) {
@@ -180,7 +189,7 @@ if (signInForm) {
       id: data.user.id,
       email: data.user.email,
       full_name: data.user.user_metadata.name || 'Student',
-      dob: data.user.user_metadata.dob || '',
+      cls: data.user.user_metadata.cls || '',
       total_points: 0,
       profile_photo: 'https://via.placeholder.com/48'
     };
@@ -230,7 +239,7 @@ supabase.auth.onAuthStateChange((event, session) => {
         id: session.user.id,
         email: session.user.email,
         full_name: session.user.user_metadata.name || 'Student',
-        dob: session.user.user_metadata.dob || '',
+        cls: session.user.user_metadata.cls || '',
         total_points: 0,
         profile_photo: 'https://via.placeholder.com/48'
       };
