@@ -1,125 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Little Daffodils Quiz Club</title>
     <link rel="icon" href="logonew.png">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="media.css">
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/media.css">
+    <link rel="icon" href="icons/icon-192.png" type="image/png">
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
- <!-- ✅ PWA requirements -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ffffff">
-  <link rel="icon" href="icons/icon-192.png" type="image/png">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <!-- ✅ PWA requirements -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
 </head>
+
 <body>
     <header>
         <div class="logo">
             <img src="logonew.png" alt="Little Daffodils logo" />
             <div class="logo-text">
-<h1 style="white-space: normal; word-wrap: break-word;  line-height: 1.2; " class="hetrography">
-  Little Daffodils Quiz Club
-</h1>
+                <h1 style="white-space: normal; word-wrap: break-word;  line-height: 1.2; " class="hetrography">Little
+                    Daffodils Quiz Club</h1>
                 <div class="school-name">Little Daffodils School</div>
             </div>
         </div>
         <div class="user-info">
             <img id="profilePhoto" src="https://via.placeholder.com/48" alt="Profile">
             <div class="user-details">
-                <span class="name" id="userName" style="margin-bottom: -7px;">Student</span> 
+                <span class="name" id="userName" style="margin-bottom: -7px;">Student</span>
                 <span class="points" id="userPoints">Points: 0</span>
-                
-                <style>
-                      .user-details {
-    display: flex !important;
-    flex-direction: column !important;   /* <-- Add this */
-    align-items: flex-start !important;    /* <-- keeps right alignment neat */
-    gap: 2px;
-  } 
-
-                    @media (max-width: 790px) {
-.user-details { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.user-details span { display:inline-flex;  }
-.dev-badge { margin-left:4px; font-size:0.75rem; padding:2px 6px; border-radius:6px; background:#4b6cb7; color:white; }}
-</style>
-
+                            <style>
+                                .user-details {
+                                    display: flex !important;
+                                    flex-direction: column !important;
+                                    /* <-- Add this */
+                                    align-items: flex-start !important;
+                                    /* <-- keeps right alignment neat */
+                                    gap: 2px;
+                                }
+                            
+                                @media (max-width: 790px) {
+                                    .user-details {
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 6px;
+                                        flex-wrap: wrap;
+                                    }
+                            
+                                    .user-details span {
+                                        display: inline-flex;
+                                    }
+                            
+                                    .dev-badge {
+                                        margin-left: 4px;
+                                        font-size: 0.75rem;
+                                        padding: 2px 6px;
+                                        border-radius: 6px;
+                                        background: #4b6cb7;
+                                        color: white;
+                                    }
+                                }
+                            </style>
 
 
             </div>
-            
         </div>
     </header>
+
 
     <div class="container">
         <div class="nav-toggle">
             <i class="fas fa-bars"></i>
         </div>
-
-
         <div class="sidebar" id="sidebar">
-    <ul class="nav-list">
-        <li class="nav-item active" data-section="quiz">
-            <i class="fas fa-brain"></i><span>Dashboard</span>
-        </li>
 
-        <li class="nav-item" data-section="leaderboard">
-            <i class="fas fa-trophy"></i><span>Leaderboard</span>
-        </li>
+            <ul class="nav-list">
+                <li class="nav-item active" data-section="quiz">
+                    <i class="fas fa-brain"></i>
+                    <span>Dashboard</span>
+                </li>
 
-        <li class="nav-item" data-section="posts">
-            <i class="fas fa-comments"></i><span>Posts</span>
-        </li>
+                <li class="nav-item" data-section="leaderboard">
+                    <i class="fas fa-trophy"></i>
+                    <span>Leaderboard</span>
+                </li>
 
-        <li class="nav-item" data-section="announcements">
-            <i class="fas fa-bullhorn"></i><span>Announcements</span>
-        </li>
+                <li class="nav-item" data-section="posts">
+                    <i class="fas fa-comments"></i>
+                    <span>Posts</span>
+                </li>
 
-        <li class="nav-item" data-section="support">
-            <i class="fas fa-life-ring"></i><span>Support</span>
-        </li>
+                <li class="nav-item" data-section="announcements">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </li>
 
-        <li class="nav-item" data-section="monitoring" id="nav-monitoring" style="display:none;">
-            <i class="fas fa-eye"></i><span>Monitoring</span>
-        </li>
+                <li class="nav-item" data-section="support">
+                    <i class="fas fa-life-ring"></i>
+                    <span>Support</span>
+                </li>
 
-        <li class="nav-item" data-section="developer" id="nav-developer" style="display:none;">
-            <i class="fas fa-code"></i><span>Developer</span>
-        </li>
+                <li class="nav-item" data-section="monitoring" id="nav-monitoring" style="display: none;">
+                    <i class="fas fa-eye"></i>
+                    <span>Monitoring</span>
+                </li>
 
-        <hr class="divider">
+                <li class="nav-item" data-section="developer" id="nav-developer" style="display: none;">
+                    <i class="fas fa-code"></i>
+                    <span>Developer</span>
+                </li>
 
-        <li class="nav-item" data-section="account">
-            <i class="fas fa-user"></i><span>My Space</span>
-        </li>
+                <hr class="divider">
 
-        <li class="nav-item" data-section="settings">
-            <i class="fas fa-cog"></i><span>Settings</span>
-        </li>
-    </ul>
-</div>
-<style>
-    .sidebar {
-   overflow-y: auto  !important;
-   height: calc(100vh - 0px) !important; /* adjust as needed */
-}
+                <li class="nav-item" data-section="account">
+                    <i class="fas fa-user"></i>
+                    <span>My Space</span>
+                </li>
 
-.nav-list {
-   display: flex  !important;
-   flex-direction: column  !important;
-   gap: 14px  !important;     /* replaces <br/> */
-}
+                <li class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </li>
+            </ul>
 
-.divider{
-      border-top: 1px solid rgba(0, 0, 0, 0.1); /* light gray line */
-        
-}
-</style>
+        </div>
+        <style>
+            .sidebar {
+                overflow-y: auto !important;
+                height: calc(100vh - 0px) !important;
+                /* adjust as needed */
+            }
+
+            .nav-list {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 14px !important;
+                /* replaces <br/> */
+            }
+
+            .divider {
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                /* light gray line */
+
+            }
+        </style>
 
         <div class="main-content">
             <div class="mobile-user">
@@ -133,25 +164,27 @@
             <!-- Quiz Section -->
             <div class="section active" id="section-quiz">
                 <h2 class="section-title" style="text-align: center;">Quiz Challenge</h2>
-                
+
                 <div class="quiz-intro" id="quizIntro">
                     <h2>Test Your Knowledge!</h2>
-                    <p>Welcome to the Little Daffodils Quiz Challenge! Based on your age, you'll be presented with questions tailored to your level. Each correct answer earns you 2 points, while incorrect answers deduct 1 point. You have 20 seconds per question. Ready to begin?</p>
+                    <p>Welcome to the Little Daffodils Quiz Challenge! Based on your age, you'll be presented with
+                        questions tailored to your level. Each correct answer earns you 2 points, while incorrect
+                        answers deduct 1 point. You have 20 seconds per question. Ready to begin?</p>
                     <button class="start-quiz-btn" id="startQuizBtn">Start Quiz</button>
                 </div>
-                
+
                 <div class="quiz-container" id="quizContainer">
                     <div class="quiz-header">
                         <h3 class="quiz-title" id="quizTitle">Quiz — Early Years</h3>
                         <div class="quiz-progress" id="quizProgress">1 / 10</div>
                     </div>
-                    
+
                     <div class="timer-container">
                         <div class="timer-circle" id="timerCircle">
                             <div class="timer-text" id="timerText">20</div>
                         </div>
                     </div>
-                    
+
                     <div class="question-container">
                         <p class="question-text" id="questionText">What is the capital of France?</p>
                         <div class="options-list" id="optionsList">
@@ -161,7 +194,7 @@
                             <button class="option" data-opt-id="4">Madrid</button>
                         </div>
                     </div>
-                    
+
                     <button class="next-btn" id="nextBtn" disabled>Next Question</button>
                 </div>
 
@@ -176,51 +209,71 @@
                 <div class="quiz-intro" id="quizIntro">
                     <h2>Your Guide</h2>
                     <p style="max-width:900px;margin:0 auto 1rem;line-height:1.75;color:#374151">
-                        Welcome to Little Daffodils Quiz Club! This short guide will help you discover everything you can do here — from taking quizzes and earning points to posting, liking, following, and climbing the leaderboard. Have fun and explore!
+                        Welcome to Little Daffodils Quiz Club! This short guide will help you discover everything you
+                        can do here — from taking quizzes and earning points to posting, liking, following, and climbing
+                        the leaderboard. Have fun and explore!
                     </p>
                     <div style="text-align:left;max-width:980px;margin:0 auto;display:grid;gap:1rem">
-                        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:1rem 1.25rem">
+                        <div
+                            style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:1rem 1.25rem">
                             <h3 style="margin:0 0 .5rem;color:var(--primary)">1) Take Quizzes and Earn Points ✨</h3>
                             <ul style="margin-left:1.25rem;line-height:1.75">
-                                <li>Tap <strong>Start Quiz</strong>. Questions are matched to your age group automatically.</li>
-                                <li>You have <strong>20 seconds</strong> per question. Choose the best answer and hit <strong>Next</strong>.</li>
-                                <li>Scoring: <strong>+2</strong> for correct answers, <strong>−1</strong> for wrong answers.</li>
-                                <li>Finish the quiz to see your score and earn points that boost your leaderboard rank.</li>
+                                <li>Tap <strong>Start Quiz</strong>. Questions are matched to your age group
+                                    automatically.</li>
+                                <li>You have <strong>20 seconds</strong> per question. Choose the best answer and hit
+                                    <strong>Next</strong>.
+                                </li>
+                                <li>Scoring: <strong>+2</strong> for correct answers, <strong>−1</strong> for wrong
+                                    answers.</li>
+                                <li>Finish the quiz to see your score and earn points that boost your leaderboard rank.
+                                </li>
                             </ul>
                         </div>
-                        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:1rem 1.25rem">
+                        <div
+                            style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:1rem 1.25rem">
                             <h3 style="margin:0 0 .5rem;color:#b45309">2) Post, Share, and Like 🧡</h3>
                             <ul style="margin-left:1.25rem;line-height:1.75">
                                 <li>Open the <strong>Posts</strong> tab to read what others share.</li>
-                                <li>Press <strong>Like</strong> on posts you enjoy. It turns to <strong>Liked</strong> and the counter updates instantly.</li>
+                                <li>Press <strong>Like</strong> on posts you enjoy. It turns to <strong>Liked</strong>
+                                    and the counter updates instantly.</li>
                                 <li>Use <strong>Share</strong> to copy a link and spread great posts with friends.</li>
-                                <li>Want to create a post? Write your message, optionally attach an image, and hit <strong>Post</strong>.</li>
+                                <li>Want to create a post? Write your message, optionally attach an image, and hit
+                                    <strong>Post</strong>.
+                                </li>
                             </ul>
                         </div>
-                        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:1rem 1.25rem">
+                        <div
+                            style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:1rem 1.25rem">
                             <h3 style="margin:0 0 .5rem;color:#166534">3) Leaderboard and Badges 🏆</h3>
                             <ul style="margin-left:1.25rem;line-height:1.75">
-                                <li>Visit <strong>Leaderboard</strong> to see the top performers. Check <em>Global</em> or your age category.</li>
-                                <li>Earn points to unlock fun badges like <strong>Bronze Achiever</strong>, <strong>Silver Scholar</strong>, and <strong>Gold Genius</strong>.</li>
+                                <li>Visit <strong>Leaderboard</strong> to see the top performers. Check <em>Global</em>
+                                    or your age category.</li>
+                                <li>Earn points to unlock fun badges like <strong>Bronze Achiever</strong>,
+                                    <strong>Silver Scholar</strong>, and <strong>Gold Genius</strong>.
+                                </li>
                                 <li>Perfect quizzes may grant special awards — keep an eye on your profile!</li>
                             </ul>
                         </div>
-                        <div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:1rem 1.25rem">
+                        <div
+                            style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:1rem 1.25rem">
                             <h3 style="margin:0 0 .5rem;color:#1d4ed8">4) Your Space: Profile and Connections 👥</h3>
                             <ul style="margin-left:1.25rem;line-height:1.75">
                                 <li>Open <strong>My Space</strong> to view your avatar, points, badges, and awards.</li>
                                 <li>Update your name and profile picture anytime.</li>
-                                <li>Discover classmates, <strong>Follow</strong> them, and manage followers. Search by name to find people quickly.</li>
+                                <li>Discover classmates, <strong>Follow</strong> them, and manage followers. Search by
+                                    name to find people quickly.</li>
                             </ul>
                         </div>
                         <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1rem 1.25rem">
                             <h3 style="margin:0 0 .5rem;color:#111827">5) Announcements 📣</h3>
                             <ul style="margin-left:1.25rem;line-height:1.75">
-                                <li>Check the <strong>Announcements</strong> tab for news, events, and updates from the club.</li>
+                                <li>Check the <strong>Announcements</strong> tab for news, events, and updates from the
+                                    club.</li>
                                 <li>New posts appear at the top so you never miss anything important.</li>
                             </ul>
                         </div>
-                        <div style="background:#fafafa;border:1px dashed #d1d5db;border-radius:12px;padding:1rem 1.25rem">
+                        <div
+                            style="background:#fafafa;border:1px dashed #d1d5db;border-radius:12px;padding:1rem 1.25rem">
                             <h3 style="margin:0 0 .5rem;color:#0f172a">Quick Tips 💡</h3>
                             <ul style="margin-left:1.25rem;line-height:1.75">
                                 <li>Be kind and respectful in your posts and comments.</li>
@@ -265,15 +318,15 @@
                         <button class="leaderboard-tab" data-category="upper_primary">Upper Primary</button>
 
                     </div>
-                    
+
                     <div class="top-three" id="top3">
                         <!-- Top 3 leaders will be loaded here -->
                     </div>
-                    
+
                     <div class="all-leaders" id="leaderboardAll">
                         <!-- All leaders will be loaded here -->
                     </div>
-                    
+
                     <div class="view-more">
                         <i class="fas fa-chevron-down"></i>
                         <span>View More</span>
@@ -287,7 +340,7 @@
                 <div class="my-space-container">
                     <!-- Profile Header Card -->
                     <div class="profile-header-card" style="display:flex; align-items:center; gap:1rem;">
-                                    
+
                         <div class="profile-avatar-section">
                             <img id="accountAvatar" src="logonew.png" alt="Avatar" class="profile-avatar">
                             <div class="profile-info">
@@ -296,7 +349,7 @@
                                 <div id="accountPoints" class="profile-points">Total Points: 0</div>
                             </div>
                         </div>
-                        
+
                         <div class="profile-stats">
                             <div class="stat-item">
                                 <div class="stat-number" id="followersCount">0</div>
@@ -307,7 +360,8 @@
                                 <div class="stat-label">Following</div>
                             </div>
                         </div>
- <button id="openSettingsBtn" title="Settings" style="margin-left:auto; background:transparent; border:none; cursor:pointer; font-size:1.1rem; color:#6b7280;">
+                        <button id="openSettingsBtn" title="Settings"
+                            style="margin-left:auto; background:transparent; border:none; cursor:pointer; font-size:1.1rem; color:#6b7280;">
                             <i class="fas fa-cog " style="color: white;"></i>
                         </button>
                     </div>
@@ -359,18 +413,20 @@
                                 Discover
                             </button>
                         </div>
-                        
+
                         <div class="tab-content">
                             <div class="tab-panel active" id="followers-panel">
                                 <div class="search-section">
-                                    <input id="followersSearch" type="text" placeholder="Search followers by name" class="search-input" />
+                                    <input id="followersSearch" type="text" placeholder="Search followers by name"
+                                        class="search-input" />
                                 </div>
                                 <div id="followersList" class="connections-list"></div>
                             </div>
-                            
+
                             <div class="tab-panel" id="following-panel">
                                 <div class="search-section">
-                                    <input id="followingSearch" type="text" placeholder="Search people to follow" class="search-input" />
+                                    <input id="followingSearch" type="text" placeholder="Search people to follow"
+                                        class="search-input" />
                                 </div>
                                 <div id="discoverList" class="connections-list"></div>
                             </div>
@@ -407,35 +463,35 @@
                             <div>
                                 <p class="profileupdate">Update your profile picture</p>
                                 <input type="file" id="photoInput" accept="image/*">
-                                
+
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="nameInput">Full Name</label>
                             <input type="text" id="nameInput" placeholder="Enter your name">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="emailInput">Email</label>
                             <input type="email" id="emailInput" placeholder="Enter your email">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="dobInput">Date of Birth</label>
                             <input type="date" id="dobInput" disabled>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="passwordInput">New Password</label>
                             <input type="password" id="passwordInput" placeholder="Enter new password">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="confirmPasswordInput">Confirm New Password</label>
                             <input type="password" id="confirmPasswordInput" placeholder="Confirm new password">
                         </div>
-                        
+
                         <div class="action-buttons">
                             <button class="btn btn-primary" id="saveProfileBtn">Save</button>
                             <button class="btn btn-logout" id="logoutBtn">Logout</button>
@@ -449,19 +505,28 @@
                 <h2 class="section-title">Developer Tools</h2>
                 <div class="settings-container">
                     <div style="display:grid; gap:1rem;">
-                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                        <div class="account-card"
+                            style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
                             <h3 style="margin-bottom:.75rem; color:var(--primary);">Questions JSON Editor</h3>
-                            <p style="color:#6b7280; margin-bottom:.5rem;">Load, edit, and save the quiz questions JSON. This saves to Supabase Storage bucket <code>config/questions.json</code>. Changes affect all users.</p>
+                            <p style="color:#6b7280; margin-bottom:.5rem;">Load, edit, and save the quiz questions JSON.
+                                This saves to Supabase Storage bucket <code>config/questions.json</code>. Changes affect
+                                all users.</p>
                             <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.5rem;">
                                 <button class="btn btn-primary" id="devLoadQuestionsBtn">Load Current</button>
-                                <button class="btn" id="devValidateBtn" style="background:#eef2ff; color:#1a3d7c;">Validate</button>
-                                <button class="btn" id="devSaveQuestionsBtn" style="background:#16a34a; color:#fff;">Save</button>
-                                <button class="btn" id="devClearSeenBtn" style="background:#f59e0b; color:#111;">Clear Seen Questions Cache</button>
+                                <button class="btn" id="devValidateBtn"
+                                    style="background:#eef2ff; color:#1a3d7c;">Validate</button>
+                                <button class="btn" id="devSaveQuestionsBtn"
+                                    style="background:#16a34a; color:#fff;">Save</button>
+                                <button class="btn" id="devClearSeenBtn" style="background:#f59e0b; color:#111;">Clear
+                                    Seen Questions Cache</button>
                             </div>
-                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:.75rem; margin-bottom:.75rem;">
+                            <div
+                                style="display:grid; grid-template-columns: repeat(2, 1fr); gap:.75rem; margin-bottom:.75rem;">
                                 <div>
-                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Age Group</label>
-                                    <select id="devAgeGroup" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Age
+                                        Group</label>
+                                    <select id="devAgeGroup"
+                                        style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
                                         <option value="early_years">Early Years</option>
                                         <option value="lower_primary">Lower Primary</option>
                                         <option value="upper_primary">Upper Primary</option>
@@ -469,8 +534,10 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Correct Option</label>
-                                    <select id="devCorrectOption" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Correct
+                                        Option</label>
+                                    <select id="devCorrectOption"
+                                        style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
                                         <option value="1">Option 1</option>
                                         <option value="2">Option 2</option>
                                         <option value="3">Option 3</option>
@@ -478,52 +545,75 @@
                                     </select>
                                 </div>
                                 <div style="grid-column: 1 / -1;">
-                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Question</label>
-                                    <input id="devQuestionText" type="text" placeholder="Type the question..." style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                    <label
+                                        style="display:block; font-weight:600; margin-bottom:.25rem;">Question</label>
+                                    <input id="devQuestionText" type="text" placeholder="Type the question..."
+                                        style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
                                 </div>
                                 <div>
-                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option 1</label>
-                                    <input id="devOpt1" type="text" placeholder="Option 1" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option
+                                        1</label>
+                                    <input id="devOpt1" type="text" placeholder="Option 1"
+                                        style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
                                 </div>
                                 <div>
-                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option 2</label>
-                                    <input id="devOpt2" type="text" placeholder="Option 2" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option
+                                        2</label>
+                                    <input id="devOpt2" type="text" placeholder="Option 2"
+                                        style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
                                 </div>
                                 <div>
-                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option 3</label>
-                                    <input id="devOpt3" type="text" placeholder="Option 3" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option
+                                        3</label>
+                                    <input id="devOpt3" type="text" placeholder="Option 3"
+                                        style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
                                 </div>
                                 <div>
-                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option 4</label>
-                                    <input id="devOpt4" type="text" placeholder="Option 4" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                    <label style="display:block; font-weight:600; margin-bottom:.25rem;">Option
+                                        4</label>
+                                    <input id="devOpt4" type="text" placeholder="Option 4"
+                                        style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
                                 </div>
                                 <div style="grid-column: 1 / -1; text-align:right;">
                                     <button class="btn btn-primary" id="devAddQuestionBtn">Add to JSON</button>
                                 </div>
                             </div>
-                            <textarea id="devQuestionsEditor" style="width:100%; min-height:320px; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,monospace; border:1px solid #e5e7eb; border-radius:8px; padding:.75rem;" placeholder="{\n  \"early_years\": [],\n  \"lower_primary\": [],\n  \"upper_primary\": []\n}"></textarea>
+                            <textarea id="devQuestionsEditor"
+                                style="width:100%; min-height:320px; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,monospace; border:1px solid #e5e7eb; border-radius:8px; padding:.75rem;"
+                                placeholder="{\n  \" early_years\": [],\n \"lower_primary\": [],\n \"upper_primary\":
+                                []\n}"></textarea>
                             <div id="devQuestionsMsg" style="margin-top:.5rem; color:#374151;"></div>
                         </div>
-                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                        <div class="account-card"
+                            style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
                             <h3 style="margin-bottom:.75rem; color:var(--primary);">Suggest an Idea</h3>
-                            <p style="color:#6b7280; margin-bottom:.5rem;">Write an idea or improvement for the club. It will be posted as an announcement with the title prefix <strong>[Idea]</strong>.</p>
-                            <input type="text" id="devIdeaTitle" placeholder="Short title" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:.5rem;" />
-                            <textarea id="devIdeaBody" placeholder="Describe your idea..." style="width:100%; min-height:120px; border:1px solid #e5e7eb; border-radius:8px; padding:.75rem;"></textarea>
+                            <p style="color:#6b7280; margin-bottom:.5rem;">Write an idea or improvement for the club. It
+                                will be posted as an announcement with the title prefix <strong>[Idea]</strong>.</p>
+                            <input type="text" id="devIdeaTitle" placeholder="Short title"
+                                style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:.5rem;" />
+                            <textarea id="devIdeaBody" placeholder="Describe your idea..."
+                                style="width:100%; min-height:120px; border:1px solid #e5e7eb; border-radius:8px; padding:.75rem;"></textarea>
                             <div style="margin-top:.5rem;">
                                 <button class="btn btn-primary" id="devPostIdeaBtn">Post Idea</button>
                             </div>
                             <div id="devIdeaMsg" style="margin-top:.5rem; color:#374151;"></div>
                         </div>
-                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                        <div class="account-card"
+                            style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
                             <h3 style="margin-bottom:.75rem; color:var(--primary);">Developer Mode</h3>
-                            <p style="color:#6b7280; margin-bottom:.5rem;">Grant developer powers to other users. This gives them the some privileges the developer.</p>
+                            <p style="color:#6b7280; margin-bottom:.5rem;">Grant developer powers to other users. This
+                                gives them the some privileges the developer.</p>
                             <div style="margin-bottom:.75rem;">
-                                <label style="display:block; font-weight:600; margin-bottom:.25rem;">Name or Database UID</label>
-                                <input type="email" id="devGrantEmail" placeholder="Enter email to grant developer powers" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                <label style="display:block; font-weight:600; margin-bottom:.25rem;">Name or Database
+                                    UID</label>
+                                <input type="email" id="devGrantEmail"
+                                    placeholder="Enter email to grant developer powers"
+                                    style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
                             </div>
                             <div style="margin-bottom:.75rem;">
                                 <label style="display:block; font-weight:600; margin-bottom:.25rem;">Role Badge</label>
-                                <select id="devRoleSelect" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
+                                <select id="devRoleSelect"
+                                    style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
                                     <option value="developer">Developer</option>
                                     <option value="teacher">Teacher</option>
                                     <option value="official">Official</option>
@@ -534,37 +624,50 @@
                             </div>
                             <div style="margin-top:.5rem;" class="buttoner">
                                 <button class="btn btn-primary" id="devGrantPowerBtn">Grant Powers</button>
-                                <button class="btn" id="devRevokePowerBtn" style="background:#dc2626; color:#fff; margin-left:.5rem;">Revoke Powers</button>
+                                <button class="btn" id="devRevokePowerBtn"
+                                    style="background:#dc2626; color:#fff; margin-left:.5rem;">Revoke Powers</button>
                             </div>
                             <div id="devPowerMsg" style="margin-top:.5rem; color:#374151;"></div>
                         </div>
 
                         <!-- Manage Users Panel (no email needed) -->
-                        <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                        <div class="account-card"
+                            style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
                             <h3 style="margin-bottom:.75rem; color:var(--primary);">Manage Users</h3>
-                            <p style="color:#6b7280; margin-bottom:.5rem;">Search registered users, badges, or delete account.</p>
+                            <p style="color:#6b7280; margin-bottom:.5rem;">Search registered users, badges, or delete
+                                account.</p>
                             <div style="display:grid; gap:.5rem; grid-template-columns: 1fr;">
-                                <input type="text" id="adminUserSearch" placeholder="Search by name..." style="padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
+                                <input type="text" id="adminUserSearch" placeholder="Search by name..."
+                                    style="padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
                                 <div style="display:flex; align-items:center; gap:.75rem;">
                                     <label style="display:flex; align-items:center; gap:.35rem; cursor:pointer;">
                                         <input type="checkbox" id="adminOnlineOnly" checked />
                                         <span>Show online only</span>
                                     </label>
-                                    <button class="btn" id="adminRefreshUsers" style="background:#e5e7eb;">Refresh</button>
+                                    <button class="btn" id="adminRefreshUsers"
+                                        style="background:#e5e7eb;">Refresh</button>
                                 </div>
-                                <div id="adminUserResults" style="max-height:180px; overflow:auto; border:1px solid #eee; border-radius:8px; padding:.5rem;"></div>
-                                <div id="adminUserControls" style="display:none; border-top:1px dashed #e5e7eb; padding-top:.75rem;">
-                                    <div style="display:grid; gap:.5rem; grid-template-columns: repeat(2, minmax(0,1fr));">
+                                <div id="adminUserResults"
+                                    style="max-height:180px; overflow:auto; border:1px solid #eee; border-radius:8px; padding:.5rem;">
+                                </div>
+                                <div id="adminUserControls"
+                                    style="display:none; border-top:1px dashed #e5e7eb; padding-top:.75rem;">
+                                    <div
+                                        style="display:grid; gap:.5rem; grid-template-columns: repeat(2, minmax(0,1fr));">
                                         <div>
-                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Points Adjustment</label>
+                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Points
+                                                Adjustment</label>
                                             <div style="display:flex; gap:.5rem;">
-                                                <input type="number" id="adminPointsDelta" placeholder="e.g. 10 or -5" style="flex:1; padding:.5rem .6rem; border:1px solid #ddd; border-radius:8px;" />
+                                                <input type="number" id="adminPointsDelta" placeholder="e.g. 10 or -5"
+                                                    style="flex:1; padding:.5rem .6rem; border:1px solid #ddd; border-radius:8px;" />
                                                 <button class="btn btn-primary" id="adminApplyPoints">Apply</button>
                                             </div>
                                         </div>
                                         <div>
-                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Role Badge</label>
-                                            <select id="adminRole1" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
+                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Role
+                                                Badge</label>
+                                            <select id="adminRole1"
+                                                style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
                                                 <option value="">None</option>
                                                 <option value="developer">Developer</option>
                                                 <option value="teacher">Teacher</option>
@@ -575,8 +678,10 @@
                                             </select>
                                         </div>
                                         <div>
-                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Second Role (optional)</label>
-                                            <select id="adminRole2" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
+                                            <label style="display:block; font-weight:600; margin-bottom:.25rem;">Second
+                                                Role (optional)</label>
+                                            <select id="adminRole2"
+                                                style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;">
                                                 <option value="">None</option>
                                                 <option value="developer">Developer</option>
                                                 <option value="teacher">Teacher</option>
@@ -587,12 +692,15 @@
                                             </select>
                                         </div>
                                         <div style="display:flex; align-items:end; gap:.5rem;">
-                                            <button class="btn" id="adminApplyRoles" style="background:#1d4ed8; color:#fff;">Apply Roles</button>
-                                            <button class="btn" id="adminRevokeRoles" style="background:#dc2626; color:#fff;">Revoke Roles</button>
+                                            <button class="btn" id="adminApplyRoles"
+                                                style="background:#1d4ed8; color:#fff;">Apply Roles</button>
+                                            <button class="btn" id="adminRevokeRoles"
+                                                style="background:#dc2626; color:#fff;">Revoke Roles</button>
                                         </div>
-                                    
+
                                         <div style="grid-column: 1/-1; display:flex; justify-content:space-between;">
-                                            <button class="btn" id="adminDeleteUser" style="background:#b91c1c; color:#fff;">Delete User</button>
+                                            <button class="btn" id="adminDeleteUser"
+                                                style="background:#b91c1c; color:#fff;">Delete User</button>
                                             <div id="adminUserMsg" style="color:#374151;"></div>
                                         </div>
                                     </div>
@@ -607,12 +715,14 @@
             <div class="section" id="section-monitoring">
                 <h2 class="section-title">Monitoring</h2>
                 <div class="settings-container">
-                    <div class="account-card" style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
+                    <div class="account-card"
+                        style="background:#fff; border-radius:12px; padding:1rem; box-shadow:0 5px 20px rgba(0,0,0,.06);">
                         <div style="display:flex; gap:1rem; align-items:center; margin-bottom:.5rem;">
                             <div><strong>Registered:</strong> <span id="monTotalUsers">0</span></div>
                             <div><strong>Online now:</strong> <span id="monOnlineUsers">0</span></div>
                         </div>
-                        <div id="monTable" style="overflow:auto; max-height:420px; border:1px solid #eee; border-radius:8px;">
+                        <div id="monTable"
+                            style="overflow:auto; max-height:420px; border:1px solid #eee; border-radius:8px;">
                             <table style="width:100%; border-collapse:collapse;">
                                 <thead>
                                     <tr style="text-align:left; background:#f8fafc;">
@@ -630,64 +740,65 @@
                     </div>
                 </div>
             </div>
-<!-- Support Section -->
-<div class="section" id="section-support">
-  <h2 class="section-title">Support</h2>
-  
-  <div class="support-container">
-    
-    <!-- LEFT SIDE (Threads + Chat) -->
-    <div class="support-left">
-      
-      <!-- Staff Panel -->
-      <div id="supportStaffPanel" class="support-panel" style="display:none;">
-        <h3 class="support-title">Student Messages</h3>
-        <div class="support-grid">
-          <!-- Thread List -->
-          <div id="supportThreads" class="support-threads"></div>
-          
-          <!-- Chat Area -->
-          <div class="support-chat-area">
-            <div id="supportMessages" class="support-messages"></div>
-            <div class="support-input">
-              <input type="file" id="supportMedia" accept="image/*,video/*,audio/*" hidden>
-              <input type="text" id="supportInput" placeholder="Type a reply..." />
-              <button id="supportAttachBtn"><i class="fas fa-paperclip"></i></button>
-              <button id="supportSendBtn" class="btn-primary">Send</button>
+            <!-- Support Section -->
+            <div class="section" id="section-support">
+                <h2 class="section-title">Support</h2>
+
+                <div class="support-container">
+
+                    <!-- LEFT SIDE (Threads + Chat) -->
+                    <div class="support-left">
+
+                        <!-- Staff Panel -->
+                        <div id="supportStaffPanel" class="support-panel" style="display:none;">
+                            <h3 class="support-title">Student Messages</h3>
+                            <div class="support-grid">
+                                <!-- Thread List -->
+                                <div id="supportThreads" class="support-threads"></div>
+
+                                <!-- Chat Area -->
+                                <div class="support-chat-area">
+                                    <div id="supportMessages" class="support-messages"></div>
+                                    <div class="support-input">
+                                        <input type="file" id="supportMedia" accept="image/*,video/*,audio/*" hidden>
+                                        <input type="text" id="supportInput" placeholder="Type a reply..." />
+                                        <button id="supportAttachBtn"><i class="fas fa-paperclip"></i></button>
+                                        <button id="supportSendBtn" class="btn-primary">Send</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Student Panel -->
+                        <div id="supportStudentPanel" class="support-panel" style="display:none;">
+                            <div id="supportStudentMessages" class="support-messages"></div>
+                            <div class="support-input">
+                                <input type="file" id="supportStudentMedia" accept="image/*,video/*,audio/*" hidden>
+                                <input type="text" id="supportStudentInput" placeholder="Write a message to staff..." />
+                                <button id="supportStudentAttach"><i class="fas fa-paperclip"></i></button>
+                                <button id="supportStudentSend" class="btn-primary">Send</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT SIDE (User Profile) -->
+                    <div class="support-right" id="supportProfile">
+                        <div class="profile-card">
+                            <img id="supportProfilePic" src="logonew.png" alt="Profile Photo" />
+                            <h3 id="supportProfileName">Select a User</h3>
+                            <p id="supportProfileRole">Role: —</p>
+                            <p id="supportProfilePoints">Points: —</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Student Panel -->
-      <div id="supportStudentPanel" class="support-panel" style="display:none;">
-        <div id="supportStudentMessages" class="support-messages"></div>
-        <div class="support-input">
-          <input type="file" id="supportStudentMedia" accept="image/*,video/*,audio/*" hidden>
-          <input type="text" id="supportStudentInput" placeholder="Write a message to staff..." />
-          <button id="supportStudentAttach"><i class="fas fa-paperclip"></i></button>
-          <button id="supportStudentSend" class="btn-primary">Send</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT SIDE (User Profile) -->
-    <div class="support-right" id="supportProfile">
-      <div class="profile-card">
-        <img id="supportProfilePic" src="logonew.png" alt="Profile Photo" />
-        <h3 id="supportProfileName">Select a User</h3>
-        <p id="supportProfileRole">Role: —</p>
-        <p id="supportProfilePoints">Points: —</p>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="scripts.js"></script>
-    <script src="monitoring.js"></script>
-    <script src="support.js"></script>
+            <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+            <script src="scripts.js"></script>
+            <script src="monitoring.js"></script>
+            <script src="support.js"></script>
 </body>
+
 </html>
