@@ -947,6 +947,8 @@
     margin-top: 40px;
   }
 }
+
+
 @media (max-width: 498px) {
   .leaderboard-tabs {
     flex-direction: column;

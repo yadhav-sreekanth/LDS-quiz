@@ -759,7 +759,7 @@ async function startQuiz() {
   // Check attempt limit (max 5 in the last 7 days)
   const allowed = await checkAttemptLimit(userId, quizType);
   if (!allowed) {
-    alert('You have reached the limit of 5 quizzes for this type in the last 7 days. Try later.');
+    alert('You can attempt only one quiz per week. Please try again later.');
     return;
   }
 
@@ -959,7 +959,7 @@ function finalizeAttempt() {
   }
 
   // Record this attempt to prevent repetition
-  recordQuizAttempt(userProfile.dob);
+  recordQuizAttempt(userId, userProfile.dob);
   // Persist seen question ids for this user/type to avoid repeats on next quiz
   try {
     const quizType = determineQuizTypeFromDOB(userProfile.dob);
@@ -983,30 +983,43 @@ async function awaitRecordAward(award) {
       .insert([{ user_id: userId, type: award.type, label: award.label }]);
   } catch (_) {}
 }
-
-function recordQuizAttempt(dob) {
+function recordQuizAttempt(userId, dob) {
   const quizType = determineQuizTypeFromDOB(dob);
   const attempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
   if (!attempts[userId]) attempts[userId] = {};
   let list = attempts[userId][quizType];
-  // Migration: previously stored as an object keyed by weekNumber; now use timestamp array
+
   if (!Array.isArray(list)) list = [];
+
   const nowTs = Date.now();
   const sevenDaysAgo = nowTs - 7 * 24 * 60 * 60 * 1000;
-  // Push and prune to last 7 days and cap length
+
+  // Push + prune
   list.push(nowTs);
-  list = list.filter((ts) => Number(ts) > sevenDaysAgo).slice(-50);
+  list = list.filter((ts) => Number(ts) > sevenDaysAgo).slice(-10);
   attempts[userId][quizType] = list;
+
   localStorage.setItem('quizAttempts', JSON.stringify(attempts));
 }
 
-async function checkAttemptLimit(userId, quizType) {
+function checkAttemptLimit(userId, quizType) {
   const attempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
   const list = Array.isArray(attempts[userId]?.[quizType]) ? attempts[userId][quizType] : [];
+
   const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  const recentCount = list.filter((ts) => Number(ts) > sevenDaysAgo).length;
-  // Allow up to 5 attempts in the last 7 days
-  return recentCount < 5;
+  const recentAttempts = list.filter((ts) => Number(ts) > sevenDaysAgo);
+
+  // 🚫 If any attempt in last 7 days, block
+  if (recentAttempts.length > 0) return false;
+
+  // ✅ Otherwise immediately record this attempt (so double-clicks don’t re-open)
+  const nowTs = Date.now();
+  if (!attempts[userId]) attempts[userId] = {};
+  if (!Array.isArray(attempts[userId][quizType])) attempts[userId][quizType] = [];
+  attempts[userId][quizType].push(nowTs);
+  localStorage.setItem('quizAttempts', JSON.stringify(attempts));
+
+  return true;
 }
 
 // Weekly points reset functionality
@@ -1099,7 +1112,21 @@ async function loadPosts() {
     el.id = `post-${post.id}`;
 
     // Format date
-    const postDate = new Date(post.created_at).toLocaleString();
+    function timeAgo(dateString) {
+      const seconds = Math.floor((Date.now() - new Date(dateString)) / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+
+      if (seconds < 60) return 'just now';
+      if (minutes < 60) return `${minutes} min${minutes > 1 ? 's' : ''} ago`;
+      if (hours < 24) return `${hours} hr${hours > 1 ? 's' : ''} ago`;
+      if (days < 7) return `${days} day${days > 1 ? 's' : ''} ago`;
+
+      return new Date(dateString).toLocaleDateString(undefined, { dateStyle: 'medium' });
+    }
+
+    const postDate = timeAgo(post.created_at);
 
     const displayName = (post.users && post.users.full_name) || 'User';
     const role = (post.users && (post.users.role_badge || '')) || '';
@@ -1384,7 +1411,22 @@ async function loadPosts() {
     });
   });
 }
+function timeAgo(dateString) {
+  const seconds = Math.floor((Date.now() - new Date(dateString)) / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
 
+  if (seconds < 60) return 'just now';
+  if (minutes < 60) return `${minutes} min${minutes > 1 ? 's' : ''} ago`;
+  if (hours < 24) return `${hours} hr${hours > 1 ? 's' : ''} ago`;
+  if (days < 7) return `${days} day${days > 1 ? 's' : ''} ago`;
+
+  // For older comments, show full date
+  return new Date(dateString).toLocaleDateString(undefined, {
+    dateStyle: 'medium'
+  });
+}
 // Comment system functions
 async function loadComments(postId, commentsListEl) {
   try {
@@ -1449,9 +1491,11 @@ async function loadComments(postId, commentsListEl) {
     }
     </strong>
 
-                                <small class="comment-time">${new Date(
-                                  comment.created_at
-                                ).toLocaleString()}</small>
+
+
+// Usage inside your HTML template:
+<small class="comment-time">${timeAgo(comment.created_at)}</small>
+
                             </div>
     <div class="comment-content"
         style="margin-top:6px;margin-left:49px;

@@ -2,122 +2,6 @@
   "early_years": [
     {
       "id": 1,
-      "question_text": "Which animal says 'meow'?",
-      "options": [
-        { "id": 1, "text": "Dog" },
-        { "id": 2, "text": "Cat" },
-        { "id": 3, "text": "Cow" },
-        { "id": 4, "text": "Duck" }
-      ],
-      "correct_option": 2
-    },
-    {
-      "id": 2,
-      "question_text": "What color is a banana?",
-      "options": [
-        { "id": 1, "text": "Red" },
-        { "id": 2, "text": "Yellow" },
-        { "id": 3, "text": "Blue" },
-        { "id": 4, "text": "Green" }
-      ],
-      "correct_option": 2
-    },
-    {
-      "id": 3,
-      "question_text": "How many fingers do you have on one hand?",
-      "options": [
-        { "id": 1, "text": "3" },
-        { "id": 2, "text": "4" },
-        { "id": 3, "text": "5" },
-        { "id": 4, "text": "6" }
-      ],
-      "correct_option": 3
-    }
-  ],
-  "lower_primary": [
-    {
-      "id": 1,
-      "question_text": "What is 5 + 7?",
-      "options": [
-        { "id": 1, "text": "10" },
-        { "id": 2, "text": "11" },
-        { "id": 3, "text": "12" },
-        { "id": 4, "text": "13" }
-      ],
-      "correct_option": 3
-    },
-    {
-      "id": 2,
-      "question_text": "Which planet is known as the Red Planet?",
-      "options": [
-        { "id": 1, "text": "Earth" },
-        { "id": 2, "text": "Mars" },
-        { "id": 3, "text": "Jupiter" },
-        { "id": 4, "text": "Venus" }
-      ],
-      "correct_option": 2
-    },
-    {
-      "id": 3,
-      "question_text": "What is the capital of India?",
-      "options": [
-        { "id": 1, "text": "Mumbai" },
-        { "id": 2, "text": "Kolkata" },
-        { "id": 3, "text": "New Delhi" },
-        { "id": 4, "text": "Chennai" }
-      ],
-      "correct_option": 3
-    }
-  ],
-  "upper_primary": [
-    {
-      "id": 1,
-      "question_text": "What is the chemical symbol for gold?",
-      "options": [
-        { "id": 1, "text": "Go" },
-        { "id": 2, "text": "Gd" },
-        { "id": 3, "text": "Au" },
-        { "id": 4, "text": "Ag" }
-      ],
-      "correct_option": 3
-    },
-    {
-      "id": 2,
-      "question_text": "Who wrote 'Romeo and Juliet'?",
-      "options": [
-        { "id": 1, "text": "Charles Dickens" },
-        { "id": 2, "text": "William Shakespeare" },
-        { "id": 3, "text": "Jane Austen" },
-        { "id": 4, "text": "Mark Twain" }
-      ],
-      "correct_option": 2
-    },
-    {
-      "id": 3,
-      "question_text": "What is the largest ocean on Earth?",
-      "options": [
-        { "id": 1, "text": "Atlantic Ocean" },
-        { "id": 2, "text": "Indian Ocean" },
-        { "id": 3, "text": "Arctic Ocean" },
-        { "id": 4, "text": "Pacific Ocean" }
-      ],
-      "correct_option": 4
-    }
-  ],
-  "cbse": [
-    {
-      "id": 1,
-      "question_text": "What is the formula for the area of a circle?",
-      "options": [
-        { "id": 1, "text": "πr²" },
-        { "id": 2, "text": "2πr" },
-        { "id": 3, "text": "πd" },
-        { "id": 4, "text": "2πr²" }
-      ],
-      "correct_option": 1
-    },
-    {
-      "id": 2,
       "question_text": "Who discovered the law of gravity?",
       "options": [
         { "id": 1, "text": "Albert Einstein" },
@@ -128,15 +12,1669 @@
       "correct_option": 2
     },
     {
-      "id": 3,
-      "question_text": "What is the chemical formula for water?",
+      "id": 2,
+      "question_text": "Which scientist is credited with the discovery of penicillin?",
       "options": [
-        { "id": 1, "text": "H2O" },
-        { "id": 2, "text": "CO2" },
-        { "id": 3, "text": "O2" },
-        { "id": 4, "text": "NaCl" }
+        { "id": 1, "text": "Marie Curie" },
+        { "id": 2, "text": "Alexander Fleming" },
+        { "id": 3, "text": "Louis Pasteur" },
+        { "id": 4, "text": "Joseph Lister" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 3,
+      "question_text": "What did Wilhelm Conrad Roentgen discover in 1895?",
+      "options": [
+        { "id": 1, "text": "Radium" },
+        { "id": 2, "text": "Penicillin" },
+        { "id": 3, "text": "X-rays" },
+        { "id": 4, "text": "Electron" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 4,
+      "question_text": "Who discovered radium and polonium?",
+      "options": [
+        { "id": 1, "text": "Isaac Newton and Galileo" },
+        { "id": 2, "text": "Marie Curie and Pierre Curie" },
+        { "id": 3, "text": "Einstein and Bohr" },
+        { "id": 4, "text": "Faraday and Maxwell" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 5,
+      "question_text": "Who proposed the heliocentric theory of the solar system?",
+      "options": [
+        { "id": 1, "text": "Galileo Galilei" },
+        { "id": 2, "text": "Isaac Newton" },
+        { "id": 3, "text": "Nicolaus Copernicus" },
+        { "id": 4, "text": "Johannes Kepler" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 6,
+      "question_text": "Who discovered the circulation of blood in the human body?",
+      "options": [
+        { "id": 1, "text": "William Harvey" },
+        { "id": 2, "text": "Joseph Lister" },
+        { "id": 3, "text": "Edward Jenner" },
+        { "id": 4, "text": "Louis Pasteur" }
       ],
       "correct_option": 1
+    },
+    {
+      "id": 7,
+      "question_text": "Which scientist discovered that the Earth revolves around the Sun?",
+      "options": [
+        { "id": 1, "text": "Isaac Newton" },
+        { "id": 2, "text": "Nicolaus Copernicus" },
+        { "id": 3, "text": "Galileo Galilei" },
+        { "id": 4, "text": "Johannes Kepler" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 8,
+      "question_text": "Who discovered insulin?",
+      "options": [
+        { "id": 1, "text": "Alexander Fleming" },
+        { "id": 2, "text": "Frederick Banting and Charles Best" },
+        { "id": 3, "text": "Marie Curie" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 9,
+      "question_text": "Who is known as the father of modern chemistry?",
+      "options": [
+        { "id": 1, "text": "Dmitri Mendeleev" },
+        { "id": 2, "text": "Antoine Lavoisier" },
+        { "id": 3, "text": "John Dalton" },
+        { "id": 4, "text": "Robert Boyle" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 10,
+      "question_text": "Who invented the automobile?",
+      "options": [
+        { "id": 1, "text": "Henry Ford" },
+        { "id": 2, "text": "Karl Benz" },
+        { "id": 3, "text": "Thomas Edison" },
+        { "id": 4, "text": "Wright Brothers" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 11,
+      "question_text": "Who invented the telephone?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Guglielmo Marconi" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 12,
+      "question_text": "Who invented the light bulb?",
+      "options": [
+        { "id": 1, "text": "Thomas Alva Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Nikola Tesla" },
+        { "id": 4, "text": "Michael Faraday" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 13,
+      "question_text": "Who built the first successful airplane?",
+      "options": [
+        { "id": 1, "text": "Wright Brothers" },
+        { "id": 2, "text": "Henry Ford" },
+        { "id": 3, "text": "Charles Lindbergh" },
+        { "id": 4, "text": "Amelia Earhart" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 14,
+      "question_text": "Who invented the World Wide Web?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Tim Berners-Lee" },
+        { "id": 4, "text": "Mark Zuckerberg" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 15,
+      "question_text": "Who invented the printing press?",
+      "options": [
+        { "id": 1, "text": "Benjamin Franklin" },
+        { "id": 2, "text": "Johannes Gutenberg" },
+        { "id": 3, "text": "Samuel Morse" },
+        { "id": 4, "text": "Thomas Edison" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 16,
+      "question_text": "Who invented dynamite?",
+      "options": [
+        { "id": 1, "text": "Alfred Nobel" },
+        { "id": 2, "text": "Robert Oppenheimer" },
+        { "id": 3, "text": "Marie Curie" },
+        { "id": 4, "text": "Isaac Newton" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 17,
+      "question_text": "Who invented the steam engine?",
+      "options": [
+        { "id": 1, "text": "James Watt" },
+        { "id": 2, "text": "Thomas Newcomen" },
+        { "id": 3, "text": "George Stephenson" },
+        { "id": 4, "text": "Henry Ford" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 18,
+      "question_text": "Who invented the radio?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Guglielmo Marconi" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 19,
+      "question_text": "Who invented the computer mouse?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Douglas Engelbart" },
+        { "id": 4, "text": "Tim Berners-Lee" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 20,
+      "question_text": "Who invented the elevator (with safety device)?",
+      "options": [
+        { "id": 1, "text": "Elisha Otis" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Thomas Edison" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 21,
+      "question_text": "Who co-founded Microsoft?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs and Steve Wozniak" },
+        { "id": 2, "text": "Bill Gates and Paul Allen" },
+        { "id": 3, "text": "Mark Zuckerberg and Eduardo Saverin" },
+        { "id": 4, "text": "Larry Page and Sergey Brin" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 22,
+      "question_text": "Who invented the iPhone?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Mark Zuckerberg" },
+        { "id": 4, "text": "Jeff Bezos" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 23,
+      "question_text": "Who is the founder of SpaceX?",
+      "options": [
+        { "id": 1, "text": "Jeff Bezos" },
+        { "id": 2, "text": "Richard Branson" },
+        { "id": 3, "text": "Elon Musk" },
+        { "id": 4, "text": "Neil Armstrong" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 24,
+      "question_text": "Who developed the first artificial heart?",
+      "options": [
+        { "id": 1, "text": "Dr. Robert Jarvik" },
+        { "id": 2, "text": "Dr. Christian Barnard" },
+        { "id": 3, "text": "Dr. William Harvey" },
+        { "id": 4, "text": "Dr. Joseph Lister" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 25,
+      "question_text": "Which company developed the first electric car in mass production?",
+      "options": [
+        { "id": 1, "text": "Toyota" },
+        { "id": 2, "text": "Ford" },
+        { "id": 3, "text": "Tesla Motors" },
+        { "id": 4, "text": "General Motors" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 26,
+      "question_text": "Who invented the World Wide Web browser 'Mosaic'?",
+      "options": [
+        { "id": 1, "text": "Tim Berners-Lee" },
+        { "id": 2, "text": "Bill Gates" },
+        { "id": 3, "text": "Marc Andreessen and Eric Bina" },
+        { "id": 4, "text": "Steve Jobs" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 27,
+      "question_text": "Who invented the laser printer?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs" },
+        { "id": 2, "text": "Gary Starkweather" },
+        { "id": 3, "text": "Bill Gates" },
+        { "id": 4, "text": "Chester Carlson" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 28,
+      "question_text": "Who invented Bluetooth technology?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs" },
+        { "id": 2, "text": "Jaap Haartsen" },
+        { "id": 3, "text": "Bill Gates" },
+        { "id": 4, "text": "Tim Berners-Lee" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 29,
+      "question_text": "What year was the first iPhone released?",
+      "options": [
+        { "id": 1, "text": "2005" },
+        { "id": 2, "text": "2006" },
+        { "id": 3, "text": "2007" },
+        { "id": 4, "text": "2008" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 30,
+      "question_text": "Who is known as the father of the personal computer?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Ed Roberts" },
+        { "id": 4, "text": "Alan Turing" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 31,
+      "question_text": "Who founded Google?",
+      "options": [
+        { "id": 1, "text": "Bill Gates and Paul Allen" },
+        { "id": 2, "text": "Steve Jobs and Steve Wozniak" },
+        { "id": 3, "text": "Mark Zuckerberg and Eduardo Saverin" },
+        { "id": 4, "text": "Larry Page and Sergey Brin" }
+      ],
+      "correct_option": 4
+    },
+    {
+      "id": 32,
+      "question_text": "Who invented the first mobile phone?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs" },
+        { "id": 2, "text": "Martin Cooper" },
+        { "id": 3, "text": "Alexander Graham Bell" },
+        { "id": 4, "text": "Guglielmo Marconi" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 33,
+      "question_text": "Who developed WhatsApp?",
+      "options": [
+        { "id": 1, "text": "Mark Zuckerberg" },
+        { "id": 2, "text": "Brian Acton and Jan Koum" },
+        { "id": 3, "text": "Jack Dorsey" },
+        { "id": 4, "text": "Evan Spiegel" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 34,
+      "question_text": "Which company launched the first smartwatch?",
+      "options": [
+        { "id": 1, "text": "Apple" },
+        { "id": 2, "text": "Samsung" },
+        { "id": 3, "text": "Seiko" },
+        { "id": 4, "text": "Sony" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 35,
+      "question_text": "Who discovered oxygen?",
+      "options": [
+        { "id": 1, "text": "Antoine Lavoisier" },
+        { "id": 2, "text": "Joseph Priestley and Carl Wilhelm Scheele" },
+        { "id": 3, "text": "Henry Cavendish" },
+        { "id": 4, "text": "John Dalton" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 36,
+      "question_text": "Who developed the periodic table of elements?",
+      "options": [
+        { "id": 1, "text": "John Dalton" },
+        { "id": 2, "text": "Antoine Lavoisier" },
+        { "id": 3, "text": "Dmitri Mendeleev" },
+        { "id": 4, "text": "Robert Boyle" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 37,
+      "question_text": "Who developed the theory of relativity?",
+      "options": [
+        { "id": 1, "text": "Isaac Newton" },
+        { "id": 2, "text": "Albert Einstein" },
+        { "id": 3, "text": "Stephen Hawking" },
+        { "id": 4, "text": "Niels Bohr" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 38,
+      "question_text": "Who discovered radioactivity?",
+      "options": [
+        { "id": 1, "text": "Marie Curie" },
+        { "id": 2, "text": "Wilhelm Roentgen" },
+        { "id": 3, "text": "Henri Becquerel" },
+        { "id": 4, "text": "Ernest Rutherford" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 39,
+      "question_text": "Who invented the smallpox vaccine?",
+      "options": [
+        { "id": 1, "text": "Louis Pasteur" },
+        { "id": 2, "text": "Alexander Fleming" },
+        { "id": 3, "text": "Edward Jenner" },
+        { "id": 4, "text": "Joseph Lister" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 40,
+      "question_text": "Who discovered X-rays?",
+      "options": [
+        { "id": 1, "text": "Marie Curie" },
+        { "id": 2, "text": "Wilhelm Conrad Roentgen" },
+        { "id": 3, "text": "Henri Becquerel" },
+        { "id": 4, "text": "Ernest Rutherford" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 41,
+      "question_text": "Who invented the microscope?",
+      "options": [
+        { "id": 1, "text": "Antonie van Leeuwenhoek" },
+        { "id": 2, "text": "Zacharias Janssen" },
+        { "id": 3, "text": "Robert Hooke" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 42, 
+      "question_text": "Who discovered the polio vaccine?",
+      "options": [
+        { "id": 1, "text": "Edward Jenner" },
+        { "id": 2, "text": "Louis Pasteur" },
+        { "id": 3, "text": "Alexander Fleming" },
+        { "id": 4, "text": "Jonas Salk" }
+      ],
+      "correct_option": 4
+    },
+    {
+      "id": 43, 
+      "question_text": "Who developed antiseptic surgery techniques?",
+      "options": [
+        { "id": 1, "text": "Edward Jenner" },
+        { "id": 2, "text": "Joseph Lister" },
+        { "id": 3, "text": "Louis Pasteur" },
+        { "id": 4, "text": "Alexander Fleming" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 44, 
+      "question_text": "Who discovered antibiotics?",
+      "options": [
+        { "id": 1, "text": "Joseph Lister" },
+        { "id": 2, "text": "Louis Pasteur" },
+        { "id": 3, "text": "Alexander Fleming" },
+        { "id": 4, "text": "Edward Jenner" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 45,
+      "question_text": "Who discovered the chromosome?",
+      "options": [
+        { "id": 1, "text": "Gregor Mendel" },
+        { "id": 2, "text": "James Watson" },
+        { "id": 3, "text": "Walther Flemming" },
+        { "id": 4, "text": "Francis Crick" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 46,
+      "question_text": "Who invented the stethoscope?",
+      "options": [
+        { "id": 1, "text": "William Harvey" },
+        { "id": 2, "text": "Joseph Lister" },
+        { "id": 3, "text": "René Laennec" },
+        { "id": 4, "text": "Edward Jenner" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 47,
+      "question_text": "Who discovered blood groups?",
+      "options": [
+        { "id": 1, "text": "William Harvey" },
+        { "id": 2, "text": "Karl Landsteiner" },
+        { "id": 3, "text": "Joseph Lister" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 48,
+      "question_text": "Who launched the first artificial satellite, Sputnik 1?",
+      "options": [
+        { "id": 1, "text": "United States" },
+        { "id": 2, "text": "Soviet Union" },
+        { "id": 3, "text": "China" },
+        { "id": 4, "text": "United Kingdom" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 49,
+      "question_text": "Who invented fiber optics?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Narinder Singh Kapany" },
+        { "id": 4, "text": "Tim Berners-Lee" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 50,
+      "question_text": "Who invented the television?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "John Logie Baird" },
+        { "id": 3, "text": "Guglielmo Marconi" },
+        { "id": 4, "text": "Philo Farnsworth" }
+      ],
+      "correct_option": 2
+    }
+  ],
+  "lower_primary": [
+    {
+      "id": 1,
+      "question_text": "Who discovered the law of gravity?",
+      "options": [
+        { "id": 1, "text": "Albert Einstein" },
+        { "id": 2, "text": "Isaac Newton" },
+        { "id": 3, "text": "Galileo Galilei" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 2,
+      "question_text": "Which scientist is credited with the discovery of penicillin?",
+      "options": [
+        { "id": 1, "text": "Marie Curie" },
+        { "id": 2, "text": "Alexander Fleming" },
+        { "id": 3, "text": "Louis Pasteur" },
+        { "id": 4, "text": "Joseph Lister" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 3,
+      "question_text": "What did Wilhelm Conrad Roentgen discover in 1895?",
+      "options": [
+        { "id": 1, "text": "Radium" },
+        { "id": 2, "text": "Penicillin" },
+        { "id": 3, "text": "X-rays" },
+        { "id": 4, "text": "Electron" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 4,
+      "question_text": "Who discovered radium and polonium?",
+      "options": [
+        { "id": 1, "text": "Isaac Newton and Galileo" },
+        { "id": 2, "text": "Marie Curie and Pierre Curie" },
+        { "id": 3, "text": "Einstein and Bohr" },
+        { "id": 4, "text": "Faraday and Maxwell" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 5,
+      "question_text": "Who proposed the heliocentric theory of the solar system?",
+      "options": [
+        { "id": 1, "text": "Galileo Galilei" },
+        { "id": 2, "text": "Isaac Newton" },
+        { "id": 3, "text": "Nicolaus Copernicus" },
+        { "id": 4, "text": "Johannes Kepler" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 6,
+      "question_text": "Who discovered the circulation of blood in the human body?",
+      "options": [
+        { "id": 1, "text": "William Harvey" },
+        { "id": 2, "text": "Joseph Lister" },
+        { "id": 3, "text": "Edward Jenner" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 7,
+      "question_text": "Which scientist discovered that the Earth revolves around the Sun?",
+      "options": [
+        { "id": 1, "text": "Isaac Newton" },
+        { "id": 2, "text": "Nicolaus Copernicus" },
+        { "id": 3, "text": "Galileo Galilei" },
+        { "id": 4, "text": "Johannes Kepler" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 8,
+      "question_text": "Who discovered insulin?",
+      "options": [
+        { "id": 1, "text": "Alexander Fleming" },
+        { "id": 2, "text": "Frederick Banting and Charles Best" },
+        { "id": 3, "text": "Marie Curie" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 9,
+      "question_text": "Who is known as the father of modern chemistry?",
+      "options": [
+        { "id": 1, "text": "Dmitri Mendeleev" },
+        { "id": 2, "text": "Antoine Lavoisier" },
+        { "id": 3, "text": "John Dalton" },
+        { "id": 4, "text": "Robert Boyle" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 10,
+      "question_text": "Who invented the automobile?",
+      "options": [
+        { "id": 1, "text": "Henry Ford" },
+        { "id": 2, "text": "Karl Benz" },
+        { "id": 3, "text": "Thomas Edison" },
+        { "id": 4, "text": "Wright Brothers" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 11,
+      "question_text": "Who invented the telephone?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Guglielmo Marconi" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 12,
+      "question_text": "Who invented the light bulb?",
+      "options": [
+        { "id": 1, "text": "Thomas Alva Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Nikola Tesla" },
+        { "id": 4, "text": "Michael Faraday" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 13,
+      "question_text": "Who built the first successful airplane?",
+      "options": [
+        { "id": 1, "text": "Wright Brothers" },
+        { "id": 2, "text": "Henry Ford" },
+        { "id": 3, "text": "Charles Lindbergh" },
+        { "id": 4, "text": "Amelia Earhart" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 14,
+      "question_text": "Who invented the World Wide Web?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Tim Berners-Lee" },
+        { "id": 4, "text": "Mark Zuckerberg" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 15,
+      "question_text": "Who invented the printing press?",
+      "options": [
+        { "id": 1, "text": "Benjamin Franklin" },
+        { "id": 2, "text": "Johannes Gutenberg" },
+        { "id": 3, "text": "Samuel Morse" },
+        { "id": 4, "text": "Thomas Edison" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 16,
+      "question_text": "Who invented dynamite?",
+      "options": [
+        { "id": 1, "text": "Alfred Nobel" },
+        { "id": 2, "text": "Robert Oppenheimer" },
+        { "id": 3, "text": "Marie Curie" },
+        { "id": 4, "text": "Isaac Newton" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 17,
+      "question_text": "Who invented the steam engine?",
+      "options": [
+        { "id": 1, "text": "James Watt" },
+        { "id": 2, "text": "Thomas Newcomen" },
+        { "id": 3, "text": "George Stephenson" },
+        { "id": 4, "text": "Henry Ford" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 18,
+      "question_text": "Who invented the radio?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Guglielmo Marconi" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 19,
+      "question_text": "Who invented the computer mouse?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Douglas Engelbart" },
+        { "id": 4, "text": "Tim Berners-Lee" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 20,
+      "question_text": "Who invented the elevator (with safety device)?",
+      "options": [
+        { "id": 1, "text": "Elisha Otis" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Thomas Edison" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 21,
+      "question_text": "Who co-founded Microsoft?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs and Steve Wozniak" },
+        { "id": 2, "text": "Bill Gates and Paul Allen" },
+        { "id": 3, "text": "Mark Zuckerberg and Eduardo Saverin" },
+        { "id": 4, "text": "Larry Page and Sergey Brin" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 22,
+      "question_text": "Who invented the iPhone?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Mark Zuckerberg" },
+        { "id": 4, "text": "Jeff Bezos" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 23,
+      "question_text": "Who is the founder of SpaceX?",
+      "options": [
+        { "id": 1, "text": "Jeff Bezos" },
+        { "id": 2, "text": "Richard Branson" },
+        { "id": 3, "text": "Elon Musk" },
+        { "id": 4, "text": "Neil Armstrong" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 24,
+      "question_text": "Who developed the first artificial heart?",
+      "options": [
+        { "id": 1, "text": "Dr. Robert Jarvik" },
+        { "id": 2, "text": "Dr. Christian Barnard" },
+        { "id": 3, "text": "Dr. William Harvey" },
+        { "id": 4, "text": "Dr. Joseph Lister" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 25,
+      "question_text": "Which company developed the first electric car in mass production?",
+      "options": [
+        { "id": 1, "text": "Toyota" },
+        { "id": 2, "text": "Ford" },
+        { "id": 3, "text": "Tesla Motors" },
+        { "id": 4, "text": "General Motors" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 26,
+      "question_text": "Who invented the World Wide Web browser 'Mosaic'?",
+      "options": [
+        { "id": 1, "text": "Tim Berners-Lee" },
+        { "id": 2, "text": "Bill Gates" },
+        { "id": 3, "text": "Marc Andreessen and Eric Bina" },
+        { "id": 4, "text": "Steve Jobs" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 27,
+      "question_text": "Who invented the laser printer?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs" },
+        { "id": 2, "text": "Gary Starkweather" },
+        { "id": 3, "text": "Bill Gates" },
+        { "id": 4, "text": "Chester Carlson" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 28,
+      "question_text": "Who invented Bluetooth technology?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs" },
+        { "id": 2, "text": "Jaap Haartsen" },
+        { "id": 3, "text": "Bill Gates" },
+        { "id": 4, "text": "Tim Berners-Lee" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 29,
+      "question_text": "What year was the first iPhone released?",
+      "options": [
+        { "id": 1, "text": "2005" },
+        { "id": 2, "text": "2006" },
+        { "id": 3, "text": "2007" },
+        { "id": 4, "text": "2008" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 30,
+      "question_text": "Who is known as the father of the personal computer?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Ed Roberts" },
+        { "id": 4, "text": "Alan Turing" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 31,
+      "question_text": "Who founded Google?",
+      "options": [
+        { "id": 1, "text": "Bill Gates and Paul Allen" },
+        { "id": 2, "text": "Steve Jobs and Steve Wozniak" },
+        { "id": 3, "text": "Mark Zuckerberg and Eduardo Saverin" },
+        { "id": 4, "text": "Larry Page and Sergey Brin" }
+      ],
+      "correct_option": 4
+    },
+    {
+      "id": 32,
+      "question_text": "Who invented the first mobile phone?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs" },
+        { "id": 2, "text": "Martin Cooper" },
+        { "id": 3, "text": "Alexander Graham Bell" },
+        { "id": 4, "text": "Guglielmo Marconi" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 33,
+      "question_text": "Who developed WhatsApp?",
+      "options": [
+        { "id": 1, "text": "Mark Zuckerberg" },
+        { "id": 2, "text": "Brian Acton and Jan Koum" },
+        { "id": 3, "text": "Jack Dorsey" },
+        { "id": 4, "text": "Evan Spiegel" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 34,
+      "question_text": "Which company launched the first smartwatch?",
+      "options": [
+        { "id": 1, "text": "Apple" },
+        { "id": 2, "text": "Samsung" },
+        { "id": 3, "text": "Seiko" },
+        { "id": 4, "text": "Sony" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 35,
+      "question_text": "Who discovered oxygen?",
+      "options": [
+        { "id": 1, "text": "Antoine Lavoisier" },
+        { "id": 2, "text": "Joseph Priestley and Carl Wilhelm Scheele" },
+        { "id": 3, "text": "Henry Cavendish" },
+        { "id": 4, "text": "John Dalton" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 36,
+      "question_text": "Who developed the periodic table of elements?",
+      "options": [
+        { "id": 1, "text": "John Dalton" },
+        { "id": 2, "text": "Antoine Lavoisier" },
+        { "id": 3, "text": "Dmitri Mendeleev" },
+        { "id": 4, "text": "Robert Boyle" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 37,
+      "question_text": "Who developed the theory of relativity?",
+      "options": [
+        { "id": 1, "text": "Isaac Newton" },
+        { "id": 2, "text": "Albert Einstein" },
+        { "id": 3, "text": "Stephen Hawking" },
+        { "id": 4, "text": "Niels Bohr" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 38,
+      "question_text": "Who discovered radioactivity?",
+      "options": [
+        { "id": 1, "text": "Marie Curie" },
+        { "id": 2, "text": "Wilhelm Roentgen" },
+        { "id": 3, "text": "Henri Becquerel" },
+        { "id": 4, "text": "Ernest Rutherford" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 39,
+      "question_text": "Who invented the smallpox vaccine?",
+      "options": [
+        { "id": 1, "text": "Louis Pasteur" },
+        { "id": 2, "text": "Alexander Fleming" },
+        { "id": 3, "text": "Edward Jenner" },
+        { "id": 4, "text": "Joseph Lister" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 40,
+      "question_text": "Who discovered X-rays?",
+      "options": [
+        { "id": 1, "text": "Marie Curie" },
+        { "id": 2, "text": "Wilhelm Conrad Roentgen" },
+        { "id": 3, "text": "Henri Becquerel" },
+        { "id": 4, "text": "Ernest Rutherford" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 41,
+      "question_text": "Who invented the microscope?",
+      "options": [
+        { "id": 1, "text": "Antonie van Leeuwenhoek" },
+        { "id": 2, "text": "Zacharias Janssen" },
+        { "id": 3, "text": "Robert Hooke" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 41,
+      "question_text": "Who discovered the polio vaccine?",
+      "options": [
+        { "id": 1, "text": "Edward Jenner" },
+        { "id": 2, "text": "Louis Pasteur" },
+        { "id": 3, "text": "Alexander Fleming" },
+        { "id": 4, "text": "Jonas Salk" }
+      ],
+      "correct_option": 4
+    },
+    {
+      "id": 42,
+      "question_text": "Who developed antiseptic surgery techniques?",
+      "options": [
+        { "id": 1, "text": "Edward Jenner" },
+        { "id": 2, "text": "Joseph Lister" },
+        { "id": 3, "text": "Louis Pasteur" },
+        { "id": 4, "text": "Alexander Fleming" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 43,
+      "question_text": "Who discovered antibiotics?",
+      "options": [
+        { "id": 1, "text": "Joseph Lister" },
+        { "id": 2, "text": "Louis Pasteur" },
+        { "id": 3, "text": "Alexander Fleming" },
+        { "id": 4, "text": "Edward Jenner" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 44,
+      "question_text": "Who invented the thermometer?",
+      "options": [
+        { "id": 1, "text": "Galileo Galilei" },
+        { "id": 2, "text": "Isaac Newton" },
+        { "id": 3, "text": "Daniel Gabriel Fahrenheit" },
+        { "id": 4, "text": "Anders Celsius" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 45,
+      "question_text": "Who discovered the chromosome?",
+      "options": [
+        { "id": 1, "text": "Gregor Mendel" },
+        { "id": 2, "text": "James Watson" },
+        { "id": 3, "text": "Walther Flemming" },
+        { "id": 4, "text": "Francis Crick" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 46,
+      "question_text": "Who invented the stethoscope?",
+      "options": [
+        { "id": 1, "text": "William Harvey" },
+        { "id": 2, "text": "Joseph Lister" },
+        { "id": 3, "text": "René Laennec" },
+        { "id": 4, "text": "Edward Jenner" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 47,
+      "question_text": "Who discovered blood groups?",
+      "options": [
+        { "id": 1, "text": "William Harvey" },
+        { "id": 2, "text": "Karl Landsteiner" },
+        { "id": 3, "text": "Joseph Lister" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 48,
+      "question_text": "Who launched the first artificial satellite, Sputnik 1?",
+      "options": [
+        { "id": 1, "text": "United States" },
+        { "id": 2, "text": "Soviet Union" },
+        { "id": 3, "text": "China" },
+        { "id": 4, "text": "United Kingdom" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 49,
+      "question_text": "Who invented fiber optics?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Narinder Singh Kapany" },
+        { "id": 4, "text": "Tim Berners-Lee" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 50,
+      "question_text": "Who invented the television?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "John Logie Baird" },
+        { "id": 3, "text": "Guglielmo Marconi" },
+        { "id": 4, "text": "Philo Farnsworth" }
+      ],
+      "correct_option": 2
+    }
+  ],
+  "upper_primary": [
+        {
+      "id": 1,
+      "question_text": "Who discovered the law of gravity?",
+      "options": [
+        { "id": 1, "text": "Albert Einstein" },
+        { "id": 2, "text": "Isaac Newton" },
+        { "id": 3, "text": "Galileo Galilei" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 2,
+      "question_text": "Which scientist is credited with the discovery of penicillin?",
+      "options": [
+        { "id": 1, "text": "Marie Curie" },
+        { "id": 2, "text": "Alexander Fleming" },
+        { "id": 3, "text": "Louis Pasteur" },
+        { "id": 4, "text": "Joseph Lister" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 3,
+      "question_text": "What did Wilhelm Conrad Roentgen discover in 1895?",
+      "options": [
+        { "id": 1, "text": "Radium" },
+        { "id": 2, "text": "Penicillin" },
+        { "id": 3, "text": "X-rays" },
+        { "id": 4, "text": "Electron" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 4,
+      "question_text": "Who discovered radium and polonium?",
+      "options": [
+        { "id": 1, "text": "Isaac Newton and Galileo" },
+        { "id": 2, "text": "Marie Curie and Pierre Curie" },
+        { "id": 3, "text": "Einstein and Bohr" },
+        { "id": 4, "text": "Faraday and Maxwell" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 5,
+      "question_text": "Who proposed the heliocentric theory of the solar system?",
+      "options": [
+        { "id": 1, "text": "Galileo Galilei" },
+        { "id": 2, "text": "Isaac Newton" },
+        { "id": 3, "text": "Nicolaus Copernicus" },
+        { "id": 4, "text": "Johannes Kepler" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 6,
+      "question_text": "Who discovered the circulation of blood in the human body?",
+      "options": [
+        { "id": 1, "text": "William Harvey" },
+        { "id": 2, "text": "Joseph Lister" },
+        { "id": 3, "text": "Edward Jenner" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 7,
+      "question_text": "Which scientist discovered that the Earth revolves around the Sun?",
+      "options": [
+        { "id": 1, "text": "Isaac Newton" },
+        { "id": 2, "text": "Nicolaus Copernicus" },
+        { "id": 3, "text": "Galileo Galilei" },
+        { "id": 4, "text": "Johannes Kepler" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 8,
+      "question_text": "Who discovered insulin?",
+      "options": [
+        { "id": 1, "text": "Alexander Fleming" },
+        { "id": 2, "text": "Frederick Banting and Charles Best" },
+        { "id": 3, "text": "Marie Curie" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 9,
+      "question_text": "Who is known as the father of modern chemistry?",
+      "options": [
+        { "id": 1, "text": "Dmitri Mendeleev" },
+        { "id": 2, "text": "Antoine Lavoisier" },
+        { "id": 3, "text": "John Dalton" },
+        { "id": 4, "text": "Robert Boyle" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 10,
+      "question_text": "Who invented the automobile?",
+      "options": [
+        { "id": 1, "text": "Henry Ford" },
+        { "id": 2, "text": "Karl Benz" },
+        { "id": 3, "text": "Thomas Edison" },
+        { "id": 4, "text": "Wright Brothers" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 11,
+      "question_text": "Who invented the telephone?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Guglielmo Marconi" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 12,
+      "question_text": "Who invented the light bulb?",
+      "options": [
+        { "id": 1, "text": "Thomas Alva Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Nikola Tesla" },
+        { "id": 4, "text": "Michael Faraday" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 13,
+      "question_text": "Who built the first successful airplane?",
+      "options": [
+        { "id": 1, "text": "Wright Brothers" },
+        { "id": 2, "text": "Henry Ford" },
+        { "id": 3, "text": "Charles Lindbergh" },
+        { "id": 4, "text": "Amelia Earhart" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 14,
+      "question_text": "Who invented the World Wide Web?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Tim Berners-Lee" },
+        { "id": 4, "text": "Mark Zuckerberg" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 15,
+      "question_text": "Who invented the printing press?",
+      "options": [
+        { "id": 1, "text": "Benjamin Franklin" },
+        { "id": 2, "text": "Johannes Gutenberg" },
+        { "id": 3, "text": "Samuel Morse" },
+        { "id": 4, "text": "Thomas Edison" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 16,
+      "question_text": "Who invented dynamite?",
+      "options": [
+        { "id": 1, "text": "Alfred Nobel" },
+        { "id": 2, "text": "Robert Oppenheimer" },
+        { "id": 3, "text": "Marie Curie" },
+        { "id": 4, "text": "Isaac Newton" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 17,
+      "question_text": "Who invented the steam engine?",
+      "options": [
+        { "id": 1, "text": "James Watt" },
+        { "id": 2, "text": "Thomas Newcomen" },
+        { "id": 3, "text": "George Stephenson" },
+        { "id": 4, "text": "Henry Ford" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 18,
+      "question_text": "Who invented the radio?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Guglielmo Marconi" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 19,
+      "question_text": "Who invented the computer mouse?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Douglas Engelbart" },
+        { "id": 4, "text": "Tim Berners-Lee" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 20,
+      "question_text": "Who invented the elevator (with safety device)?",
+      "options": [
+        { "id": 1, "text": "Elisha Otis" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Thomas Edison" },
+        { "id": 4, "text": "Nikola Tesla" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 21,
+      "question_text": "Who co-founded Microsoft?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs and Steve Wozniak" },
+        { "id": 2, "text": "Bill Gates and Paul Allen" },
+        { "id": 3, "text": "Mark Zuckerberg and Eduardo Saverin" },
+        { "id": 4, "text": "Larry Page and Sergey Brin" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 22,
+      "question_text": "Who invented the iPhone?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Mark Zuckerberg" },
+        { "id": 4, "text": "Jeff Bezos" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 23,
+      "question_text": "Who is the founder of SpaceX?",
+      "options": [
+        { "id": 1, "text": "Jeff Bezos" },
+        { "id": 2, "text": "Richard Branson" },
+        { "id": 3, "text": "Elon Musk" },
+        { "id": 4, "text": "Neil Armstrong" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 24,
+      "question_text": "Who developed the first artificial heart?",
+      "options": [
+        { "id": 1, "text": "Dr. Robert Jarvik" },
+        { "id": 2, "text": "Dr. Christian Barnard" },
+        { "id": 3, "text": "Dr. William Harvey" },
+        { "id": 4, "text": "Dr. Joseph Lister" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 25,
+      "question_text": "Which company developed the first electric car in mass production?",
+      "options": [
+        { "id": 1, "text": "Toyota" },
+        { "id": 2, "text": "Ford" },
+        { "id": 3, "text": "Tesla Motors" },
+        { "id": 4, "text": "General Motors" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 26,
+      "question_text": "Who invented the World Wide Web browser 'Mosaic'?",
+      "options": [
+        { "id": 1, "text": "Tim Berners-Lee" },
+        { "id": 2, "text": "Bill Gates" },
+        { "id": 3, "text": "Marc Andreessen and Eric Bina" },
+        { "id": 4, "text": "Steve Jobs" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 27,
+      "question_text": "Who invented the laser printer?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs" },
+        { "id": 2, "text": "Gary Starkweather" },
+        { "id": 3, "text": "Bill Gates" },
+        { "id": 4, "text": "Chester Carlson" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 28,
+      "question_text": "Who invented Bluetooth technology?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs" },
+        { "id": 2, "text": "Jaap Haartsen" },
+        { "id": 3, "text": "Bill Gates" },
+        { "id": 4, "text": "Tim Berners-Lee" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 29,
+      "question_text": "What year was the first iPhone released?",
+      "options": [
+        { "id": 1, "text": "2005" },
+        { "id": 2, "text": "2006" },
+        { "id": 3, "text": "2007" },
+        { "id": 4, "text": "2008" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 30,
+      "question_text": "Who is known as the father of the personal computer?",
+      "options": [
+        { "id": 1, "text": "Bill Gates" },
+        { "id": 2, "text": "Steve Jobs" },
+        { "id": 3, "text": "Ed Roberts" },
+        { "id": 4, "text": "Alan Turing" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 31,
+      "question_text": "Who founded Google?",
+      "options": [
+        { "id": 1, "text": "Bill Gates and Paul Allen" },
+        { "id": 2, "text": "Steve Jobs and Steve Wozniak" },
+        { "id": 3, "text": "Mark Zuckerberg and Eduardo Saverin" },
+        { "id": 4, "text": "Larry Page and Sergey Brin" }
+      ],
+      "correct_option": 4
+    },
+    {
+      "id": 32,
+      "question_text": "Who invented the first mobile phone?",
+      "options": [
+        { "id": 1, "text": "Steve Jobs" },
+        { "id": 2, "text": "Martin Cooper" },
+        { "id": 3, "text": "Alexander Graham Bell" },
+        { "id": 4, "text": "Guglielmo Marconi" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 33,
+      "question_text": "Who developed WhatsApp?",
+      "options": [
+        { "id": 1, "text": "Mark Zuckerberg" },
+        { "id": 2, "text": "Brian Acton and Jan Koum" },
+        { "id": 3, "text": "Jack Dorsey" },
+        { "id": 4, "text": "Evan Spiegel" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 34,
+      "question_text": "Which company launched the first smartwatch?",
+      "options": [
+        { "id": 1, "text": "Apple" },
+        { "id": 2, "text": "Samsung" },
+        { "id": 3, "text": "Seiko" },
+        { "id": 4, "text": "Sony" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 35,
+      "question_text": "Who discovered oxygen?",
+      "options": [
+        { "id": 1, "text": "Antoine Lavoisier" },
+        { "id": 2, "text": "Joseph Priestley and Carl Wilhelm Scheele" },
+        { "id": 3, "text": "Henry Cavendish" },
+        { "id": 4, "text": "John Dalton" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 36,
+      "question_text": "Who developed the periodic table of elements?",
+      "options": [
+        { "id": 1, "text": "John Dalton" },
+        { "id": 2, "text": "Antoine Lavoisier" },
+        { "id": 3, "text": "Dmitri Mendeleev" },
+        { "id": 4, "text": "Robert Boyle" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 37,
+      "question_text": "Who developed the theory of relativity?",
+      "options": [
+        { "id": 1, "text": "Isaac Newton" },
+        { "id": 2, "text": "Albert Einstein" },
+        { "id": 3, "text": "Stephen Hawking" },
+        { "id": 4, "text": "Niels Bohr" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 38,
+      "question_text": "Who discovered radioactivity?",
+      "options": [
+        { "id": 1, "text": "Marie Curie" },
+        { "id": 2, "text": "Wilhelm Roentgen" },
+        { "id": 3, "text": "Henri Becquerel" },
+        { "id": 4, "text": "Ernest Rutherford" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 39,
+      "question_text": "Who invented the smallpox vaccine?",
+      "options": [
+        { "id": 1, "text": "Louis Pasteur" },
+        { "id": 2, "text": "Alexander Fleming" },
+        { "id": 3, "text": "Edward Jenner" },
+        { "id": 4, "text": "Joseph Lister" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 40,
+      "question_text": "Who discovered X-rays?",
+      "options": [
+        { "id": 1, "text": "Marie Curie" },
+        { "id": 2, "text": "Wilhelm Conrad Roentgen" },
+        { "id": 3, "text": "Henri Becquerel" },
+        { "id": 4, "text": "Ernest Rutherford" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 41,
+      "question_text": "Who invented the microscope?",
+      "options": [
+        { "id": 1, "text": "Antonie van Leeuwenhoek" },
+        { "id": 2, "text": "Zacharias Janssen" },
+        { "id": 3, "text": "Robert Hooke" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 41,
+      "question_text": "Who discovered the polio vaccine?",
+      "options": [
+        { "id": 1, "text": "Edward Jenner" },
+        { "id": 2, "text": "Louis Pasteur" },
+        { "id": 3, "text": "Alexander Fleming" },
+        { "id": 4, "text": "Jonas Salk" }
+      ],
+      "correct_option": 4
+    },
+    {
+      "id": 42,
+      "question_text": "Who developed antiseptic surgery techniques?",
+      "options": [
+        { "id": 1, "text": "Edward Jenner" },
+        { "id": 2, "text": "Joseph Lister" },
+        { "id": 3, "text": "Louis Pasteur" },
+        { "id": 4, "text": "Alexander Fleming" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 43,
+      "question_text": "Who discovered antibiotics?",
+      "options": [
+        { "id": 1, "text": "Joseph Lister" },
+        { "id": 2, "text": "Louis Pasteur" },
+        { "id": 3, "text": "Alexander Fleming" },
+        { "id": 4, "text": "Edward Jenner" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 44,
+      "question_text": "Who invented the thermometer?",
+      "options": [
+        { "id": 1, "text": "Galileo Galilei" },
+        { "id": 2, "text": "Isaac Newton" },
+        { "id": 3, "text": "Daniel Gabriel Fahrenheit" },
+        { "id": 4, "text": "Anders Celsius" }
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 45,
+      "question_text": "Who discovered the chromosome?",
+      "options": [
+        { "id": 1, "text": "Gregor Mendel" },
+        { "id": 2, "text": "James Watson" },
+        { "id": 3, "text": "Walther Flemming" },
+        { "id": 4, "text": "Francis Crick" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 46,
+      "question_text": "Who invented the stethoscope?",
+      "options": [
+        { "id": 1, "text": "William Harvey" },
+        { "id": 2, "text": "Joseph Lister" },
+        { "id": 3, "text": "René Laennec" },
+        { "id": 4, "text": "Edward Jenner" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 47,
+      "question_text": "Who discovered blood groups?",
+      "options": [
+        { "id": 1, "text": "William Harvey" },
+        { "id": 2, "text": "Karl Landsteiner" },
+        { "id": 3, "text": "Joseph Lister" },
+        { "id": 4, "text": "Louis Pasteur" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 48,
+      "question_text": "Who launched the first artificial satellite, Sputnik 1?",
+      "options": [
+        { "id": 1, "text": "United States" },
+        { "id": 2, "text": "Soviet Union" },
+        { "id": 3, "text": "China" },
+        { "id": 4, "text": "United Kingdom" }
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 49,
+      "question_text": "Who invented fiber optics?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "Alexander Graham Bell" },
+        { "id": 3, "text": "Narinder Singh Kapany" },
+        { "id": 4, "text": "Tim Berners-Lee" }
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 50,
+      "question_text": "Who invented the television?",
+      "options": [
+        { "id": 1, "text": "Thomas Edison" },
+        { "id": 2, "text": "John Logie Baird" },
+        { "id": 3, "text": "Guglielmo Marconi" },
+        { "id": 4, "text": "Philo Farnsworth" }
+      ],
+      "correct_option": 2
     }
   ]
 }
