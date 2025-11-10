@@ -6,6 +6,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Initialize user data
 let userId = null;
 let userProfile = null;
+let quizInProgress = false;
 
 function hasModeratorPower(profile) {
   const role = (profile?.role_badge || '').toLowerCase();
@@ -750,6 +751,7 @@ async function devSaveQuestionsToStorage(text) {
 }
 
 async function startQuiz() {
+    quizInProgress = true; // ✅ start tracking tab switches
   if (!canStartQuizByRole?.()) {
     alert('Your role cannot start quizzes.');
     return;
@@ -917,6 +919,7 @@ function handleAnswer(questionId, selectedOptionId) {
 }
 
 function finalizeAttempt() {
+    quizInProgress = false; // ✅ stop tracking tab switches
   // Update user's total points and weekly points
   const newTotal = (userProfile.total_points || 0) + currentScore;
   const newWeeklyTotal = (userProfile.weekly_points || 0) + currentScore;

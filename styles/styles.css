@@ -2017,4 +2017,20 @@ strong,
   align-items: center;
   vertical-align: middle;
 }
+.monitor-table th {
+  background: #f8fafc;
+  cursor: pointer;
+  user-select: none;
+}
+.monitor-table th:hover {
+  background: #e8f0fe;
+}
+/* ✅ Make monitoring table responsive */
+#monitoring-content {
+  overflow-x: auto;
+  width: 100%;
+}
 
+.monitor-table {
+  min-width: 900px; /* ensures columns don’t squeeze too much */
+}
