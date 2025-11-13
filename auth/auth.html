@@ -1,36 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Verifying...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
-  <p style="font-family:sans-serif;text-align:center;margin-top:40vh;">Verifying your account...</p>
+
+<body style="font-family:sans-serif;text-align:center;margin-top:40vh;">
+  <p id="statusText">Verifying your account...</p>
 
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
     const SUPABASE_URL = "https://qcvbqizwmhtuinpqtbzz.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdmJxaXp3bWh0dWlucHF0Ynp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTgyMjIsImV4cCI6MjA3MzE3NDIyMn0.cSRjn0n1MowMMkILc-WEuotSN2Cj78jpbxJhtEqRjl4";
+
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const { data, error } = await supabase.auth.getSession();
-
-    // ✅ Dynamically get your repo path (e.g., /LDS-quiz/)
-    const repoName = window.location.pathname.split("/")[1];
+    // Figure out your repo folder name automatically (so it works anywhere)
+    const pathParts = window.location.pathname.split("/");
+    const repoName = pathParts[1] || ""; // handles both /LDS-quiz/ or root
     const redirectTo = `/${repoName}/index.html`;
 
-    if (error) {
-      document.body.innerHTML = "<h3>Verification failed. Try signing in again.</h3>";
-    } else if (data?.session) {
-      // user already has session
-      window.location.href = redirectTo;
-    } else {
-      document.body.innerHTML = "<h3>Verified! Redirecting...</h3>";
-      setTimeout(() => {
-        window.location.href = redirectTo;
-      }, 1000);
+    try {
+      // Exchange the token from URL for a valid session
+      const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+
+      if (error) {
+        document.getElementById("statusText").innerText =
+          "Verification failed. Please sign in again.";
+      } else {
+        document.getElementById("statusText").innerText = "Verified successfully! Redirecting...";
+        setTimeout(() => {
+          window.location.href = redirectTo;
+        }, 1500);
+      }
+    } catch (err) {
+      console.error(err);
+      document.getElementById("statusText").innerText =
+        "An unexpected error occurred. Please try again.";
     }
   </script>
 </body>
+
 </html>
