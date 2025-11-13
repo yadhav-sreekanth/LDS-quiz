@@ -1,12 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Verifying...</title>
-</head>
-<body>
-  <p style="font-family:sans-serif;text-align:center;margin-top:40vh;">Verifying your account...</p>
+  <link rel="icon" href="../icons/icon-192.png">
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
+    .logo {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 20px;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 6px solid #ddd;
+      border-top-color: #3498db;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #444;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ✅ Logo and loader -->
+  <img src="../logonew.png" alt="Logo" class="logo" onerror="this.src='../icons/icon-192.png'">
+  <div class="spinner"></div>
+  <p>Verifying your account...</p>
+
+  <!-- ✅ Original Script (unchanged) -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -33,4 +95,5 @@
     }
   </script>
 </body>
+
 </html>
