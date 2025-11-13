@@ -220,8 +220,11 @@ document.addEventListener('DOMContentLoaded', async function () {
       if (section === 'developer') ensureDeveloperVisibleAndInit();
       if (section === 'monitoring') loadMonitoring();
       if (section === 'support') initSupportSection(userProfile);
+      if (section === 'explore') loadExplore();
+
     });
   });
+
 
   // My Space header settings shortcut
   const openSettingsBtn = document.getElementById('openSettingsBtn');
@@ -1472,69 +1475,68 @@ async function loadComments(postId, commentsListEl) {
       const canModerate = hasDevPowers() || comment.user_id === userId;
       const isPinned = !!comment.is_pinned || localPinnedForPost.has(comment.id);
       commentEl.innerHTML = `
-                            <div class="comment-header">
+ <div class="comment-header" style="display:flex;align-items:center;justify-content:space-between;">
+  <div style="display:flex;align-items:center;gap:.5rem;">
     <img
-    src="${comment.users?.profile_photo || userProfile?.profile_photo || 'logonew.png'}"
-    alt="${comment.users?.full_name || 'User'}"
-    class="comment-avatar"
-    style="width:40px; height:40px; border-radius:50%; object-fit:cover; aspect-ratio:1/1; object-position:center;"
-    onerror="this.onerror=null;this.src='logonew.png';"
+      src="${comment.users?.profile_photo || userProfile?.profile_photo || 'logonew.png'}"
+      alt="${comment.users?.full_name || 'User'}"
+      class="comment-avatar"
+      style="width:40px;height:40px;border-radius:50%;object-fit:cover;aspect-ratio:1/1;object-position:center;"
+      onerror="this.onerror=null;this.src='logonew.png';"
     />
-    <strong class="comment-author">
-    ${comment.users?.full_name || 'User'}
-    ${
-      comment.users?.role_badge
-        ? `<span class="dev-badge" style="margin-left:.25rem;">${comment.users.role_badge.toUpperCase()}</span>`
-        : ''
-    }
-    ${
-      isPinned
-        ? '<span class="pinned-badge" style="font-size:.6rem;padding:.1rem .35rem;margin-left:.25rem;">Pinned</span>'
-        : ''
-    }
-    </strong>
-
-
-
-// Usage inside your HTML template:
-<small class="comment-time">${timeAgo(comment.created_at)}</small>
-
-                            </div>
-    <div class="comment-content"
-        style="margin-top:6px;margin-left:49px;
-                background:linear-gradient(135deg,#f9fafc 0%,#eef2f8 100%);
-                border:1px solid #dbe2ec;
-                padding:10px 16px;
-                border-radius:10px;
-                line-height:1.6;
-                margin-bottom:30px;
-                font-size:1.1rem;
-                color:#222;
-                width:fit-content;
-                max-width:90%;
-                word-wrap:break-word;
-                box-sizing:border-box;
-                box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-    ${escapeHtml(comment.content)}
+    <div>
+      <strong class="comment-author">
+        ${comment.users?.full_name || 'User'}
+        ${
+          comment.users?.role_badge
+            ? `<span class="dev-badge" style="margin-left:.25rem;">${comment.users.role_badge.toUpperCase()}</span>`
+            : ''
+        }
+        ${
+          isPinned
+            ? '<span class="pinned-badge" style="font-size:.6rem;padding:.1rem .35rem;margin-left:.25rem;">Pinned</span>'
+            : ''
+        }
+      </strong>
+      <br/>
+      <small class="comment-time" style="color:#555;">${timeAgo(comment.created_at)}</small>
     </div>
-                            ${
-                              canModerate
-                                ? `
-                            <div class="comment-actions">
-                                <button class="btn-icon comment-pin" data-post-id="${postId}" data-comment-id="${
-                                    comment.id
-                                  }" data-pinned="${
-                                    isPinned ? 'true' : 'false'
-                                  }"><i class="fas fa-thumbtack"></i> ${
-                                    isPinned ? 'Unpin' : 'Pin'
-                                  }</button>
-                                <button class="btn-icon comment-delete" data-post-id="${postId}" data-comment-id="${
-                                    comment.id
-                                  }"><i class="fas fa-trash"></i> Delete</button>
-                            </div>`
-                                : ''
-                            }
-                        `;
+  </div>
+
+  ${
+    canModerate
+      ? `
+      <div class="comment-actions" style="margin-left:auto;">
+        <button class="btn-icon comment-delete"
+          data-post-id="${postId}" data-comment-id="${comment.id}"
+          title="Delete this comment"
+          style="background:none;border:none;color:#888;cursor:pointer;font-size:1rem;">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>`
+      : ''
+  }
+</div>
+
+<div class="comment-content"
+  style="
+        margin-top:6px;
+        background:linear-gradient(135deg,#f9fafc 0%,#eef2f8 100%);
+        border:1px solid #dbe2ec;
+        padding:10px 16px;
+        border-radius:10px;
+        line-height:1.6;
+        margin-bottom:30px;
+        font-size:1.1rem;
+        color:#222;
+        width:fit-content;
+        max-width:90%;
+        word-wrap:break-word;
+        box-sizing:border-box;
+        box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+  ${escapeHtml(comment.content)}
+</div>
+`
       commentsListEl.appendChild(commentEl);
     });
 
@@ -1932,7 +1934,7 @@ async function loadLeaderboard(category) {
                 ${user.full_name}
                 ${
                   user.is_dev || (user.role_badge || '').toLowerCase() === 'developer'
-                    ? ' <span class="dev-badge developer">DEV</span>'
+                    ? ' <span class="dev-badge developer" class = "yadhav">DEV</span>'
                     : ''
                 }
             </strong>
@@ -2561,7 +2563,7 @@ function bindAdminManageUsers() {
             ? new Date(actMap[u.id].last_active_at).toLocaleString()
             : '-';
           row.innerHTML = `
-                            <img src="${u.profile_photo || 'https://via.placeholder.com/28'}" 
+                            <img src="${u.profile_photo || 'logonew.png'}" 
                                 style="width:28px;height:28px;border-radius:999px;" alt="">
                             <div style="flex:1;">
                                 <div>${escapeHtml(u.full_name)} 
@@ -2755,3 +2757,115 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+async function loadExplore() {
+  const container = document.getElementById('exploreResults');
+  container.innerHTML = '<p>Loading users...</p>';
+
+  const { data, error } = await supabase
+    .from('users')
+    .select(
+      'id, full_name, total_points, profile_photo, role_badge, followers_count, following_count'
+    )
+    .order('total_points', { ascending: false })
+    .limit(50);
+
+  if (error) {
+    container.innerHTML = '<p>Failed to load users.</p>';
+    console.error(error);
+    return;
+  }
+
+  container.innerHTML = data
+    .filter((u) => u.id !== userId)
+    .map(
+      (u) => `
+      <div class="explore-card">
+        <img src="${u.profile_photo || 'https://via.placeholder.com/80'}" alt="${u.full_name}">
+        <div class="user-name">${u.full_name}</div>
+        ${
+          u.role_badge
+            ? `<span class="dev-badge ${u.role_badge.toLowerCase()}">${u.role_badge.toUpperCase()}</span>`
+            : ''
+        }
+        <div class="user-points">${u.total_points || 0} points</div>
+        <button class="view-btn" data-id="${u.id}">View</button>
+      </div>
+    `
+    )
+    .join('');
+
+  document.querySelectorAll('.view-btn').forEach((btn) => {
+    btn.addEventListener('click', () => openExploreModal(btn.dataset.id));
+  });
+
+  // 🔍 Search functionality
+  document.getElementById('exploreSearch').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.explore-card').forEach((card) => {
+      card.style.display = card.textContent.toLowerCase().includes(term) ? '' : 'none';
+    });
+  });
+}
+
+async function openExploreModal(uid) {
+  const modal = document.getElementById('exploreModal');
+  const body = document.getElementById('exploreModalBody');
+  modal.classList.remove('hidden');
+  body.innerHTML = '<p>Loading profile...</p>';
+
+  const { data, error } = await supabase.from('users').select('*').eq('id', uid).single();
+
+  if (error || !data) {
+    body.innerHTML = '<p>Unable to load user.</p>';
+    return;
+  }
+
+  const isFollowing = await checkFollowing(uid);
+
+  body.innerHTML = `
+    <img src="${data.profile_photo || 'https://via.placeholder.com/100'}" alt="${data.full_name}">
+    <h3>${data.full_name}</h3>
+    ${
+      data.role_badge
+        ? `<span class="dev-badge ${data.role_badge.toLowerCase()}">${data.role_badge.toUpperCase()}</span>`
+        : ''
+    }
+    <p>Total Points: ${data.total_points || 0}</p>
+    <p>Followers: ${data.followers_count || 0} | Following: ${data.following_count || 0}</p>
+    <button class="follow-btn ${isFollowing ? 'unfollow' : ''}" data-id="${data.id}">
+      ${isFollowing ? 'Unfollow' : 'Follow'}
+    </button>
+  `;
+
+  document.querySelector('.follow-btn').addEventListener('click', toggleFollow);
+  document
+    .querySelector('.close-modal')
+    .addEventListener('click', () => modal.classList.add('hidden'));
+}
+
+async function checkFollowing(targetId) {
+  const { data, error } = await supabase
+    .from('follows')
+    .select('follower_id')
+    .eq('follower_id', userId)
+    .eq('followed_id', targetId)
+    .maybeSingle();
+  return !!data;
+}
+
+async function toggleFollow(e) {
+  const btn = e.currentTarget;
+  const targetId = btn.dataset.id;
+  const following = btn.classList.contains('unfollow');
+
+  if (following) {
+    await supabase.from('follows').delete().match({ follower_id: userId, followed_id: targetId });
+    btn.textContent = 'Follow';
+    btn.classList.remove('unfollow');
+  } else {
+    await supabase.from('follows').insert([{ follower_id: userId, followed_id: targetId }]);
+    btn.textContent = 'Unfollow';
+    btn.classList.add('unfollow');
+  }
+}

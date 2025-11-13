@@ -2034,3 +2034,320 @@ strong,
 .monitor-table {
   min-width: 900px; /* ensures columns don’t squeeze too much */
 }
+.comment-actions{
+  margin-top: -20px;
+}
+
+/* ============================================================
+   🌌 EXPLORE / LEADERBOARD — Supercalifragilistic Edition
+   ============================================================ */
+
+/* === Section Container === */
+#section-explore {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* === Header === */
+.explore-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.explore-header h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #2b6cb0, #805ad5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* === Search Bar === */
+.explore-search {
+  flex: 1;
+  max-width: 320px;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(150, 150, 150, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  font-size: 1rem;
+  color: var(--secondary);
+  transition: all 0.3s ease;
+}
+
+.explore-search:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* === Grid === */
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* === Section Titles === */
+.explore-section-title {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--secondary);
+  border-left: 5px solid #3b82f6;
+  padding-left: 0.6rem;
+  letter-spacing: -0.3px;
+}
+
+/* === User Cards === */
+.explore-card {
+  background: linear-gradient(145deg, #ffffff, #f3f6fb);
+  border-radius: 16px;
+  padding: 1.25rem;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.explore-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.explore-card img {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3b82f6;
+  margin-bottom: 0.7rem;
+  transition: transform 0.3s ease;
+}
+
+.explore-card:hover img {
+  transform: scale(1.05);
+}
+
+.user-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.2rem;
+  color: #1e293b;
+}
+
+.user-points {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0.25rem 0;
+}
+
+/* === Buttons === */
+.view-btn {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.45rem 1rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  transform: scale(1.05);
+}
+
+/* === Role Badges === */
+.dev-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.dev-badge.developer { background: #2563eb; }
+.dev-badge.teacher   { background: #8b5cf6; }
+.dev-badge.official  { background: #10b981; }
+.dev-badge.chairman  { background: #9333ea; }
+.dev-badge.student   { background: #3b82f6; }
+
+/* === Modal === */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(5px);
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border-radius: 16px;
+  padding: 1.8rem;
+  width: 90%;
+  max-width: 420px;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.close-modal {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: #64748b;
+  transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+  color: #1e40af;
+}
+
+#exploreModalBody img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3b82f6;
+  margin-bottom: 0.5rem;
+}
+
+.follow-btn {
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.follow-btn:hover {
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  transform: scale(1.05);
+}
+
+.follow-btn.unfollow {
+  background: #ef4444;
+  color: white;
+}
+
+.follow-btn.unfollow:hover {
+  background: #dc2626;
+  color: rgb(135, 127, 127);
+}
+/* ============================================================
+   🌌 EXPLORE — COLUMN LAYOUT (Supercalifragilistic)
+   ============================================================ */
+
+/* Parent container holding all role columns */
+.explore-columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+/* Each vertical column */
+.explore-column {
+  flex: 1;
+  min-width: 250px;
+  max-width: 320px;
+  background: linear-gradient(145deg, #ffffff, #f3f6fb);
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.explore-column:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Column titles (role names) */
+.explore-section-title {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  border-bottom: 3px solid #3b82f6;
+  padding-bottom: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+/* Cards inside each column */
+.explore-grid {
+  display: flex;
+  flex-direction: column !important;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Adjust card sizing within columns */
+.explore-card {
+  width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.explore-card:hover {
+  transform: scale(1.03);
+}
+
+/* === Responsive Breakpoints === */
+
+/* 2 columns layout for medium devices */
+@media (max-width: 1024px) {
+  .explore-columns {
+    justify-content: space-around;
+  }
+}
+
+/* Stack columns for small screens */
+@media (max-width: 768px) {
+  .explore-columns {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .explore-column {
+    width: 90%;
+    max-width: 420px;
+  }
+}

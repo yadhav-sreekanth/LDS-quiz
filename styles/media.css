@@ -640,7 +640,7 @@
     display: none !important; /* override inline styles */
   }
 }
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   /* make the posts feed take full width */
   .posts-container {
     display: flex;
@@ -766,9 +766,8 @@
   }
 
   .file-input input[type='file']::file-selector-button {
-    width: 100%;
+    
     text-align: center;
-    margin-right: 0;
     margin-bottom: 0.5rem;
   }
 
@@ -1012,5 +1011,68 @@
     content: none !important;
   }
 }
+@media (max-width: 371px) {
+  /* Account card adjustments */
+  .account-card {
+    padding: 0.75rem !important;
+    width: 100% !important;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05) !important;
+  }
+
+  /* Search input full width */
+  #adminUserSearch {
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Checkbox + refresh button stacked */
+  #adminUserSearch + div {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  /* User results container */
+  #adminUserResults {
+    max-height: 140px !important;
+    overflow-y: auto !important;
+    width: 100% !important;
+  }
+
+  /* Admin controls: stack vertically */
+  #adminUserControls > div {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  #adminUserControls input,
+  #adminUserControls select,
+  #adminUserControls .btn {
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Delete user + message row */
+  #adminUserControls div[style*="grid-column"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  /* General button adjustments */
+  .btn {
+    padding: 0.45rem 0.75rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+@media (max-width: 371px) {
+  .dev-badge.developer {
+    display: none !important;
+  }
+
+}
+
 
 /* END of responsive block */

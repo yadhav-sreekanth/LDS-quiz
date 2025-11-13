@@ -86,6 +86,11 @@
                     <span>Dashboard</span>
                 </li>
 
+                            <li class="nav-item" data-section="explore">
+                                <i class="fas fa-compass"></i>
+                                <span>Explore</span>
+                            </li>
+
                 <li class="nav-item" data-section="leaderboard">
                     <i class="fas fa-trophy"></i>
                     <span>Leaderboard</span>
@@ -207,11 +212,24 @@
                 </div>
                 <div class="quiz-intro" id="quizIntro">
                     <h2>Your Guide</h2>
-                    <p style="max-width:900px;margin:0 auto 1rem;line-height:1.75;color:#374151">
-                        Welcome to Little Daffodils Quiz Club! This short guide will help you discover everything you
-                        can do here — from taking quizzes and earning points to posting, liking, following, and climbing
-                        the leaderboard. Have fun and explore!
-                    </p>
+<p style="max-width:900px;margin:0 auto 1rem;line-height:1.75;color:#374151">
+    Welcome to <strong>Little Daffodils Quiz Club!</strong>
+    This short guide will help you discover everything you can do here — from taking quizzes and earning points to
+    posting, liking, following, and climbing the leaderboard.
+</p>
+
+<p style="max-width:900px;margin:0 auto 1rem;line-height:1.75;color:#374151">
+    Have fun exploring each section and enjoy learning in a fun and friendly way.
+    Every student belongs to one of three groups — <em>Early Years</em>, <em>Primary</em>, or <em>CBSE</em> — ensuring
+    fair and age-appropriate quizzes.
+</p>
+
+<p style="max-width:900px;margin:0 auto 1rem;line-height:1.75;color:#374151">
+    Activities and interactions are gently monitored by the <strong>Chairman</strong>, <strong>Principal</strong>,
+    <strong>Teachers</strong>, <strong>Officials</strong>, and <strong>Developers</strong> to keep the club safe, fair,
+    and enjoyable for everyone.
+</p>
+
                     <div style="text-align:left;max-width:980px;margin:0 auto;display:grid;gap:1rem">
                         <div
                             style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:1rem 1.25rem">
@@ -235,7 +253,6 @@
                                 <li>Open the <strong>Posts</strong> tab to read what others share.</li>
                                 <li>Press <strong>Like</strong> on posts you enjoy. It turns to <strong>Liked</strong>
                                     and the counter updates instantly.</li>
-                                <li>Use <strong>Share</strong> to copy a link and spread great posts with friends.</li>
                                 <li>Want to create a post? Write your message, optionally attach an image, and hit
                                     <strong>Post</strong>.
                                 </li>
@@ -606,7 +623,7 @@
                                 <label style="display:block; font-weight:600; margin-bottom:.25rem;">Name or Database
                                     UID</label>
                                 <input type="email" id="devGrantEmail"
-                                    placeholder="Enter email to grant developer powers"
+                                    placeholder="Enter name or ID to grant developer powers"
                                     style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:8px;" />
                             </div>
                             <div style="margin-bottom:.75rem;">
@@ -657,7 +674,7 @@
                                             <label style="display:block; font-weight:600; margin-bottom:.25rem;">Points
                                                 Adjustment</label>
                                             <div style="display:flex; gap:.5rem;">
-                                                <input type="number" id="adminPointsDelta" placeholder="e.g. 10 or -5"
+                                                <input type="number"  id="adminPointsDelta" placeholder="e.g. 10 or -5"
                                                     style="flex:1; padding:.5rem .6rem; border:1px solid #ddd; border-radius:8px;" />
                                                 <button class="btn btn-primary" id="adminApplyPoints">Apply</button>
                                             </div>
@@ -759,9 +776,7 @@
                                 <div class="support-chat-area">
                                     <div id="supportMessages" class="support-messages"></div>
                                     <div class="support-input">
-                                        <input type="file" id="supportMedia" accept="image/*,video/*,audio/*" hidden>
                                         <input type="text" id="supportInput" placeholder="Type a reply..." />
-                                        <button id="supportAttachBtn"><i class="fas fa-paperclip"></i></button>
                                         <button id="supportSendBtn" class="btn-primary">Send</button>
                                     </div>
                                 </div>
@@ -791,6 +806,31 @@
                     </div>
                 </div>
             </div>
+            <!-- 🌍 Explore Section -->
+            <section id="section-explore" class="section">
+                <div class="explore-header">
+                    <h2>Explore Users & Leaderboards</h2>
+            
+                    <!-- 🔍 Search -->
+                    <input type="text" id="exploreSearch" placeholder="Search users..." class="explore-search" />
+                </div>
+            
+                <!-- 🏆 Results container (populated by JS) -->
+                <div id="exploreResults" class="explore-results">
+                    <p>loading.../p>
+                </div>
+            </section>
+            
+            <!-- 👤 User Modal (shown when clicking “View”) -->
+            <div id="exploreModal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <div id="exploreModalBody">
+                        <p>Loading profile...</p>
+                    </div>
+                </div>
+            </div>
+
 
 
 
@@ -799,5 +839,4 @@
             <script src="support.js"></script>
             <script src="scripts.js"></script>
 </body>
-
 </html>
