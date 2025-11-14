@@ -2204,10 +2204,14 @@ async function deleteUserStorageAssets(uid) {
 async function loadAnnouncements() {
   const listEl = document.getElementById('announcementsList');
   const formWrap = document.getElementById('announceFormWrap');
-  // Show form only for developer email
+
+  // User permission checks
   const role = (userProfile?.role_badge || '').toLowerCase();
-  const canAnnounce =
-    userProfile?.is_dev || ['developer', 'teacher', 'chairman', 'admin'].includes(role);
+
+  const isDevEmail =
+    (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com' || userProfile?.is_dev;
+
+  const canAnnounce = isDevEmail || ['developer', 'teacher', 'chairman', 'admin'].includes(role);
 
   if (formWrap) formWrap.style.display = canAnnounce ? 'block' : 'none';
 
@@ -2218,11 +2222,13 @@ async function loadAnnouncements() {
     .order('created_at', { ascending: false });
 
   listEl.innerHTML = '';
+
   if (error) {
     console.error('Error loading announcements:', error);
     listEl.innerHTML = '<p>Error loading announcements.</p>';
     return;
   }
+
   if (!data || data.length === 0) {
     listEl.innerHTML = '<p>No announcements right now.</p>';
     return;
@@ -2232,34 +2238,41 @@ async function loadAnnouncements() {
     const el = document.createElement('div');
     el.className = 'post';
     const when = new Date(a.created_at).toLocaleString();
+
     el.innerHTML = `
-                        <div class="post-head">
-                            <strong>${escapeHtml(a.title || 'Announcement')}</strong>
-                            <small>${when}</small>
-                        </div>
-                        <div class="post-body">
-                            <p>${escapeHtml(a.body || '')}</p>
-                            ${
-                              isDevEmail
-                                ? `<div class="post-actions"><button class="delete-btn announce-delete" data-aid="${a.id}"><i class=\"fas fa-trash\"></i> Delete</button></div>`
-                                : ''
-                            }
-                        </div>
-                    `;
+      <div class="post-head">
+        <strong>${escapeHtml(a.title || 'Announcement')}</strong>
+        <small>${when}</small>
+      </div>
+      <div class="post-body">
+        <p>${escapeHtml(a.body || '')}</p>
+        ${
+          isDevEmail
+            ? `<div class="post-actions">
+                 <button class="delete-btn announce-delete" data-aid="${a.id}">
+                   <i class="fas fa-trash"></i> Delete
+                 </button>
+               </div>`
+            : ''
+        }
+      </div>
+    `;
     listEl.appendChild(el);
   });
 
-  // Attach delete handlers for dev
+  // Attach delete handler for devs only
   if (isDevEmail) {
     listEl.querySelectorAll('.announce-delete').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-aid');
         if (!confirm('Delete this announcement?')) return;
+
         const { error } = await supabase.from('announcements').delete().eq('id', id);
         if (error) {
           alert('Delete failed: ' + error.message);
           return;
         }
+
         loadAnnouncements();
       });
     });
@@ -2269,26 +2282,34 @@ async function loadAnnouncements() {
 async function createAnnouncement() {
   const title = (document.getElementById('announceTitle').value || '').trim();
   const body = (document.getElementById('announceBody').value || '').trim();
+
   if (!title || !body) {
     alert('Title and body required');
     return;
   }
-  // Restrict to developer email on client side (RLS should enforce on server)
+
+  // Restrict to developer
   const isDevEmail =
     (userProfile.email || '').toLowerCase() === 'yadhavvsreelakam@gmail.com' || userProfile?.is_dev;
+
   if (!isDevEmail) {
     alert('Only developers can post announcements.');
     return;
   }
+
   const { error } = await supabase.from('announcements').insert([{ title, body }]);
+
   if (error) {
     alert('Failed to publish: ' + error.message);
     return;
   }
+
   document.getElementById('announceTitle').value = '';
   document.getElementById('announceBody').value = '';
+
   loadAnnouncements();
 }
+
 
 async function loadAccount() {
   try {
