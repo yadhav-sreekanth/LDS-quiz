@@ -252,11 +252,24 @@ header {
    ============================== */
 .dev-badge.chairman,
 .dev-badge.senior_principal {
-  background: linear-gradient(135deg, #f4d03f, #f39c12);
+  background: linear-gradient(135deg, #ffeb3b, #f7b500, #ff8c00);
+  border: 1px solid rgba(255, 215, 0, 0.8);
+  color: #000;
+  font-weight: 700;
+
   box-shadow:
-    0 0 10px rgba(243, 156, 18, 0.4),
-    inset 0 0 5px rgba(255, 255, 255, 0.3);
+    0 0 12px rgba(255, 185, 0, 0.7),
+    0 0 20px rgba(255, 140, 0, 0.5),
+    inset 0 0 10px rgba(255, 255, 255, 0.45),
+    inset 0 0 4px rgba(255, 215, 0, 0.6);
+
+  border-radius: 6px;
+  padding: 4px 10px;
+
+  /* Gives it a luxury “polished metal” feel */
+  backdrop-filter: blur(2px);
 }
+
 
 /* ==============================
    🎓 PRINCIPAL — ROYAL AMETHYST
@@ -2184,7 +2197,7 @@ strong,
 .dev-badge.developer { background: #2563eb; }
 .dev-badge.teacher   { background: #8b5cf6; }
 .dev-badge.official  { background: #10b981; }
-.dev-badge.chairman  { background: #9333ea; }
+.dev-badge.chairman  { background: #ccff00; }
 .dev-badge.student   { background: #3b82f6; }
 
 /* === Modal === */
